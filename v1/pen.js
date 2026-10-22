@@ -25,6 +25,10 @@
   .pen-tools .pen-toggle:hover { opacity: 1; }
   body.pen-on .pen-tools .pen-toggle { opacity: 1; background: var(--ink, #1D2238); color: var(--paper, #fff); border-color: var(--ink, #1D2238); }
   .pen-tools .pen-more { display: none; flex-direction: column; gap: 8px; }
+  .pen-tools .pen-guide-hint { width: auto; height: auto; border-radius: 6px; padding: 3px 6px; font-size: 0.7rem; line-height: 1.2;
+    max-width: 64px; white-space: normal; text-align: center; background: var(--note-yellow, #FFF3B0); color: var(--on-hl, #1D2238);
+    border: 1px solid var(--ink, #1D2238); }
+  .pen-tools .pen-guide-hint[hidden] { display: none; }
   body.pen-on .pen-tools .pen-more { display: flex; }
   .pen-tools .swatch span { width: 16px; height: 16px; border-radius: 50%; display: block; }
   .pen-tools .on { box-shadow: 0 0 0 3px var(--hl-yellow, #FFE45C); }
@@ -95,6 +99,20 @@
     document.addEventListener("visibilitychange", () => { if (!document.hidden) reload(); });
     function save() { try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) { /* ignore */ } }
     function strokesOf(i) { return saved[i] || (saved[i] = []); }
+    // Guide mode: a note written while a step glows belongs to that step (s.g) and shows only on that step.
+    // With the guide off, only ordinary notes show, so the two kinds never pile up.
+    function guideStep() { const g = window.guideState; return g && g.on ? g.step : null; }
+    function visibleOf(i) { const g = guideStep(); return strokesOf(i).filter((s) => g === null ? s.g === undefined : s.g === g); }
+    // With the guide off, a small hint says how many notes are waiting in Guide mode
+    const guideHint = document.createElement("button");
+    guideHint.type = "button"; guideHint.className = "pen-guide-hint"; guideHint.hidden = true;
+    guideHint.title = "These notes show one step at a time. Click to turn the guide on.";
+    guideHint.onclick = () => { if (window.guideToggle) window.guideToggle(); };
+    function updateGuideHint() {
+      const n = guideStep() === null ? strokesOf(currentIndex()).filter((s) => s.g !== undefined).length : 0;
+      guideHint.hidden = !n || !window.guideToggle;
+      guideHint.textContent = `✎ ${n} in Guide mode`;
+    }
 
     function currentIndex() {
       const i = hosts.findIndex((h) => !h.hidden && h.offsetParent !== null);
@@ -168,7 +186,8 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.lineCap = "round"; ctx.lineJoin = "round";
       const f = frame();
-      strokesOf(currentIndex()).forEach((s) => drawStroke(s, f));
+      visibleOf(currentIndex()).forEach((s) => drawStroke(s, f));
+      updateGuideHint();
       ctx.globalAlpha = 1;
       placeStickies(f);
     }
@@ -197,6 +216,7 @@
       const f = frame();
       if (erasing || e.button === 5) { current = "erase"; eraseAt(toSlide(e, f), f); return; }
       current = { c: tool.color, w: tool.width, a: tool.alpha, p: [toSlide(e, f)] };
+      if (guideStep() !== null) current.g = guideStep();
       strokesOf(currentIndex()).push(current);
       tap = { x: e.clientX, y: e.clientY, t: Date.now(), moved: false };
       requestRedraw();
@@ -249,8 +269,8 @@
     function eraseAt([x, y], f) {
       const reach = 12 / f.w;
       const i = currentIndex();
-      const list = strokesOf(i);
-      const kept = list.filter((s) => !s.p.some(([px, py]) => Math.abs(px - x) < reach && Math.abs(py - y) < reach));
+      const list = strokesOf(i), shown = new Set(visibleOf(i));
+      const kept = list.filter((s) => !shown.has(s) || !s.p.some(([px, py]) => Math.abs(px - x) < reach && Math.abs(py - y) < reach));
       if (kept.length !== list.length) { saved[i] = kept; save(); requestRedraw(); }
     }
 
@@ -295,7 +315,8 @@
         return;
       }
       disarm();
-      saved[currentIndex()] = []; save(); requestRedraw();
+      const i = currentIndex(), shown = new Set(visibleOf(i));
+      saved[i] = strokesOf(i).filter((s) => !shown.has(s)); save(); requestRedraw();
     };
     function disarm() { clearTimeout(clearArmed); clearArmed = null; clear.textContent = "✕"; clear.title = "Clear notes on this page"; }
     // Clear every note on every page, after a confirmation message
@@ -327,7 +348,8 @@
     addNote.textContent = "📝";
     addNote.onclick = () => newSticky();
     more.append(addNote, eraser, undo, clear, clearAll);
-    box.append(toggle, more);
+    document.addEventListener("guidestep", requestRedraw);
+    box.append(toggle, more, guideHint);
     document.body.appendChild(box);
 
     function mark() {
@@ -363,9 +385,9 @@
       } catch (e) { /* ignore */ }
     }
     function undoLast() {
-      const list = strokesOf(currentIndex());
-      if (!list.length) return;
-      list.pop(); save(); requestRedraw();
+      const list = strokesOf(currentIndex()), shown = visibleOf(currentIndex());
+      if (!shown.length) return;
+      list.splice(list.lastIndexOf(shown[shown.length - 1]), 1); save(); requestRedraw();
     }
     function setOn(on) {
       document.body.classList.toggle("pen-on", on);

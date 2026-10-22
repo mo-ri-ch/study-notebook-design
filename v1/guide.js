@@ -45,6 +45,11 @@
 
   function load() { try { return localStorage.getItem(KEY) === "1"; } catch (e) { return false; } }
   function save() { try { localStorage.setItem(KEY, on ? "1" : "0"); } catch (e) { /* private mode */ } }
+  // Tell the pen which step is glowing, so notes written in Guide mode belong to that step
+  function announce() {
+    window.guideState = { on, step };
+    document.dispatchEvent(new CustomEvent("guidestep", { detail: window.guideState }));
+  }
 
   function hasClass(el, list) { return list.some(c => el.classList.contains(c)); }
 
@@ -94,9 +99,9 @@
 
   function show(scroll) {
     clear();
-    if (!on) return;
+    if (!on) { announce(); return; }
     buildSteps();
-    if (!steps.length) return;
+    if (!steps.length) { announce(); return; }
     step = Math.max(0, Math.min(steps.length - 1, step));
     steps[step].forEach(el => el.classList.add("guide-now"));
     count.textContent = `${step + 1} / ${steps.length}`;
@@ -104,6 +109,7 @@
     // Follow the step's size as it changes (an activity opening, Step through starting, a terminal appearing)
     if (sizeWatch) { sizeWatch.disconnect(); steps[step].forEach(el => sizeWatch.observe(el)); }
     if (scroll) scrollToStep();
+    announce();
   }
 
   // On wide screens the page area scrolls by itself (next to the page list); on phones the window scrolls
@@ -152,8 +158,9 @@
     toggle.setAttribute("aria-pressed", on ? "true" : "false");
     toggle.textContent = on ? "🧭 Guiding" : "🧭 Guide me";
     save();
-    if (on) { step = 0; show(true); } else clear();
+    if (on) { step = 0; show(true); } else { clear(); announce(); }
   }
+  window.guideToggle = () => setOn(!on);
 
   // ----- the controls -----
   const glow = document.createElement("div");
