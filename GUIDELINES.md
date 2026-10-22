@@ -20,6 +20,8 @@ and every change. Add to this file whenever he gives new design advice.
   Never split a single idea across slides.
 - **Hands-on where possible.** Typing and seeing results live beats reading.
 - **Every activity has ↺ Reset** to put it back to how it started.
+- **No greyed-out buttons.** A button appears only when it can be used (e.g. "← Back" only after
+  the first step; at the end of a game, one clear "↺ Start again" instead of dead buttons).
 - **Put explanations after the thing they explain** (e.g. pros/cons of word pieces after the
   merge game that shows how pieces are learned).
 - **Doubts only some readers will have** (e.g. "what about spaces?") are never text on the page.
