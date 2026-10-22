@@ -447,14 +447,38 @@ function setupPeeks() {
     const long = pop.textContent.length > 160;
     const r = el.getBoundingClientRect(), w = Math.min(long ? 460 : 340, window.innerWidth - 24);
     pop.style.maxWidth = w + "px";
-    const left = Math.min(Math.max(12, r.left), window.innerWidth - pop.offsetWidth - 12);
-    const below = r.bottom + 8 + pop.offsetHeight < window.innerHeight;
+    place(r);
+  }
+  // Put the peek where it fits, and never on top of the thing being hovered (that would close it at once)
+  function place(r) {
+    const M = 12, G = 8, W = window.innerWidth, H = window.innerHeight;
+    pop.style.maxHeight = ""; pop.style.overflowY = "";
+    const w = pop.offsetWidth, h = pop.offsetHeight;
+    const roomBelow = H - r.bottom - G - M, roomAbove = r.top - G - M;
+    const roomLeft = r.left - G - M, roomRight = W - r.right - G - M;
+    const clampX = x => Math.min(Math.max(M, x), W - w - M), clampY = y => Math.min(Math.max(M, y), H - h - M);
+    let left, top;
+    if (h <= roomBelow) { left = clampX(r.left); top = r.bottom + G; }
+    else if (h <= roomAbove) { left = clampX(r.left); top = r.top - G - h; }
+    else if (w <= roomLeft) { left = r.left - G - w; top = clampY(r.top + r.height / 2 - h / 2); }
+    else if (w <= roomRight) { left = r.right + G; top = clampY(r.top + r.height / 2 - h / 2); }
+    else {
+      // Nowhere fits fully: use the bigger side and let the peek scroll inside
+      const below = roomBelow >= roomAbove, room = Math.max(80, below ? roomBelow : roomAbove);
+      pop.style.maxHeight = room + "px"; pop.style.overflowY = "auto";
+      left = clampX(r.left); top = below ? r.bottom + G : r.top - G - Math.min(h, room);
+    }
     pop.style.left = left + "px";
-    pop.style.top = (below ? r.bottom + 8 : Math.max(12, r.top - pop.offsetHeight - 8)) + "px";
+    pop.style.top = top + "px";
   }
   function hide() { follow.disconnect(); pop.hidden = true; if (owner) owner.removeAttribute("aria-describedby"); owner = null; pinned = false; }
   document.addEventListener("mouseover", e => { const t = target(e.target); if (t && !pinned) show(t); });
-  document.addEventListener("mouseout", e => { const t = target(e.target); if (t && !pinned && !t.contains(e.relatedTarget)) hide(); });
+  document.addEventListener("mouseout", e => {
+    const t = target(e.target);
+    if (t && !pinned && !t.contains(e.relatedTarget) && !pop.contains(e.relatedTarget)) hide();
+  });
+  // You can move onto the peek to read it; it closes when you leave it (unless you go back to its word)
+  pop.addEventListener("mouseleave", e => { if (!pinned && !(owner && owner.contains(e.relatedTarget))) hide(); });
   document.addEventListener("focusin", e => { const t = target(e.target); if (t) show(t); });
   document.addEventListener("focusout", e => { if (target(e.target) && !pinned) hide(); });
   document.addEventListener("click", e => {
