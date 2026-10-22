@@ -80,3 +80,7 @@
     .link svg { display: none; }
     .link .q::before { content: "↓ "; }
   }
+  /* Optional part headings in the path */
+  .path .part-head { font-family: var(--hand); color: var(--redpen); font-size: 1.35rem; margin: 18px 0 14px; padding-bottom: 4px;
+    border-bottom: 2px dashed color-mix(in srgb, var(--redpen) 45%, transparent); max-width: 860px; }
+  .path .part-head:first-child { margin-top: 0; }

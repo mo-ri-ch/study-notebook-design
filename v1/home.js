@@ -1,6 +1,7 @@
 // home.js — the course home page (study-notebook-design, v1).
 // Needs common.js first (for LESSONS and isDone).
 //   <ol class="path" id="pathList"></ol>     → the lessons as sticky notes, joined by each lesson's question
+//                                              (a lesson with part: "Part 1 · …" gets a heading above it)
 //   <button data-note="needNote">…</button>  → opens the small sticky note with id="needNote" in place
 
 // ---------------- The path: sticky notes joined by questions ----------------
@@ -15,6 +16,14 @@
     const done = isDone(lesson.n);
     const stamp = done ? '<span class="stamp done">✓ Done</span>'
       : lesson.ready ? '<span class="stamp open">Open</span>' : '<span class="stamp soon">Soon</span>';
+
+    // Optional: a handwritten heading before the first lesson of each part (lesson.part = "Part 1 · …")
+    if (lesson.part) {
+      const head = document.createElement("li");
+      head.className = "part-head";
+      head.textContent = lesson.part;
+      list.appendChild(head);
+    }
 
     const step = document.createElement("li");
     step.className = "step" + (right ? " right" : "");
