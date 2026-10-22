@@ -217,6 +217,13 @@
     backBtn.addEventListener("click", () => { move(-1); backBtn.blur(); });
 
     // Keys. Step through (on the code page) handles its own arrows first.
+    // Esc leaves Guide mode, unless it was used to close something else first (the pen, a word card)
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape" || !on || e.defaultPrevented) return;
+      const card = document.querySelector(".pyword-card");
+      if (card && !card.hidden) return;
+      setOn(false);
+    });
     document.addEventListener("keydown", (e) => {
       if (!on || e.ctrlKey || e.metaKey || e.altKey) return;
       if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;

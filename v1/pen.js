@@ -407,7 +407,7 @@
       if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
       const on = document.body.classList.contains("pen-on");
       if ((e.key === "p" || e.key === "P") && !e.ctrlKey && !e.metaKey && !e.altKey) setOn(!on);
-      else if (e.key === "Escape" && on) setOn(false);
+      else if (e.key === "Escape" && on) { setOn(false); e.preventDefault(); }   // Esc does one thing at a time: the guide waits
       else if ((e.ctrlKey || e.metaKey) && (e.key === "z" || e.key === "Z") && on) { e.preventDefault(); undoLast(); }
     });
 
