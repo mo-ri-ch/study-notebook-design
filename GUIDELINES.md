@@ -27,6 +27,8 @@ and every change. Add to this file whenever he gives new design advice.
 - **Doubts only some readers will have** (e.g. "what about spaces?") are never text on the page.
   They sit behind a small 🤔 beside the box they belong to (`<button class="doubt" data-peek-from="…">`):
   hover or tap shows the question and answer. It's not part of the guide's glowing steps.
+  The 🤔's title is **the student's real question, short and specific**, as they'd think it
+  (e.g. "Why only between −1 and 1?", not a vague "Isn't a dot product any number?").
 - **Details on hover (or tap), not on the page.** Numbers and terms that need a breakdown get a
   "peek" (`data-peek="…"` or `data-peek-from="id"`, dotted underline): the page stays calm and the
   detail is one move away. Works with a tap on phones; Esc or a tap elsewhere closes it.
