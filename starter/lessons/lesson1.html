@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>First lesson</title>
+<meta name="description" content="Lesson 1 of My Course: one sentence about the lesson.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&family=Kalam:wght@400&family=Patrick+Hand&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://mo-ri-ch.github.io/study-notebook-design/v1/style.css">
+</head>
+<body data-pen="blue">
+<div class="wrap">
+  <header class="topbar">
+    <a class="home" href="../">← My Course</a>
+    <span class="where">Lesson 1 of 2</span>
+  </header>
+
+  <!-- data-paged: one part per screen, with slide thumbnails and ← → keys -->
+  <main data-paged>
+    <div class="paged-head">
+      <h1>First lesson</h1>
+      <div class="progress" aria-label="Lesson parts"></div>
+    </div>
+
+    <!-- Each <section class="part"> is one screen. data-title is its name in the thumbnails. -->
+    <section class="part" data-title="The problem">
+      <h2>The problem</h2>
+      <p class="say">Short lines, one idea each.</p>
+      <p class="say">Put <mark>a new word</mark> in a yellow highlighter.</p>
+
+      <div class="activity">
+        <div class="do">Try it: something the student does.</div>
+<pre><code>print("code students can copy and run")</code></pre>
+      </div>
+    </section>
+
+    <section class="part" data-title="Check yourself">
+      <h2>Check yourself</h2>
+      <!-- A quiz: mark the right button with data-right. The quiz's data-right is shown when they pick it;
+           each wrong button's data-why says why it's wrong. -->
+      <div class="quiz" data-right="Yes, that's right.">
+        <div class="q">A question?</div>
+        <div class="options">
+          <button data-right>The right answer</button>
+          <button data-why="Why this one is wrong.">A wrong answer</button>
+        </div>
+        <div class="feedback"></div>
+      </div>
+    </section>
+
+    <section class="part" data-title="What's next?">
+      <h2>What's next?</h2>
+      <div class="open-question">
+        <div>This leaves a question</div>
+        <div class="big">The question this lesson leaves open.</div>
+        <div><a href="lesson2.html">Lesson 2 answers it.</a></div>
+      </div>
+      <p><button class="done-toggle" data-done="1">Mark lesson as done</button></p>
+    </section>
+  </main>
+</div>
+
+<nav class="pagebar" aria-label="Move between parts">
+  <div class="inner">
+    <button data-page-back>← Previous</button>
+    <span data-page-label></span>
+    <button class="primary" data-page-next>Next →</button>
+  </div>
+</nav>
+
+<script src="../assets/course.js"></script>
+<script src="https://mo-ri-ch.github.io/study-notebook-design/v1/common.js"></script>
+<script src="https://mo-ri-ch.github.io/study-notebook-design/v1/pen.js"></script>
+<script src="https://mo-ri-ch.github.io/study-notebook-design/v1/guide.js"></script>
+</body>
+</html>

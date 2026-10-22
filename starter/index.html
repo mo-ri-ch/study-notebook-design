@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Course</title>
+<meta name="description" content="One sentence about the course.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&family=Kalam:wght@400&family=Patrick+Hand&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://mo-ri-ch.github.io/study-notebook-design/v1/style.css">
+<link rel="stylesheet" href="https://mo-ri-ch.github.io/study-notebook-design/v1/home.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <a class="home" href="./">My Course</a>
+    <div class="tools">
+      <a class="btn" href="https://github.com/mo-ri-ch/my-course">Code</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <h1>Course title, <span class="swash">highlighted</span>.</h1>
+        <p class="say">One sentence on what students will learn, with <b>the key idea in bold.</b></p>
+        <div class="actions">
+          <a class="btn primary" href="lessons/lesson1.html">Start Lesson 1</a>
+          <button data-note="needNote" aria-expanded="false" aria-controls="needNote">What you need</button>
+          <button data-note="howNote" aria-expanded="false" aria-controls="howNote">How to use</button>
+        </div>
+        <div class="need" id="needNote" hidden>
+          <button class="close" aria-label="Close">×</button>
+          <div class="cols">
+            <div>
+              <h3>Helps to know</h3>
+              <ul>
+                <li><span class="yes">✓</span> Something students should know</li>
+                <li><span class="yes">✓</span> Another thing they should know</li>
+              </ul>
+            </div>
+            <div>
+              <h3>You don't need</h3>
+              <ul>
+                <li><span class="no">✗</span> A GPU</li>
+                <li><span class="no">✗</span> Research experience</li>
+                <li><span class="no">✗</span> Heavy math</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="need blue" id="howNote" hidden>
+          <button class="close" aria-label="Close">×</button>
+          <div class="cols">
+            <div>
+              <h3>Learning</h3>
+              <ul>
+                <li><span class="yes">1</span> Go in order.</li>
+                <li><span class="yes">2</span> Guess before you click.</li>
+                <li><span class="yes">3</span> Play with every demo.</li>
+                <li><span class="yes">4</span> Take your own notes with the pen (P).</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Teaching</h3>
+              <ul>
+                <li><span class="yes">T</span> Big text for a projector</li>
+                <li><span class="yes">← →</span> Move between parts</li>
+                <li><span class="yes">?</span> Ask quizzes out loud first</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="activity">
+        <p>Something to try on the home page: a demo, a picture, or the big picture of the course.</p>
+      </div>
+    </section>
+
+    <h2 id="path">The path</h2>
+    <p class="path-intro">Each lesson ends with a question. The next lesson answers it.</p>
+    <ol class="path" id="pathList"></ol>
+
+  </main>
+  <footer class="site">Your progress is saved in this browser only.<span class="made">Made with <span class="heart" aria-label="love">♥</span> by <a href="https://www.linkedin.com/in/morich/" target="_blank" rel="noopener">Rishal</a></span></footer>
+</div>
+
+<script src="assets/course.js"></script>
+<script src="https://mo-ri-ch.github.io/study-notebook-design/v1/common.js"></script>
+<script src="https://mo-ri-ch.github.io/study-notebook-design/v1/pen.js"></script>
+<script src="https://mo-ri-ch.github.io/study-notebook-design/v1/home.js"></script>
+</body>
+</html>

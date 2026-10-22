@@ -1,0 +1,82 @@
+/* home.css — the course home page: hero, small sticky notes that open in place,
+   and the lessons as sticky notes joined by their questions. Used with home.js. */
+  .hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: start; padding: 40px 0 72px; }
+  .hero h1 { font-size: clamp(2.8rem, 6vw, 4.2rem); margin-bottom: 20px; }
+  .hero .say { color: var(--pencil); font-size: 1.35rem; }
+  .hero .say b { color: var(--ink); }
+  .hero .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+
+    font-family: var(--mono); font-size: 1.05rem; height: 9.5em; overflow-y: auto; line-height: 1.5;
+    white-space: pre-wrap; word-break: break-word;
+    padding: 8px 12px; background: var(--paper); border: 2px solid var(--ink); border-radius: 8px;
+  }
+
+  /* "What you need": a small sticky note that opens in place */
+  .need {
+    position: relative; margin-top: 22px; padding: 22px 22px 14px;
+    background: var(--note-yellow); border-radius: 2px 2px 6px 2px; transform: rotate(-0.6deg);
+    box-shadow: 0 14px 22px -14px rgba(20,24,50,.45);
+  }
+  .need::before {
+    content: ""; position: absolute; top: -12px; left: 40px; width: 90px; height: 24px;
+    background: var(--tape); transform: rotate(-3deg);
+  }
+  .need .cols { display: grid; grid-template-columns: 1.3fr 1fr; gap: 18px; }
+  .need h3 { font-size: 1.35rem; margin-bottom: 8px; }
+  .need ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; font-size: 0.95rem; }
+  .need .yes { color: var(--good); font-weight: 700; }
+  .need .no { color: var(--redpen); font-weight: 700; }
+  .need .small { font-size: 0.85rem; color: var(--pencil); margin: 12px 0 0; }
+  .need .close { position: absolute; top: 6px; right: 8px; border: 0; background: none; font-size: 1.4rem; padding: 0 6px; }
+  .need .close:hover { background: none; color: var(--redpen); }
+  .need.blue { background: var(--note-blue); transform: rotate(0.6deg); }
+  .need .yes { display: inline-block; min-width: 1.4em; }
+  @media (max-width: 520px) { .need .cols { grid-template-columns: 1fr; } }
+
+  .path-intro { max-width: 40ch; color: var(--pencil); font-size: 1.15rem; margin-bottom: 32px; }
+
+  /* Lessons as sticky notes, zigzagging down the page */
+  .path { list-style: none; padding: 0; margin: 0 0 40px; max-width: 860px; }
+  .step { display: grid; grid-template-columns: 1fr 1fr; }
+  .step .lnote { grid-column: 1; }
+  .step.right .lnote { grid-column: 2; justify-self: end; }
+
+  .lnote {
+    display: block; width: 100%; max-width: 380px; padding: 20px 22px 18px;
+    color: var(--on-hl); text-decoration: none;
+    box-shadow: 0 14px 22px -14px rgba(20,24,50,.45), 0 1px 0 rgba(0,0,0,.05);
+    border-radius: 2px 2px 6px 2px;
+  }
+  .lnote .num { font-family: var(--head); font-size: 1.1rem; color: var(--pencil); }
+  .lnote .title { font-family: var(--head); font-size: 2rem; line-height: 1.1; margin: 4px 0 10px; }
+  .lnote .sum { font-size: 0.98rem; line-height: 1.45; }
+  .lnote .stamp {
+    display: inline-block; margin-top: 12px; font-family: var(--head); font-size: 1.05rem;
+    padding: 0 10px; border: 2px solid currentColor; border-radius: 6px; transform: rotate(-3deg);
+  }
+  .lnote .stamp.open { color: var(--pen); }
+  .lnote .stamp.done { color: var(--good); }
+  .lnote .stamp.soon { color: var(--pencil); }
+  a.lnote:hover { outline: 3px solid var(--hl-yellow); }
+  .lnote.y { background: var(--note-yellow); } .lnote.p { background: var(--note-pink); }
+  .lnote.b { background: var(--note-blue); } .lnote.g { background: var(--note-green); } .lnote.o { background: var(--note-orange); }
+  .lnote.soon-note { opacity: 0.85; }
+
+  /* The question that links one note to the next */
+  .link { display: grid; grid-template-columns: 1fr; align-items: center; min-height: 130px; }
+  .link svg { grid-column: 1; grid-row: 1; width: 100%; height: 130px; overflow: visible; }
+  .link svg path { fill: none; stroke: var(--pencil); stroke-width: 2; stroke-linecap: round; }
+  .link .q {
+    grid-row: 1; grid-column: 1; justify-self: center; max-width: 28ch; text-align: center; margin: 0;
+    font-family: var(--hand); color: var(--redpen); font-size: 1.1rem; line-height: 1.35;
+    background: var(--paper); padding: 4px 10px;
+  }
+
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; gap: 24px; padding-top: 16px; }
+    .step { grid-template-columns: 1fr; }
+    .step .lnote, .step.right .lnote { grid-column: 1; justify-self: stretch; max-width: none; }
+    .link { min-height: 0; padding: 12px 0; }
+    .link svg { display: none; }
+    .link .q::before { content: "↓ "; }
+  }
