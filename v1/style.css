@@ -658,4 +658,8 @@ footer.site .heart { color: var(--redpen); }
   background: var(--paper); border: 1.5px solid var(--rule); box-shadow: none; }
 .doubt[data-peek], .doubt[data-peek-from] { border-bottom: 1.5px solid var(--rule); }
 .doubt:hover, .doubt:focus-visible { background: var(--note-yellow); border-color: var(--pen); }
-@media (max-width: 760px) { .doubt { top: -19px; right: auto; left: 12px; } }
+@media (max-width: 760px) {
+  .doubt { top: -19px; right: auto; left: 12px; }
+  /* Beside plain text (not a box), sit above its right end, so it never covers the words */
+  :not(.activity) > .doubt { width: 32px; height: 32px; font-size: 1.05rem; top: -30px; left: auto; right: 0; }
+}
