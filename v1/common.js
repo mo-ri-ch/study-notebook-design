@@ -471,14 +471,19 @@ function setupPeeks() {
     pop.style.left = left + "px";
     pop.style.top = top + "px";
   }
-  function hide() { follow.disconnect(); pop.hidden = true; if (owner) owner.removeAttribute("aria-describedby"); owner = null; pinned = false; }
-  document.addEventListener("mouseover", e => { const t = target(e.target); if (t && !pinned) show(t); });
+  function hide() { clearTimeout(closing); follow.disconnect(); pop.hidden = true; if (owner) owner.removeAttribute("aria-describedby"); owner = null; pinned = false; }
+  // Closing waits a moment, so the mouse can cross the small gap from a word to its peek (to click a link in it)
+  let closing = null;
+  const stay = () => { clearTimeout(closing); closing = null; };
+  const hideSoon = () => { stay(); closing = setTimeout(() => { if (!pinned) hide(); }, 300); };
+  document.addEventListener("mouseover", e => { const t = target(e.target); if (t && !pinned) { stay(); if (owner !== t || pop.hidden) show(t); } });
   document.addEventListener("mouseout", e => {
     const t = target(e.target);
-    if (t && !pinned && !t.contains(e.relatedTarget) && !pop.contains(e.relatedTarget)) hide();
+    if (t && !pinned && !t.contains(e.relatedTarget) && !pop.contains(e.relatedTarget)) hideSoon();
   });
   // You can move onto the peek to read it; it closes when you leave it (unless you go back to its word)
-  pop.addEventListener("mouseleave", e => { if (!pinned && !(owner && owner.contains(e.relatedTarget))) hide(); });
+  pop.addEventListener("mouseenter", stay);
+  pop.addEventListener("mouseleave", e => { if (!pinned && !(owner && owner.contains(e.relatedTarget))) hideSoon(); });
   document.addEventListener("focusin", e => { const t = target(e.target); if (t) show(t); });
   document.addEventListener("focusout", e => { if (target(e.target) && !pinned) hide(); });
   document.addEventListener("click", e => {
