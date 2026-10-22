@@ -26,6 +26,9 @@ and every change. Add to this file whenever he gives new design advice.
 - **Details on hover (or tap), not on the page.** Numbers and terms that need a breakdown get a
   "peek" (`data-peek="…"` or `data-peek-from="id"`, dotted underline): the page stays calm and the
   detail is one move away. Works with a tap on phones; Esc or a tap elsewhere closes it.
+  Use it freely: **the main idea stays on the page; side details go in peeks** — full names of
+  abbreviations (BPE, CBOW, RNN, LSTM), "real models have more", "this picture is simplified",
+  history and dates.
 - **Don't repeat another course.** E.g. the Transformers course has no writing demo, because
   Build a Tiny LLM already has one.
 
