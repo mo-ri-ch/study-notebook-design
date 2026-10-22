@@ -15,6 +15,9 @@ and every change. Add to this file whenever he gives new design advice.
   (vectors, a neural network, matrix multiplication…), add a short "✏️ Quick basics" slide first.
 - **Plain words with concrete examples.** No terse labels like "Interpretable" or "Extra work"
   on their own: say what it means, with an example the student has just seen.
+- **Don't over-explain.** Once the main idea is clear, stop. Every extra line or "why" on the page
+  can confuse a beginner more than it helps. Later slides answer later questions; if something must
+  be said, put it in a hover or a 🤔, not on the page.
 - **One idea and at most one activity per slide.** If a slide holds several ideas, split it
   along natural boundaries, with matching titles and a one-line hook to the next slide.
   Never split a single idea across slides.
@@ -26,6 +29,9 @@ and every change. Add to this file whenever he gives new design advice.
   the first step; at the end of a game, one clear "↺ Start again" instead of dead buttons).
 - **Put explanations after the thing they explain** (e.g. pros/cons of word pieces after the
   merge game that shows how pieces are learned).
+- **Show equations as real equations, not in words** (a fraction with a line, powers raised), and
+  work them through with the slide's own numbers (e.g. softmax: e²·⁰ / (e²·⁰ + e⁰·⁵ + e⁰·¹) = 73%).
+  Keep them short enough to fit a phone.
 - **Doubts only some readers will have** (e.g. "what about spaces?") are never text on the page.
   They sit behind a small 🤔 beside the box they belong to (`<button class="doubt" data-peek-from="…">`):
   hover or tap shows the question and answer. It's not part of the guide's glowing steps.
