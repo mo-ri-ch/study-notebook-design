@@ -19,6 +19,8 @@ and every change. Add to this file whenever he gives new design advice.
   along natural boundaries, with matching titles and a one-line hook to the next slide.
   Never split a single idea across slides.
 - **Hands-on where possible.** Typing and seeing results live beats reading.
+- **Pictures where they explain better than words** (e.g. arrows for embeddings). Always our own
+  drawings in the notebook style, ideally ones that move or respond; never copied from lecture slides.
 - **Every activity has ↺ Reset** to put it back to how it started.
 - **No greyed-out buttons.** A button appears only when it can be used (e.g. "← Back" only after
   the first step; at the end of a game, one clear "↺ Start again" instead of dead buttons).
