@@ -410,7 +410,11 @@ body.teach pre { font-size: 0.8rem; }
   /* All lessons as headings; the current lesson's slides indented below */
   .toc { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .toc > li { min-width: 0; }
-  body.has-thumbs .thumbs { overflow: clip; }
+  /* When the list is taller than the screen, it scrolls on its own */
+  body.has-thumbs .thumbs { overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
+    scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--ink) 18%, transparent) transparent; }
+  body.has-thumbs .thumbs::-webkit-scrollbar { width: 6px; }
+  body.has-thumbs .thumbs::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--ink) 18%, transparent); border-radius: 3px; }
   .toc-lesson { display: flex; gap: 8px; align-items: baseline; padding: 3px 4px; border-radius: 4px;
     font-family: var(--head); font-size: 1rem; line-height: 1.25; color: var(--ink); text-decoration: none; }
   .toc-lesson .toc-t { min-width: 0; }
@@ -420,7 +424,8 @@ body.teach pre { font-size: 0.8rem; }
   .toc-lesson.here { font-weight: 700; text-decoration: underline; text-decoration-color: var(--ul); text-decoration-thickness: 2px; text-underline-offset: 4px; }
   .toc-lesson.here .toc-n { color: var(--ink); }
   .toc-lesson.soon { color: color-mix(in srgb, var(--pencil) 70%, transparent); cursor: default; }
-  .toc .thumb-list { margin: 6px 0 10px 1.6em; --tgap: 6px; }
+  .toc .thumb-list { margin: 6px 0 10px 1.6em; --tgap: 6px; grid-template-columns: minmax(0, 1fr); }
+  .toc .thumb { min-width: 0; box-sizing: border-box; }
   .toc .thumb { padding: 4px 8px; }
   .toc .thumb-cap { font-size: 0.92rem; }
   .thumbs.tight .toc-lesson { padding: 1px 4px; font-size: 0.95rem; }

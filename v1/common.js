@@ -113,7 +113,16 @@ function setupPagedLesson() {
       t.classList.toggle("seen", seen.has(k) && k !== current);
       if (k === current) t.setAttribute("aria-current", "step"); else t.removeAttribute("aria-current");
     });
-    if (thumbs[current]) thumbs[current].scrollIntoView({ block: "nearest" });
+    // Keep the current slide's name in view in the side list (only up/down, never sideways)
+    if (thumbs[current]) {
+      const t = thumbs[current], box = t.closest(".thumbs");
+      if (box) {
+        const r = t.getBoundingClientRect(), b = box.getBoundingClientRect();
+        if (r.top < b.top + 8) box.scrollTop -= b.top + 8 - r.top;
+        else if (r.bottom > b.bottom - 8) box.scrollTop += r.bottom - (b.bottom - 8);
+        box.scrollLeft = 0;
+      }
+    }
     if (back) {
       back.disabled = current === 0 && !prevLesson;
       back.textContent = current === 0 && prevLesson ? `← Lesson ${prevLesson.label || prevLesson.n}` : backText;
