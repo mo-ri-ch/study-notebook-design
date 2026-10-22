@@ -439,7 +439,9 @@ function setupPeeks() {
     const from = el.dataset.peekFrom && document.getElementById(el.dataset.peekFrom);
     pop.innerHTML = from ? from.innerHTML : el.dataset.peek;
     pop.hidden = false; owner = el; el.setAttribute("aria-describedby", "peekPop");
-    const r = el.getBoundingClientRect(), w = Math.min(340, window.innerWidth - 24);
+    // Short peeks stay narrow; longer ones get more room, so they don't become tall towers
+    const long = pop.textContent.length > 160;
+    const r = el.getBoundingClientRect(), w = Math.min(long ? 460 : 340, window.innerWidth - 24);
     pop.style.maxWidth = w + "px";
     const left = Math.min(Math.max(12, r.left), window.innerWidth - pop.offsetWidth - 12);
     const below = r.bottom + 8 + pop.offsetHeight < window.innerHeight;
