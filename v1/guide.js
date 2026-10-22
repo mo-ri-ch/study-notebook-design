@@ -169,7 +169,7 @@
   const toggle = document.createElement("button");
   toggle.type = "button";
   toggle.className = "guide-toggle";
-  toggle.title = "Guide me: a glow shows what to look at. Use → and ←.";
+  toggle.title = "Guide me (G): a glow shows what to look at. Use → and ←. Esc to stop.";
 
   const bar = document.createElement("div");
   bar.className = "guide-bar";
@@ -217,6 +217,15 @@
     backBtn.addEventListener("click", () => { move(-1); backBtn.blur(); });
 
     // Keys. Step through (on the code page) handles its own arrows first.
+    // G turns the guide on and off (like P for the pen and T for teach mode)
+    document.addEventListener("keydown", (e) => {
+      if ((e.key !== "g" && e.key !== "G") || e.ctrlKey || e.metaKey || e.altKey) return;
+      const a = document.activeElement;
+      if (a.isContentEditable || a.tagName === "TEXTAREA" || a.tagName === "SELECT" ||
+        (a.tagName === "INPUT" && !/^(range|button|checkbox|radio|submit)$/.test(a.type))) return;
+      e.preventDefault();
+      setOn(!on);
+    });
     // Esc leaves Guide mode, unless it was used to close something else first (the pen, a word card)
     document.addEventListener("keydown", (e) => {
       if (e.key !== "Escape" || !on || e.defaultPrevented) return;
