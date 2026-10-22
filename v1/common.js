@@ -5,7 +5,7 @@
 //   window.COURSE = {
 //     id: "my-course",              // prefix for everything saved in the browser (progress, notes)
 //     pathLabel: "Building the LLM", // label of the step row in each lesson's closing question
-//     lessons: [ { n, step, title, file, ready, summary, leaves }, ... ],
+//     lessons: [ { n, label?, step, title, file, ready, summary, leaves }, ... ],   // label: shown instead of n, e.g. "1a"
 //     setup: [ fn, ... ],            // optional: course-only extras, run before the shared setup
 //   };
 const COURSE = window.COURSE || {};
@@ -116,11 +116,11 @@ function setupPagedLesson() {
     if (thumbs[current]) thumbs[current].scrollIntoView({ block: "nearest" });
     if (back) {
       back.disabled = current === 0 && !prevLesson;
-      back.textContent = current === 0 && prevLesson ? `← Lesson ${prevLesson.n}` : backText;
+      back.textContent = current === 0 && prevLesson ? `← Lesson ${prevLesson.label || prevLesson.n}` : backText;
     }
     if (next) {
       next.hidden = current === parts.length - 1 && !nextLesson;
-      next.textContent = current === parts.length - 1 && nextLesson ? `Lesson ${nextLesson.n} →` : nextText;
+      next.textContent = current === parts.length - 1 && nextLesson ? `Lesson ${nextLesson.label || nextLesson.n} →` : nextText;
     }
     if (hint) {
       const h = parts[current].querySelector(".hook");
@@ -185,7 +185,7 @@ function buildThumbnails(parts, onPick) {
       head.title = "Coming soon";
     }
     head.className = "toc-lesson" + (here ? " here" : "") + (done ? " done" : "") + (l.ready ? "" : " soon");
-    head.innerHTML = `<span class="toc-n">${done ? "✓" : l.n}</span><span class="toc-t">${l.title}</span>`;
+    head.innerHTML = `<span class="toc-n">${done ? "✓" : (l.label || l.n)}</span><span class="toc-t">${l.title}</span>`;
     li.appendChild(head);
     if (here) li.appendChild(list);
     toc.appendChild(li);

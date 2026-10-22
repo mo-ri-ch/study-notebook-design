@@ -21,7 +21,7 @@
     const tag = lesson.ready ? "a" : "div";
     step.innerHTML = `<${tag} class="lnote ${COLORS[i % 5]}${lesson.ready ? "" : " soon-note"}"
         ${lesson.ready ? `href="lessons/${lesson.file}"` : ""} style="transform:rotate(${TILT[i % 5]}deg)">
-        <div class="num">Lesson ${lesson.n}</div>
+        <div class="num">Lesson ${lesson.label || lesson.n}</div>
         <div class="title">${lesson.title}</div>
         <div class="sum">${lesson.summary}</div>${stamp}
       </${tag}>`;
