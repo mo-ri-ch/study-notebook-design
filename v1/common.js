@@ -434,10 +434,14 @@ function setupPeeks() {
   pop.className = "peek-pop"; pop.hidden = true; pop.setAttribute("role", "tooltip"); pop.id = "peekPop";
   document.body.appendChild(pop);
   let owner = null, pinned = false;
+  // An open peek follows its source: type in a box or press a button, and it updates right away
+  const follow = new MutationObserver(() => { if (owner && !pop.hidden) show(owner); });
   const target = el => el && el.closest && el.closest("[data-peek], [data-peek-from]");
   function show(el) {
     const from = el.dataset.peekFrom && document.getElementById(el.dataset.peekFrom);
     pop.innerHTML = from ? from.innerHTML : el.dataset.peek;
+    follow.disconnect();
+    if (from) follow.observe(from, { childList: true, subtree: true, characterData: true });
     pop.hidden = false; owner = el; el.setAttribute("aria-describedby", "peekPop");
     // Short peeks stay narrow; longer ones get more room, so they don't become tall towers
     const long = pop.textContent.length > 160;
@@ -448,7 +452,7 @@ function setupPeeks() {
     pop.style.left = left + "px";
     pop.style.top = (below ? r.bottom + 8 : Math.max(12, r.top - pop.offsetHeight - 8)) + "px";
   }
-  function hide() { pop.hidden = true; if (owner) owner.removeAttribute("aria-describedby"); owner = null; pinned = false; }
+  function hide() { follow.disconnect(); pop.hidden = true; if (owner) owner.removeAttribute("aria-describedby"); owner = null; pinned = false; }
   document.addEventListener("mouseover", e => { const t = target(e.target); if (t && !pinned) show(t); });
   document.addEventListener("mouseout", e => { const t = target(e.target); if (t && !pinned && !t.contains(e.relatedTarget)) hide(); });
   document.addEventListener("focusin", e => { const t = target(e.target); if (t) show(t); });
