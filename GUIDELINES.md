@@ -23,6 +23,9 @@ and every change. Add to this file whenever he gives new design advice.
 - **Put explanations after the thing they explain** (e.g. pros/cons of word pieces after the
   merge game that shows how pieces are learned).
 - **Optional extras fold away** ("🤔 What about spaces?") instead of adding text to the slide.
+- **Details on hover (or tap), not on the page.** Numbers and terms that need a breakdown get a
+  "peek" (`data-peek="…"` or `data-peek-from="id"`, dotted underline): the page stays calm and the
+  detail is one move away. Works with a tap on phones; Esc or a tap elsewhere closes it.
 - **Don't repeat another course.** E.g. the Transformers course has no writing demo, because
   Build a Tiny LLM already has one.
 

@@ -641,3 +641,11 @@ footer.site .heart { color: var(--redpen); }
 .our-text .our-line { font-family: var(--mono); font-size: 0.95rem; }
 .our-text mark.pair { background: var(--hl-yellow); color: var(--ink); padding: 1px 0; border-radius: 2px; }
 .our-text .our-note { color: var(--pencil); font-size: 0.85rem; white-space: nowrap; }
+
+/* Peek: more detail on hover or tap (see setupPeeks in common.js) */
+[data-peek], [data-peek-from] { border-bottom: 1.5px dotted currentColor; cursor: help; }
+[data-peek]:focus-visible, [data-peek-from]:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; border-radius: 2px; }
+.peek-pop { position: fixed; z-index: 10000; padding: 10px 12px; font-size: 0.92rem; line-height: 1.45;
+  background: var(--note-yellow); color: var(--on-hl); border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
+  border-radius: 2px 2px 6px 2px; box-shadow: 0 12px 22px -12px rgba(20,24,50,.5); }
+.peek-pop[hidden] { display: none; }

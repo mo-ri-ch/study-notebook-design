@@ -425,6 +425,46 @@ function setupDoneToggle() {
 }
 
 
+// ---------- Peek: more detail on hover (or tap), so pages stay uncluttered ----------
+// <span data-peek="Short extra detail">11 pieces</span>            shows that text
+// <span data-peek-from="someId">11 pieces</span>                   shows the current contents of #someId
+// The element gets a dotted underline so people know there's more. Tap works on phones; Esc or a tap elsewhere closes.
+function setupPeeks() {
+  const pop = document.createElement("div");
+  pop.className = "peek-pop"; pop.hidden = true; pop.setAttribute("role", "tooltip"); pop.id = "peekPop";
+  document.body.appendChild(pop);
+  let owner = null, pinned = false;
+  const target = el => el && el.closest && el.closest("[data-peek], [data-peek-from]");
+  function show(el) {
+    const from = el.dataset.peekFrom && document.getElementById(el.dataset.peekFrom);
+    pop.innerHTML = from ? from.innerHTML : el.dataset.peek;
+    pop.hidden = false; owner = el; el.setAttribute("aria-describedby", "peekPop");
+    const r = el.getBoundingClientRect(), w = Math.min(340, window.innerWidth - 24);
+    pop.style.maxWidth = w + "px";
+    const left = Math.min(Math.max(12, r.left), window.innerWidth - pop.offsetWidth - 12);
+    const below = r.bottom + 8 + pop.offsetHeight < window.innerHeight;
+    pop.style.left = left + "px";
+    pop.style.top = (below ? r.bottom + 8 : Math.max(12, r.top - pop.offsetHeight - 8)) + "px";
+  }
+  function hide() { pop.hidden = true; if (owner) owner.removeAttribute("aria-describedby"); owner = null; pinned = false; }
+  document.addEventListener("mouseover", e => { const t = target(e.target); if (t && !pinned) show(t); });
+  document.addEventListener("mouseout", e => { const t = target(e.target); if (t && !pinned && !t.contains(e.relatedTarget)) hide(); });
+  document.addEventListener("focusin", e => { const t = target(e.target); if (t) show(t); });
+  document.addEventListener("focusout", e => { if (target(e.target) && !pinned) hide(); });
+  document.addEventListener("click", e => {
+    const t = target(e.target);
+    if (t) { if (pinned && owner === t) hide(); else { show(t); pinned = true; } return; }
+    if (!pop.contains(e.target)) hide();
+  });
+  // Esc closes the peek first (and only that: the guide waits for the next Esc)
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !pop.hidden) { e.preventDefault(); hide(); } }, true);
+  document.addEventListener("scroll", () => { if (!pinned) hide(); }, true);
+  // Peek targets can be reached with the keyboard
+  new MutationObserver(mark).observe(document.body, { childList: true, subtree: true });
+  function mark() { document.querySelectorAll("[data-peek]:not([tabindex]), [data-peek-from]:not([tabindex])").forEach(el => el.tabIndex = 0); }
+  mark();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   (COURSE.setup || []).forEach(fn => fn());
   setupPagedLesson();
@@ -437,4 +477,5 @@ document.addEventListener("DOMContentLoaded", () => {
   setupWalkthroughs();
   setupDoneToggle();
   setupLlmPath();
+  setupPeeks();
 });
