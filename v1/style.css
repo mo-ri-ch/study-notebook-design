@@ -678,12 +678,13 @@ input.ink::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; bac
 .xref-go { font-weight: 700; font-size: 0.9rem; color: var(--pen); text-decoration: none; white-space: nowrap; }
 .xref-go:hover { text-decoration: underline; }
 .xref-close { border: 0; background: none; box-shadow: none; padding: 2px 6px; color: var(--pencil); font-size: 1rem; }
-.xref-view { position: relative; overflow-x: auto; overflow-y: hidden; background: var(--paper); }
+.xref-view { position: relative; overflow: hidden; background: var(--paper); cursor: grab; touch-action: none; user-select: none; }
+.xref-view:active { cursor: grabbing; }
 .xref-size { position: relative; overflow: hidden; }
 .xref-zoom { display: inline-flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--pencil); font-family: var(--mono); }
 .xref-zoom button { width: 26px; height: 26px; padding: 0; border-radius: 50%; font-size: 1rem; line-height: 1; display: grid; place-items: center; }
 .xref-pct { min-width: 3.2em; text-align: center; }
-.xref-view iframe { border: 0; transform-origin: 0 0; display: block; background: var(--paper); position: absolute; left: 0; top: 0; }
+.xref-view iframe { border: 0; transform-origin: 0 0; display: block; background: var(--paper); position: absolute; left: 0; top: 0; pointer-events: none; }   /* look only */
 .xref-wait { position: absolute; inset: 0; display: grid; place-items: center; color: var(--pencil); font-size: 0.9rem; }
 
 /* A page shown inside a preview: content only */

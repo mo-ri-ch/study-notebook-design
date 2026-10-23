@@ -2,12 +2,6 @@
 if (new URLSearchParams(location.search).get("embed")) {
   document.documentElement.classList.add("embed");
   const base = document.createElement("base"); base.target = "_top"; document.head.appendChild(base);   // links inside open in the real page
-  // Ctrl + wheel (or a trackpad pinch) inside the preview zooms the preview, not the whole browser
-  window.addEventListener("wheel", e => {
-    if (!e.ctrlKey) return;
-    e.preventDefault();
-    parent.postMessage({ xrefZoom: e.deltaY < 0 ? 1 : -1 }, "*");
-  }, { passive: false });
 }
 
 // common.js — the shared parts of every course page (study-notebook-design, v1):
@@ -527,7 +521,17 @@ function setupLinkPreviews() {
     place();
   }
   function fitK() { return (window.innerWidth < 640 ? window.innerWidth : Math.min(620, window.innerWidth - 24)) / pageW(); }
-  window.addEventListener("message", e => { if (box && e.data && e.data.xrefZoom) zoom(e.data.xrefZoom); });
+  // Smooth zoom (pinch, Ctrl + wheel), keeping the point under the finger/mouse still
+  function zoomBy(f, cx, cy) {
+    if (!box) return;
+    const view = box.querySelector(".xref-view"), win = box.querySelector("iframe").contentWindow;
+    const old = k || fitK(), nk = Math.max(0.3, Math.min(2, old * f));
+    const r = view.getBoundingClientRect(), px = cx - r.left, py = cy - r.top;
+    const pageX = (view.scrollLeft + px) / old, pageY = (win ? win.scrollY : 0) + py / old;
+    k = nk; place();
+    view.scrollLeft = pageX * nk - px;
+    if (win) win.scrollTo(0, pageY - py / nk);
+  }
   function close() { if (box) box.remove(); box = null; owner = null; }
   function open(link) {
     close();
@@ -548,10 +552,40 @@ function setupLinkPreviews() {
     frame.addEventListener("load", () => { const w = box && box.querySelector(".xref-wait"); if (w) w.remove(); });
     frame.src = inner.href;
     box.querySelector(".xref-close").addEventListener("click", close);
+    panAndZoom(box.querySelector(".xref-view"), frame);
     box.querySelectorAll(".xref-zoom button").forEach(b => b.addEventListener("click", () => zoom(Number(b.dataset.z))));
     k = null;   // start at the size that fits
     document.body.appendChild(box);
     place();
+  }
+  // Look only: drag to pan, wheel to scroll, pinch or Ctrl + wheel to zoom. The page inside can't be clicked or typed in.
+  function panAndZoom(view, frame) {
+    const win = () => frame.contentWindow;
+    const pts = new Map();
+    let last = null, spread = 0;
+    view.addEventListener("pointerdown", e => { view.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]); last = [e.clientX, e.clientY]; spread = 0; });
+    view.addEventListener("pointermove", e => {
+      if (!pts.has(e.pointerId)) return;
+      pts.set(e.pointerId, [e.clientX, e.clientY]);
+      if (pts.size === 2) {   // pinch
+        const [a, b] = [...pts.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+        if (spread) zoomBy(d / spread, (a[0] + b[0]) / 2, (a[1] + b[1]) / 2);
+        spread = d; return;
+      }
+      const z = k || fitK();
+      view.scrollLeft -= e.clientX - last[0];
+      if (win()) win().scrollBy(0, -(e.clientY - last[1]) / z);
+      last = [e.clientX, e.clientY];
+    });
+    const up = e => { pts.delete(e.pointerId); spread = 0; if (pts.size === 1) last = [...pts.values()][0]; };
+    view.addEventListener("pointerup", up); view.addEventListener("pointercancel", up);
+    view.addEventListener("wheel", e => {
+      e.preventDefault();
+      if (e.ctrlKey) { zoomBy(e.deltaY < 0 ? 1.1 : 1 / 1.1, e.clientX, e.clientY); return; }
+      const z = k || fitK();
+      view.scrollLeft += e.deltaX;
+      if (win()) win().scrollBy(0, e.deltaY / z);
+    }, { passive: false });
   }
   function place() {
     if (!box || !owner) return;
