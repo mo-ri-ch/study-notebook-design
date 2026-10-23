@@ -695,3 +695,15 @@ html.embed body.has-thumbs .wrap { position: static; right: auto; padding: 16px 
 html.embed body.guiding section.part > * { opacity: 1 !important; }
 html.embed body { padding-bottom: 0 !important; }
 html.embed body.has-thumbs { overflow: auto !important; }   /* the page scrolls inside the preview */
+
+/* ---------- Split screen: this page on the left, a linked page on the right (wide screens) ---------- */
+.split-view { position: fixed; inset: 0; z-index: 10002; display: grid; grid-template-columns: 1fr 8px 1fr; background: var(--paper); }
+.split-view iframe { width: 100%; height: 100%; border: 0; display: block; background: var(--paper); min-width: 0; }
+.split-bar { background: var(--ink); cursor: col-resize; opacity: 0.85; }
+.split-bar:hover { opacity: 1; }
+.split-right { display: flex; flex-direction: column; min-width: 0; }
+.split-right iframe { flex: 1; height: auto; }
+.split-head { display: flex; align-items: center; gap: 12px; padding: 8px 10px 8px 14px; border-bottom: 1px solid var(--grid, #dfe4ee); background: var(--card, #fff); }
+.split-name { flex: 1; min-width: 0; font-family: var(--head); font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.split-view.dragging iframe { pointer-events: none; }
+html.split-open body { overflow: hidden; }

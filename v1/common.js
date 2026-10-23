@@ -511,6 +511,65 @@ function setupPeeks() {
 // "Go to this page →", to go there. Esc, ✕ or a click elsewhere closes it. On phones it slides up from the bottom.
 function setupLinkPreviews() {
   if (document.documentElement.classList.contains("embed")) return;
+  const wide = () => window.innerWidth >= 900;
+  // Inside one half of a split screen: links open (or replace) the right half of the top page
+  let topSplit = null;
+  try { topSplit = window.parent !== window && window.parent.__notebookSplit; } catch (e) { topSplit = null; }
+  if (topSplit) {
+    document.addEventListener("click", e => {
+      const link = e.target.closest && e.target.closest("a.xref");
+      if (!link || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      topSplit.open(link.href, link.textContent.trim());
+    });
+    return;
+  }
+  // ----- Wide screens: split the screen. This page on the left, the linked page on the right, both fully working -----
+  let split = null, splitHref = null;
+  function openSplit(href, name) {
+    if (split && splitHref === href) { location.href = href; return; }   // same link again: go there
+    if (!split) {
+      split = document.createElement("div");
+      split.className = "split-view";
+      split.innerHTML = `<iframe class="split-left" title="This page"></iframe>
+        <div class="split-bar" role="separator" aria-label="Drag to resize the two halves"></div>
+        <div class="split-right"><div class="split-head"><span class="split-name"></span>
+          <a class="xref-go" target="_top">Go to this page →</a>
+          <button type="button" class="xref-close" aria-label="Close the split screen">✕</button></div>
+          <iframe class="split-frame" title="Linked page"></iframe></div>`;
+      split.querySelector(".split-left").src = location.href;
+      split.querySelector(".xref-close").addEventListener("click", closeSplit);
+      // drag the middle bar to resize
+      const bar = split.querySelector(".split-bar");
+      bar.addEventListener("pointerdown", e => {
+        bar.setPointerCapture(e.pointerId); split.classList.add("dragging");
+        const move = ev => { const x = Math.max(280, Math.min(window.innerWidth - 280, ev.clientX)); split.style.gridTemplateColumns = `${x}px 8px 1fr`; };
+        const up = () => { split.classList.remove("dragging"); bar.removeEventListener("pointermove", move); bar.removeEventListener("pointerup", up); };
+        bar.addEventListener("pointermove", move); bar.addEventListener("pointerup", up);
+      });
+      document.body.appendChild(split);
+      document.documentElement.classList.add("split-open");
+    }
+    splitHref = href;
+    split.querySelector(".split-frame").src = href;
+    split.querySelector(".split-name").textContent = name || "";
+    split.querySelector(".xref-go").href = href;
+  }
+  function closeSplit() {
+    if (!split) return;
+    // Carry over where you got to on the left
+    try {
+      const l = split.querySelector(".split-left").contentWindow.location;
+      if (l.pathname !== location.pathname) { location.href = l.href; return; }
+      if (l.hash && l.hash !== location.hash) location.hash = l.hash;
+    } catch (e) { /* not reachable */ }
+    split.remove(); split = null; splitHref = null;
+    document.documentElement.classList.remove("split-open");
+  }
+  window.__notebookSplit = { open: openSplit, close: closeSplit };
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && split) { e.preventDefault(); closeSplit(); } });
+
+  // ----- Narrow screens (phones): a look-only box slides up from the bottom -----
   let box = null, owner = null, k = null;
   const pageW = () => window.innerWidth < 640 ? 520 : 1000;   // the previewed page is laid out this wide (phone or laptop layout), then shrunk or enlarged
   function zoom(dir) {
@@ -612,6 +671,9 @@ function setupLinkPreviews() {
     const link = e.target.closest && e.target.closest("a.xref");
     if (link) {
       if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;   // new tab etc.: as usual
+      if (wide()) {
+        e.preventDefault(); close(); openSplit(link.href, link.textContent.trim()); return;
+      }
       if (link === owner) return;   // second click: go there
       e.preventDefault();
       open(link);
