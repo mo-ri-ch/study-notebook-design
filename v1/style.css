@@ -663,3 +663,8 @@ footer.site .heart { color: var(--redpen); }
   /* Beside plain text (not a box), sit above its right end, so it never covers the words */
   :not(.activity) > .doubt { width: 32px; height: 32px; font-size: 1.05rem; top: -30px; left: auto; right: 0; }
 }
+
+/* Notebook-style slider: an ink line with a yellow dot. <input type="range" class="ink"> */
+input.ink { -webkit-appearance: none; appearance: none; height: 4px; background: var(--ink); border-radius: 2px; accent-color: var(--ink); }
+input.ink::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--hl-yellow); border: 2px solid var(--ink); cursor: grab; }
+input.ink::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--hl-yellow); border: 2px solid var(--ink); cursor: grab; }
