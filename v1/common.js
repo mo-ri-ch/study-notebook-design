@@ -2,6 +2,12 @@
 if (new URLSearchParams(location.search).get("embed")) {
   document.documentElement.classList.add("embed");
   const base = document.createElement("base"); base.target = "_top"; document.head.appendChild(base);   // links inside open in the real page
+  // Ctrl + wheel (or a trackpad pinch) inside the preview zooms the preview, not the whole browser
+  window.addEventListener("wheel", e => {
+    if (!e.ctrlKey) return;
+    e.preventDefault();
+    parent.postMessage({ xrefZoom: e.deltaY < 0 ? 1 : -1 }, "*");
+  }, { passive: false });
 }
 
 // common.js — the shared parts of every course page (study-notebook-design, v1):
@@ -511,7 +517,17 @@ function setupPeeks() {
 // "Go to this page →", to go there. Esc, ✕ or a click elsewhere closes it. On phones it slides up from the bottom.
 function setupLinkPreviews() {
   if (document.documentElement.classList.contains("embed")) return;
-  let box = null, owner = null;
+  let box = null, owner = null, k = null;
+  const pageW = () => window.innerWidth < 640 ? 520 : 1000;   // the previewed page is laid out this wide (phone or laptop layout), then shrunk or enlarged
+  function zoom(dir) {
+    if (!box) return;
+    const steps = [0.4, 0.5, 0.62, 0.75, 0.9, 1, 1.15, 1.3, 1.5];
+    const now = k || fitK();
+    k = dir > 0 ? (steps.find(v => v > now + 0.001) || now) : ([...steps].reverse().find(v => v < now - 0.001) || now);
+    place();
+  }
+  function fitK() { return (window.innerWidth < 640 ? window.innerWidth : Math.min(620, window.innerWidth - 24)) / pageW(); }
+  window.addEventListener("message", e => { if (box && e.data && e.data.xrefZoom) zoom(e.data.xrefZoom); });
   function close() { if (box) box.remove(); box = null; owner = null; }
   function open(link) {
     close();
@@ -523,14 +539,17 @@ function setupLinkPreviews() {
     box.setAttribute("role", "dialog");
     box.setAttribute("aria-label", "Preview of " + link.textContent.trim());
     box.innerHTML = `<div class="xref-bar"><span class="xref-name"></span>
+        <span class="xref-zoom"><button type="button" data-z="-1" aria-label="Zoom out">−</button><span class="xref-pct"></span><button type="button" data-z="1" aria-label="Zoom in">+</button></span>
         <a class="xref-go" href="${url.href}">Go to this page →</a>
         <button type="button" class="xref-close" aria-label="Close preview">✕</button></div>
-      <div class="xref-view"><iframe title="Preview" loading="eager"></iframe><div class="xref-wait">Loading…</div></div>`;
+      <div class="xref-view"><div class="xref-size"><iframe title="Preview" loading="eager"></iframe></div><div class="xref-wait">Loading…</div></div>`;
     box.querySelector(".xref-name").textContent = link.textContent.trim();
     const frame = box.querySelector("iframe");
     frame.addEventListener("load", () => { const w = box && box.querySelector(".xref-wait"); if (w) w.remove(); });
     frame.src = inner.href;
     box.querySelector(".xref-close").addEventListener("click", close);
+    box.querySelectorAll(".xref-zoom button").forEach(b => b.addEventListener("click", () => zoom(Number(b.dataset.z))));
+    k = null;   // start at the size that fits
     document.body.appendChild(box);
     place();
   }
@@ -538,12 +557,15 @@ function setupLinkPreviews() {
     if (!box || !owner) return;
     const phone = window.innerWidth < 640;
     box.classList.toggle("sheet", phone);
-    const view = box.querySelector(".xref-view"), frame = box.querySelector("iframe");
+    const view = box.querySelector(".xref-view"), frame = box.querySelector("iframe"), sizer = box.querySelector(".xref-size");
     const w = phone ? window.innerWidth : Math.min(620, window.innerWidth - 24);
     const h = phone ? Math.round(window.innerHeight * 0.55) : Math.min(400, window.innerHeight - 140);
-    const k = phone ? 0.8 : 0.62;   // how much the page is shrunk inside the box
+    const z = k || fitK();   // how much the page is shrunk (or enlarged) inside the box
     view.style.height = h + "px";
-    frame.style.width = Math.round(w / k) + "px"; frame.style.height = Math.round(h / k) + "px"; frame.style.transform = `scale(${k})`;
+    // The page keeps its width; when zoomed in, the box scrolls sideways, and the page scrolls up and down inside
+    frame.style.width = pageW() + "px"; frame.style.height = Math.round(h / z) + "px"; frame.style.transform = `scale(${z})`;
+    sizer.style.width = Math.round(pageW() * z) + "px"; sizer.style.height = h + "px";
+    box.querySelector(".xref-pct").textContent = Math.round(z / fitK() * 100) + "%";
     if (phone) { box.style.left = "0"; box.style.top = ""; box.style.width = "100%"; return; }
     box.style.width = w + "px";
     const r = owner.getBoundingClientRect(), bh = box.offsetHeight;
