@@ -689,3 +689,4 @@ html.embed .guide-glow, html.embed footer, html.embed .done-toggle { display: no
 html.embed body.has-thumbs .wrap { position: static; right: auto; padding: 16px 24px 24px; max-width: none; overflow: visible; }
 html.embed body.guiding section.part > * { opacity: 1 !important; }
 html.embed body { padding-bottom: 0 !important; }
+html.embed body.has-thumbs { overflow: auto !important; }   /* the page scrolls inside the preview */
