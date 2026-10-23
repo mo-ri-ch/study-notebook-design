@@ -42,9 +42,11 @@
   const sizeWatch = window.ResizeObserver ? new ResizeObserver(() => placeGlow()) : null;
   let on = false, step = 0, steps = [], section = null, hasNext = false, host = document.body;
   const startHash = location.hash;   // read now: the page list rewrites it once the page is set up
+  // In a split screen: the left half carries on guiding where you were; the right half starts with the guide off
+  const pane = (() => { try { const f = window.frameElement; return f ? (f.classList.contains("split-left") ? "left" : f.classList.contains("split-frame") ? "right" : null) : null; } catch (e) { return null; } })();
 
   function load() { try { return localStorage.getItem(KEY) === "1"; } catch (e) { return false; } }
-  function save() { try { localStorage.setItem(KEY, on ? "1" : "0"); } catch (e) { /* private mode */ } }
+  function save() { if (pane === "right") return; try { localStorage.setItem(KEY, on ? "1" : "0"); } catch (e) { /* private mode */ } }   // the right half's guide is just for that half
   // Tell the pen which step is glowing, so notes written in Guide mode belong to that step
   function announce() {
     window.guideState = { on, step };
@@ -264,13 +266,15 @@
       requestAnimationFrame(() => show(true));
     }).observe(main, { attributes: true, subtree: true, attributeFilter: ["hidden"] });
 
-    on = load();
+    on = pane === "right" ? false : load();
     document.body.classList.toggle("guiding", on);
     toggle.textContent = on ? "🧭 Guiding" : "🧭 Guide me";
     toggle.setAttribute("aria-pressed", on ? "true" : "false");
     if (on) {
       if (startHash === "#last") step = 1e9;
-      requestAnimationFrame(() => show(false));
+      // the left half of a split: the same glowing step as before the split
+      if (pane === "left") { try { const st = parent.guideState; if (st && st.on && parent.location.hash === startHash) step = st.step; } catch (e) { /* not reachable */ } }
+      requestAnimationFrame(() => show(pane === "left"));
     }
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", setup);

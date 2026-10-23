@@ -53,6 +53,8 @@ and every change. Add to this file whenever he gives new design advice.
   on a laptop the screen splits in two, this page on the left and the linked page on the right, both complete and fully
   working (page list, pen, guide…), like two browser windows side by side. Drag the middle bar to resize; "Go to this
   page →" opens it fully; ✕ or Esc closes the split (the left side keeps where you got to). Clicking the same link again goes there.
+  If Guide me is on, the left half keeps guiding from the same glowing step; the right half starts with the guide off
+  (turning it on there affects only that half).
   On phones, a look-only box slides up from the bottom instead (drag to pan, pinch / − + to zoom).
   Use `xref` for every mention of another page.
 - G guide me · P pen · ← → back/next · T big text · Esc stop pen/guide (one thing per press).
