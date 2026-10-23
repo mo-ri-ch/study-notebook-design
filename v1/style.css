@@ -75,8 +75,8 @@
 
 * { box-sizing: border-box; }
 
-/* Bigger text, easy to read on a shared screen. Phones keep the normal size. */
-html { font-size: 19px; }
+/* Comfortable text on laptops (about 90% of the old 19px). Phones keep the normal size. */
+html { font-size: 17px; }
 @media (max-width: 600px) { html { font-size: 16px; } }
 [hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
