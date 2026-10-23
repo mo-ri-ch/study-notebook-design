@@ -668,3 +668,24 @@ footer.site .heart { color: var(--redpen); }
 input.ink { -webkit-appearance: none; appearance: none; height: 4px; background: var(--ink); border-radius: 2px; accent-color: var(--ink); }
 input.ink::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--hl-yellow); border: 2px solid var(--ink); cursor: grab; }
 input.ink::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--hl-yellow); border: 2px solid var(--ink); cursor: grab; }
+
+/* ---------- Link previews (see setupLinkPreviews in common.js) ---------- */
+.xref-box { position: fixed; z-index: 10001; background: var(--card, #fff); border: 2px solid var(--ink); border-radius: 10px;
+  box-shadow: 3px 3px 0 var(--ink); overflow: hidden; }
+.xref-box.sheet { left: 0; right: 0; bottom: 0; border-radius: 14px 14px 0 0; border-bottom: 0; box-shadow: 0 -8px 24px -10px rgba(20,24,50,.45); }
+.xref-bar { display: flex; align-items: center; gap: 12px; padding: 8px 10px 8px 14px; border-bottom: 1px solid var(--grid, #dfe4ee); }
+.xref-name { flex: 1; min-width: 0; font-family: var(--head); font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xref-go { font-weight: 700; font-size: 0.9rem; color: var(--pen); text-decoration: none; white-space: nowrap; }
+.xref-go:hover { text-decoration: underline; }
+.xref-close { border: 0; background: none; box-shadow: none; padding: 2px 6px; color: var(--pencil); font-size: 1rem; }
+.xref-view { position: relative; overflow: hidden; background: var(--paper); }
+.xref-view iframe { border: 0; transform-origin: 0 0; display: block; background: var(--paper); }
+.xref-wait { position: absolute; inset: 0; display: grid; place-items: center; color: var(--pencil); font-size: 0.9rem; }
+
+/* A page shown inside a preview: content only */
+html.embed .topbar, html.embed .paged-head, html.embed .pagebar, html.embed .thumbs, html.embed .thumbs-toggle,
+html.embed .pen-tools, html.embed .pen-layer, html.embed .sticky-layer, html.embed .pen-guide-hint, html.embed .guide-toggle, html.embed .guide-bar,
+html.embed .guide-glow, html.embed footer, html.embed .done-toggle { display: none !important; }
+html.embed body.has-thumbs .wrap { position: static; right: auto; padding: 16px 24px 24px; max-width: none; overflow: visible; }
+html.embed body.guiding section.part > * { opacity: 1 !important; }
+html.embed body { padding-bottom: 0 !important; }

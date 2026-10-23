@@ -49,6 +49,10 @@ and every change. Add to this file whenever he gives new design advice.
   Build a Tiny LLM already has one.
 
 ## Features and keys (shared by all courses)
+- **Links to other pages preview first.** A link to another page or lesson (`<a class="xref" href="lesson3.html#3">`)
+  opens a small live preview of that exact page beside the link on the first click (a sheet from the bottom on phones);
+  clicking the link again, or "Go to this page →", goes there. Esc, ✕ or a click elsewhere closes it.
+  The previewed page shows content only (`?embed=1`). Use `xref` for every mention of another page.
 - G guide me · P pen · ← → back/next · T big text · Esc stop pen/guide (one thing per press).
 - Notes written in Guide mode belong to the glowing step; with the guide off only ordinary notes
   show, plus a "✎ N in Guide mode" hint.

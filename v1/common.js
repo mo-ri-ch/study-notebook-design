@@ -1,3 +1,9 @@
+// A page opened inside a link preview (?embed=1) shows only its content
+if (new URLSearchParams(location.search).get("embed")) {
+  document.documentElement.classList.add("embed");
+  const base = document.createElement("base"); base.target = "_top"; document.head.appendChild(base);   // links inside open in the real page
+}
+
 // common.js — the shared parts of every course page (study-notebook-design, v1):
 // one-part-per-screen lessons, slide thumbnails, progress, quizzes, teach mode, copy and run buttons.
 //
@@ -500,8 +506,71 @@ function setupPeeks() {
   mark();
 }
 
+// ---------- Link previews: a link to another page (a.xref) first shows that page in a small box ----------
+// Click once: a live, shrunk view of the exact page opens beside the link. Click the link again, or
+// "Go to this page →", to go there. Esc, ✕ or a click elsewhere closes it. On phones it slides up from the bottom.
+function setupLinkPreviews() {
+  if (document.documentElement.classList.contains("embed")) return;
+  let box = null, owner = null;
+  function close() { if (box) box.remove(); box = null; owner = null; }
+  function open(link) {
+    close();
+    owner = link;
+    const url = new URL(link.href, location.href);
+    const inner = new URL(url); inner.searchParams.set("embed", "1");
+    box = document.createElement("div");
+    box.className = "xref-box";
+    box.setAttribute("role", "dialog");
+    box.setAttribute("aria-label", "Preview of " + link.textContent.trim());
+    box.innerHTML = `<div class="xref-bar"><span class="xref-name"></span>
+        <a class="xref-go" href="${url.href}">Go to this page →</a>
+        <button type="button" class="xref-close" aria-label="Close preview">✕</button></div>
+      <div class="xref-view"><iframe title="Preview" loading="eager"></iframe><div class="xref-wait">Loading…</div></div>`;
+    box.querySelector(".xref-name").textContent = link.textContent.trim();
+    const frame = box.querySelector("iframe");
+    frame.addEventListener("load", () => { const w = box && box.querySelector(".xref-wait"); if (w) w.remove(); });
+    frame.src = inner.href;
+    box.querySelector(".xref-close").addEventListener("click", close);
+    document.body.appendChild(box);
+    place();
+  }
+  function place() {
+    if (!box || !owner) return;
+    const phone = window.innerWidth < 640;
+    box.classList.toggle("sheet", phone);
+    const view = box.querySelector(".xref-view"), frame = box.querySelector("iframe");
+    const w = phone ? window.innerWidth : Math.min(620, window.innerWidth - 24);
+    const h = phone ? Math.round(window.innerHeight * 0.55) : Math.min(400, window.innerHeight - 140);
+    const k = phone ? 0.8 : 0.62;   // how much the page is shrunk inside the box
+    view.style.height = h + "px";
+    frame.style.width = Math.round(w / k) + "px"; frame.style.height = Math.round(h / k) + "px"; frame.style.transform = `scale(${k})`;
+    if (phone) { box.style.left = "0"; box.style.top = ""; box.style.width = "100%"; return; }
+    box.style.width = w + "px";
+    const r = owner.getBoundingClientRect(), bh = box.offsetHeight;
+    let top = r.bottom + 8;
+    if (top + bh > window.innerHeight - 8) top = Math.max(8, r.top - bh - 8);   // no room below: open above
+    box.style.top = top + "px";
+    box.style.left = Math.max(12, Math.min(r.left, window.innerWidth - w - 12)) + "px";
+  }
+  document.addEventListener("click", e => {
+    const link = e.target.closest && e.target.closest("a.xref");
+    if (link) {
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;   // new tab etc.: as usual
+      if (link === owner) return;   // second click: go there
+      e.preventDefault();
+      open(link);
+      return;
+    }
+    if (box && !box.contains(e.target)) close();
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && box) { e.preventDefault(); e.stopPropagation(); close(); } }, true);
+  window.addEventListener("resize", place);
+  document.addEventListener("scroll", () => { if (box && !box.classList.contains("sheet")) place(); }, true);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   (COURSE.setup || []).forEach(fn => fn());
+  setupLinkPreviews();
   setupPagedLesson();
   setupCopy();
   setupRun();
