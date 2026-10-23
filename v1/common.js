@@ -526,29 +526,53 @@ function setupLinkPreviews() {
   }
   // ----- Wide screens: split the screen. This page on the left, the linked page on the right, both fully working -----
   let split = null, splitHref = null;
+  // The scrolling part of a page: on wide screens the lesson area scrolls by itself, otherwise the window does
+  const scroller = doc => doc.querySelector("body.has-thumbs .wrap") || doc.scrollingElement;
+  const calm = () => window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const SLIDE = 450;   // ms
+  function columns(left, bar, right) { split.style.gridTemplateColumns = `${left}px ${bar}px ${right}px`; }
   function openSplit(href, name) {
     if (split && splitHref === href) { location.href = href; return; }   // same link again: go there
     if (!split) {
       split = document.createElement("div");
       split.className = "split-view";
+      split.style.visibility = "hidden";   // shown once the left half looks exactly like this page
       split.innerHTML = `<iframe class="split-left" title="This page"></iframe>
         <div class="split-bar" role="separator" aria-label="Drag to resize the two halves"></div>
-        <div class="split-right"><div class="split-head"><span class="split-name"></span>
+        <div class="split-right"><div class="split-inner"><div class="split-head"><span class="split-name"></span>
           <a class="xref-go" target="_top">Go to this page →</a>
           <button type="button" class="xref-close" aria-label="Close the split screen">✕</button></div>
-          <iframe class="split-frame" title="Linked page"></iframe></div>`;
-      split.querySelector(".split-left").src = location.href;
+          <iframe class="split-frame" title="Linked page"></iframe></div></div>`;
+      const left = split.querySelector(".split-left"), inner = split.querySelector(".split-inner");
       split.querySelector(".xref-close").addEventListener("click", closeSplit);
       // drag the middle bar to resize
       const bar = split.querySelector(".split-bar");
       bar.addEventListener("pointerdown", e => {
         bar.setPointerCapture(e.pointerId); split.classList.add("dragging");
-        const move = ev => { const x = Math.max(280, Math.min(window.innerWidth - 280, ev.clientX)); split.style.gridTemplateColumns = `${x}px 8px 1fr`; };
+        const move = ev => { const x = Math.max(280, Math.min(window.innerWidth - 280, ev.clientX)); split.style.gridTemplateColumns = `${x}px 8px minmax(0, 1fr)`; };
         const up = () => { split.classList.remove("dragging"); bar.removeEventListener("pointermove", move); bar.removeEventListener("pointerup", up); };
         bar.addEventListener("pointermove", move); bar.addEventListener("pointerup", up);
       });
+      const W = window.innerWidth, half = Math.round((W - 8) / 2);
+      columns(W, 0, 0);
       document.body.appendChild(split);
       document.documentElement.classList.add("split-open");
+      // Once the left half has loaded, put it at the same scroll, show it, then slide: left shrinks, right comes in from the right
+      let started = false;
+      const slideIn = () => {
+        if (started || !split) return; started = true;
+        try { scroller(left.contentDocument).scrollTop = scroller(document).scrollTop; } catch (e) { /* fine */ }
+        split.style.visibility = "";
+        if (calm()) { split.style.gridTemplateColumns = "minmax(0, 1fr) 8px minmax(0, 1fr)"; return; }
+        inner.style.width = (W - half - 8) + "px";   // the right page keeps its size and slides in with the edge
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          split.classList.add("sliding"); columns(half, 8, W - half - 8);
+          setTimeout(() => { if (!split) return; split.classList.remove("sliding"); inner.style.width = ""; split.style.gridTemplateColumns = "minmax(0, 1fr) 8px minmax(0, 1fr)"; }, SLIDE + 30);
+        }));
+      };
+      left.addEventListener("load", () => setTimeout(slideIn, 60));
+      setTimeout(slideIn, 2500);   // don't wait forever
+      left.src = location.href;
     }
     splitHref = href;
     split.querySelector(".split-frame").src = href;
@@ -556,15 +580,31 @@ function setupLinkPreviews() {
     split.querySelector(".xref-go").href = href;
   }
   function closeSplit() {
-    if (!split) return;
-    // Carry over where you got to on the left
-    try {
-      const l = split.querySelector(".split-left").contentWindow.location;
-      if (l.pathname !== location.pathname) { location.href = l.href; return; }
-      if (l.hash && l.hash !== location.hash) location.hash = l.hash;
-    } catch (e) { /* not reachable */ }
-    split.remove(); split = null; splitHref = null;
-    document.documentElement.classList.remove("split-open");
+    if (!split || split.classList.contains("closing")) return;
+    const left = split.querySelector(".split-left");
+    // Went to another page on the left? Just open it.
+    let lw = null;
+    try { lw = left.contentWindow; if (lw.location.pathname !== location.pathname) { location.href = lw.location.href; return; } } catch (e) { lw = null; }
+    const finish = () => {
+      // Carry over where you got to on the left: same page, same scroll
+      try {
+        if (lw && lw.location.hash && lw.location.hash !== location.hash) location.hash = lw.location.hash;
+        const top = scroller(left.contentDocument).scrollTop;
+        requestAnimationFrame(() => { scroller(document).scrollTop = top; });
+      } catch (e) { /* fine */ }
+      split.remove(); split = null; splitHref = null;
+      document.documentElement.classList.remove("split-open");
+    };
+    if (calm()) { finish(); return; }
+    // Slide back: the right half leaves to the right, the left grows to the full width
+    split.classList.add("closing");
+    const W = window.innerWidth, lwPx = left.getBoundingClientRect().width, inner = split.querySelector(".split-inner");
+    inner.style.width = split.querySelector(".split-right").getBoundingClientRect().width + "px";
+    columns(lwPx, 8, W - lwPx - 8);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      split.classList.add("sliding"); columns(W, 0, 0);
+      setTimeout(finish, SLIDE + 30);
+    }));
   }
   window.__notebookSplit = { open: openSplit, close: closeSplit };
   document.addEventListener("keydown", e => { if (e.key === "Escape" && split) { e.preventDefault(); closeSplit(); } });
