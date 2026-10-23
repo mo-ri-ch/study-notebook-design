@@ -353,32 +353,99 @@ function setupRun() {
 // ---------- Clickable quizzes ----------
 // <div class="quiz"><button data-right>…</button><button>…</button><div class="feedback"></div></div>
 function setupQuizzes() {
+  const teaching = () => document.body.classList.contains("teach");
   document.querySelectorAll(".quiz").forEach(quiz => {
     const feedback = quiz.querySelector(".feedback");
+    const buttons = [...quiz.querySelectorAll(".options button")];
     const again = document.createElement("button");
-    again.className = "reset quiz-reset";
-    again.type = "button";
-    again.textContent = "↺ Try again";
-    again.hidden = true;
-    again.addEventListener("click", () => {
-      quiz.querySelectorAll(".options button").forEach(x => x.classList.remove("right", "wrong"));
-      if (feedback) { feedback.textContent = ""; feedback.className = "feedback"; }
-      again.hidden = true;
-    });
-    quiz.appendChild(again);
-    quiz.querySelectorAll(".options button").forEach(b => {
-      b.addEventListener("click", () => {
-        quiz.querySelectorAll(".options button").forEach(x => x.classList.remove("right", "wrong"));
-        const right = b.hasAttribute("data-right");
-        b.classList.add(right ? "right" : "wrong");
-        if (feedback) {
-          feedback.innerHTML = right ? (quiz.dataset.right || "Right!") : (b.dataset.why || "Not quite. Try another.");
-          feedback.className = "feedback " + (right ? "good" : "bad");
-        }
-        again.hidden = false;
-      });
-    });
+    again.className = "reset quiz-reset"; again.type = "button"; again.textContent = "↺ Try again"; again.hidden = true;
+    const reveal = document.createElement("button");
+    reveal.className = "quiz-reveal"; reveal.type = "button"; reveal.textContent = "Reveal the answer"; reveal.hidden = true;
+    function clear() {
+      buttons.forEach(x => x.classList.remove("right", "wrong", "chosen"));
+      if (feedback) { feedback.innerHTML = ""; feedback.className = "feedback"; }
+      again.hidden = true; reveal.hidden = true;
+    }
+    function show(b) {
+      buttons.forEach(x => x.classList.remove("right", "wrong", "chosen"));
+      const right = b.hasAttribute("data-right");
+      b.classList.add(right ? "right" : "wrong");
+      if (feedback) {
+        let html = right ? (quiz.dataset.right || "Right!") : (b.dataset.why || "Not quite. Try another.");
+        // A wrong answer points to the page that teaches it
+        if (!right && quiz.dataset.page) html += ` <span class="quiz-back">Re-read: <a class="xref" href="${quiz.dataset.page}">${quiz.dataset.topic || "this page"}</a></span>`;
+        feedback.innerHTML = html;
+        feedback.className = "feedback " + (right ? "good" : "bad");
+      }
+      again.hidden = false; reveal.hidden = true;
+      quiz.dispatchEvent(new CustomEvent("answered", { bubbles: true, detail: { right } }));
+    }
+    again.addEventListener("click", clear);
+    // Teaching (T): the class picks first; the answer shows only when you press Reveal
+    reveal.addEventListener("click", () => show(buttons.find(x => x.hasAttribute("data-right"))));
+    quiz.append(reveal, again);
+    buttons.forEach(b => b.addEventListener("click", () => {
+      if (teaching()) { clear(); b.classList.add("chosen"); reveal.hidden = false; return; }
+      show(b);
+    }));
   });
+}
+
+// ---------- Lesson test: <div class="test" data-test="4"> with .quiz questions inside ----------
+// Pass = every question answered right (retry allowed). The first-try score is shown honestly,
+// with the pages to re-read. Saved per lesson; the next lesson reminds you if you skipped it.
+function testKey(n) { return `${STORE}-test:${n}`; }
+function testPassed(n) { try { return JSON.parse(localStorage.getItem(testKey(n)) || "{}").passed === true; } catch (e) { return false; } }
+function setupTests() {
+  document.querySelectorAll(".test[data-test]").forEach(test => {
+    const n = test.dataset.test, quizzes = [...test.querySelectorAll(".quiz")];
+    const state = new Map();   // quiz -> { first: true/false, right: true/false }
+    const card = document.createElement("div");
+    card.className = "test-result"; card.setAttribute("aria-live", "polite");
+    test.appendChild(card);
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(testKey(n)) || "{}"); } catch (e) { saved = {}; }
+    function render() {
+      const done = quizzes.filter(q => state.get(q) && state.get(q).right).length;
+      const firstRight = quizzes.filter(q => state.get(q) && state.get(q).first).length;
+      const answered = quizzes.filter(q => state.has(q)).length;
+      const missed = quizzes.filter(q => state.has(q) && !state.get(q).first);
+      if (done === quizzes.length) {
+        const rec = { passed: true, firstTry: firstRight, of: quizzes.length };
+        try { localStorage.setItem(testKey(n), JSON.stringify(rec)); } catch (e) { /* private */ }
+        card.innerHTML = `<b>✓ Lesson ${n} test passed.</b> First try: ${firstRight} of ${quizzes.length}.` +
+          (missed.length ? `<br>Worth another look: ${missed.map(q => `<a class="xref" href="${q.dataset.page}">${q.dataset.topic}</a>`).join(", ")}.` : " Every idea landed first time.");
+        card.className = "test-result passed";
+      } else {
+        card.innerHTML = saved.passed && !answered ? `✓ You passed this test before (first try: ${saved.firstTry} of ${saved.of}). You can take it again.`
+          : `${done} of ${quizzes.length} right so far.`;
+        card.className = "test-result";
+      }
+    }
+    test.addEventListener("answered", e => {
+      if (document.body.classList.contains("teach")) return;   // a class discussion doesn't count
+      const q = e.target.closest(".quiz"); if (!q) return;
+      const st = state.get(q);
+      if (!st) state.set(q, { first: e.detail.right, right: e.detail.right });
+      else if (e.detail.right) st.right = true;
+      render();
+    });
+    render();
+  });
+  // A soft reminder at the start of a lesson whose previous lesson has a test you haven't passed
+  const file = location.pathname.split("/").pop();
+  const here = LESSONS.findIndex(l => l.file === file), prev = here > 0 ? LESSONS[here - 1] : null;
+  const main = document.querySelector("main[data-paged]");
+  if (!prev || !prev.test || !main || testPassed(prev.n) || document.documentElement.classList.contains("embed")) return;
+  let skipped = false; try { skipped = sessionStorage.getItem(testKey(prev.n) + ":skip") === "1"; } catch (e) { /* fine */ }
+  if (skipped) return;
+  const note = document.createElement("div");
+  note.className = "test-gate";
+  note.innerHTML = `<b>Before this lesson:</b> take the Lesson ${prev.n} test, to check every idea landed.
+    <span class="test-gate-row"><a class="btn primary" href="${prev.file}#${prev.test}">Take the Lesson ${prev.n} test</a>
+    <button type="button">Continue anyway</button></span>`;
+  note.querySelector("button").addEventListener("click", () => { try { sessionStorage.setItem(testKey(prev.n) + ":skip", "1"); } catch (e) { /* fine */ } note.remove(); });
+  if (!document.body.classList.contains("teach")) main.prepend(note);
 }
 
 // ---------- Predict-first boxes (click to reveal) ----------
@@ -735,6 +802,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupTeachMode();
   setupKeys();
   setupQuizzes();
+  setupTests();
   setupPredictions();
   setupWalkthroughs();
   setupDoneToggle();

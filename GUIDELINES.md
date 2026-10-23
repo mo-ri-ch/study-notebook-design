@@ -48,6 +48,26 @@ and every change. Add to this file whenever he gives new design advice.
 - **Don't repeat another course.** E.g. the Transformers course has no writing demo, because
   Build a Tiny LLM already has one.
 
+- **Explain properly; never assume the student already gets it.** Say what changes, why, and show it with the
+  slide's real numbers. Avoid vague words ("harder push", "size", "magnitude"); say it plainly ("the further from 0,
+  the more it moves"). More words are fine when they make it clearer; keep each sentence short.
+- **Never make the student remember.** Show again what a page relies on (e.g. the training text, with the part the
+  page talks about highlighted), and link back to the exact page where it was taught.
+- **Show the whole when showing part.** If a table shows 5 of 14 items, say where the other 9 are.
+- **Be honest about trade-offs** (e.g. learning takes more passes than counting here; say so, and say why it's still worth it).
+- **Explain an idea where it first appears,** not a page later.
+
+## Lesson tests
+- Each lesson ends with a **test** (`<div class="test" data-test="N">` holding `.quiz` questions; set `test: <page>` on the
+  lesson in the course list). One question per key idea; only what was taught.
+- Questions make the student **think, not recall**: predict an outcome, apply the idea to new numbers, work a small
+  calculation, spot the mistake in a claim. Plausible wrong answers, each with its own short "why".
+- Each question has `data-page` / `data-topic`: a wrong answer links to the page to re-read.
+- Pass = every question right (retries allowed). The first-try score is shown honestly, with the pages worth another look.
+- The next lesson gently reminds you if you haven't passed (with "Continue anyway"); never a hard lock.
+- **Teaching (T):** no reminders, nothing counts; picking an answer only marks it, and "Reveal the answer" shows it,
+  so a class can think and vote first.
+
 ## Features and keys (shared by all courses)
 - **Links to other pages open beside the page.** A link to another page or lesson (`<a class="xref" href="lesson3.html#3">`):
   on a laptop the screen splits in two, this page on the left and the linked page on the right, both complete and fully
