@@ -288,6 +288,110 @@ function addReset(inside, fn) {
 }
 
 
+// ---------- Show me how: game-style bubbles that walk through one activity ----------
+// addTour(elementInsideActivity, steps, { id, auto })
+//   steps: [{ at, say, run, click }]
+//     at    — the element to point at (element, selector inside the activity, or a function returning one)
+//     say   — the bubble's text (HTML, or a function returning it, called after run)
+//     run   — optional: set the activity up for this step (pick a group, mark a box…)
+//     click — optional: instead of a Next button, wait for the reader to click this element
+//   id   — remembers that the reader has seen it (it opens by itself only the first time)
+//   auto — open by itself the first time the page is shown (default true; never in teach mode)
+// Adds a "👆 Show me how" button beside ↺ Reset. Esc, ✕ or "Skip" closes; ← → move while it's open.
+let tourOpen = null;
+function addTour(inside, steps, opts = {}) {
+  const el = typeof inside === "string" ? document.getElementById(inside) : inside;
+  const box = el && el.closest(".activity");
+  if (!box || !steps.length) return;
+  const key = ((window.COURSE && COURSE.id) || "notebook") + "-tour-" + (opts.id || "x");
+  const seen = () => { try { return localStorage.getItem(key) === "1"; } catch (e) { return false; } };
+  const markSeen = () => { try { localStorage.setItem(key, "1"); } catch (e) {} };
+  const btn = document.createElement("button");
+  btn.className = "tour-btn"; btn.type = "button"; btn.textContent = "👆 Show me how";
+  box.insertBefore(btn, box.firstChild); box.classList.add("has-tour");
+  const find = a => typeof a === "function" ? a() : typeof a === "string" ? box.querySelector(a) : a || box;
+  let i = 0, bubble = null, target = null, waitEl = null, waitFn = null;
+  function clearWait() { if (waitEl && waitFn) waitEl.removeEventListener("click", waitFn); waitEl = waitFn = null; }
+  function place() {
+    if (!bubble || !target) return;
+    const r = target.getBoundingClientRect(), W = document.documentElement.clientWidth, H = window.innerHeight, M = 10;
+    const w = Math.min(340, W - 2 * M); bubble.style.width = w + "px";
+    const h = bubble.offsetHeight;
+    const below = r.bottom + 14 + h < H - M || r.top - 14 - h < M;
+    let left = Math.min(Math.max(M, r.left + r.width / 2 - w / 2), W - w - M);
+    bubble.style.left = (left + window.scrollX) + "px";
+    bubble.style.top = ((below ? r.bottom + 14 : r.top - 14 - h) + window.scrollY) + "px";
+    bubble.classList.toggle("above", !below);
+    bubble.style.setProperty("--arrow", Math.min(Math.max(16, r.left + r.width / 2 - left), w - 16) + "px");
+  }
+  function show(n) {
+    clearWait();
+    i = Math.max(0, Math.min(n, steps.length - 1));
+    const st = steps[i];
+    if (st.run) st.run();
+    if (target) target.classList.remove("tour-on");
+    target = find(st.at); target.classList.add("tour-on");
+    const say = typeof st.say === "function" ? st.say() : st.say;
+    const last = i === steps.length - 1;
+    bubble.innerHTML = `<div class="tour-top"><span class="tour-n">${i + 1} / ${steps.length}</span><button class="tour-x" type="button" aria-label="Close">✕</button></div>` +
+      `<div class="tour-say">${say}</div><div class="tour-nav">` +
+      (i ? `<button class="tour-back" type="button">← Back</button>` : `<button class="tour-skip" type="button">Skip</button>`) +
+      (st.click ? `<span class="tour-wait">Your turn ↑</span>` : `<button class="tour-next primary" type="button">${last ? "Done ✓" : "Next →"}</button>`) + `</div>`;
+    bubble.querySelector(".tour-x").onclick = close;
+    const back = bubble.querySelector(".tour-back"), skip = bubble.querySelector(".tour-skip"), next = bubble.querySelector(".tour-next");
+    if (back) back.onclick = () => show(i - 1);
+    if (skip) skip.onclick = close;
+    if (next) next.onclick = () => last ? close() : show(i + 1);
+    if (st.click) {
+      waitEl = find(st.click); waitEl.classList.add("tour-on");
+      waitFn = () => { waitEl.classList.remove("tour-on"); setTimeout(() => last ? close() : show(i + 1), 60); };
+      waitEl.addEventListener("click", waitFn);
+    }
+    const r = target.getBoundingClientRect();
+    if (r.top < 70 || r.bottom > window.innerHeight - 160) target.scrollIntoView({ block: "center", behavior: "smooth" });
+    place(); setTimeout(place, 350);
+    (next || bubble.querySelector(".tour-x")).focus({ preventScroll: true });
+  }
+  function open() {
+    if (tourOpen) tourOpen();
+    bubble = document.createElement("div"); bubble.className = "tour-bubble"; bubble.setAttribute("role", "dialog"); bubble.setAttribute("aria-label", "Show me how");
+    document.body.appendChild(bubble); box.classList.add("touring");
+    tourOpen = close; markSeen();
+    window.addEventListener("scroll", place, { passive: true }); window.addEventListener("resize", place);
+    show(0);
+  }
+  function close() {
+    clearWait();
+    if (target) target.classList.remove("tour-on");
+    box.querySelectorAll(".tour-on").forEach(x => x.classList.remove("tour-on"));
+    if (bubble) bubble.remove(); bubble = null; target = null; box.classList.remove("touring");
+    window.removeEventListener("scroll", place); window.removeEventListener("resize", place);
+    if (tourOpen === close) tourOpen = null;
+  }
+  btn.addEventListener("click", () => { btn.blur(); open(); });
+  document.addEventListener("keydown", e => {
+    if (tourOpen !== close) return;
+    if (e.key === "Escape") { e.preventDefault(); e.stopImmediatePropagation(); close(); }
+    else if (e.key === "ArrowRight" && !steps[i].click) { e.preventDefault(); e.stopImmediatePropagation(); i === steps.length - 1 ? close() : show(i + 1); }
+    else if (e.key === "ArrowLeft" && i > 0) { e.preventDefault(); e.stopImmediatePropagation(); show(i - 1); }
+  }, true);
+  // The first time its page is shown, open by itself (not in teach mode, not inside a split-screen preview)
+  if (opts.auto !== false) {
+    const sec = box.closest("section.part");
+    const embedded = /[?&]embed=1/.test(location.search);
+    const maybe = () => {
+      const teach = document.body.classList.contains("teach");
+      if (!seen() && !embedded && !teach && (!sec || !sec.hidden) && !tourOpen) setTimeout(() => { if (!sec || !sec.hidden) open(); }, 500);
+    };
+    if (sec) new MutationObserver(() => { if (!sec.hidden) maybe(); }).observe(sec, { attributes: true, attributeFilter: ["hidden"] });
+    document.addEventListener("DOMContentLoaded", () => setTimeout(maybe, 0));
+  }
+  return { open, close };
+}
+// Close an open tour when the page changes
+document.addEventListener("click", e => { if (tourOpen && e.target.closest("[data-page-next], [data-page-back], .progress a, .progress button")) tourOpen(); }, true);
+
+
 // ---------- Copy button on every code block ----------
 function setupCopy() {
   document.querySelectorAll("main pre:not(.term-out)").forEach(pre => {

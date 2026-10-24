@@ -83,6 +83,12 @@ and every change. Add to this file whenever he gives new design advice.
   (turning it on there affects only that half).
   On phones, a look-only box slides up from the bottom instead (drag to pan, pinch / − + to zoom).
   Use `xref` only for the few links worth opening (see "Say the idea, not where it was taught").
+- **👆 Show me how: game-style bubbles inside an activity.** When an activity shows several things at once, give it
+  steps with `addTour(el, steps, { id })` (in common.js): a bubble points at one part at a time (a box, a row, a button),
+  sets the activity up for that step, and explains it with the real numbers. A step can wait for the reader to press
+  something ("Your turn ↑") instead of Next. It opens by itself the first time (not in teach mode or split preview);
+  the "👆 Show me how" button beside ↺ Reset replays it. Skip, ✕ or Esc closes; ← → move while it's open.
+  Working correctly is not the same as easy to follow: if a reader can't tell where to look first, add a tour.
 - G guide me · P pen · ← → back/next · T big text · Esc stop pen/guide (one thing per press).
 - Notes written in Guide mode belong to the glowing step; with the guide off only ordinary notes
   show, plus a "✎ N in Guide mode" hint.

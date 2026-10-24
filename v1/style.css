@@ -722,3 +722,26 @@ html.split-open body { overflow: hidden; }
 .test-gate-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
 .test .quiz .q .q-code { font-size: 0.9rem; margin: 10px 0 0; }
 .test .quiz .q .q-code code { font-size: 1em; }
+
+/* Show me how: game-style bubbles inside an activity */
+.tour-btn { position: absolute; top: 10px; right: 96px; background: none; border: 0; padding: 2px 4px; box-shadow: none;
+  font-family: var(--head); font-weight: 400; font-size: 1.05rem; color: var(--pen); cursor: pointer; }
+.tour-btn:hover { background: none; text-decoration: underline; }
+.activity.has-tour .do { padding-right: 240px; }
+@media (max-width: 640px) { .tour-btn { position: static; display: block; margin: -4px 0 6px; padding: 0; } .activity.has-tour .do { padding-right: 84px; } }
+.tour-on { position: relative; z-index: 3; outline: 3px solid var(--pen) !important; outline-offset: 3px; border-radius: 6px;
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--hl-yellow) 45%, transparent); transition: box-shadow 0.2s; }
+.tour-bubble { position: absolute; z-index: 10001; background: var(--card, #fff); color: var(--ink); border: 2px solid var(--ink);
+  border-radius: 12px; box-shadow: 4px 4px 0 var(--ink); padding: 10px 14px 12px; font-size: 1rem; line-height: 1.45; }
+.tour-bubble::before { content: ""; position: absolute; top: -9px; left: calc(var(--arrow, 30px) - 8px); width: 14px; height: 14px;
+  background: var(--card, #fff); border-left: 2px solid var(--ink); border-top: 2px solid var(--ink); transform: rotate(45deg); }
+.tour-bubble.above::before { top: auto; bottom: -9px; transform: rotate(225deg); }
+.tour-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.tour-n { font-family: var(--mono); font-size: 0.8rem; color: var(--pencil); }
+.tour-x { background: none; border: 0; box-shadow: none; padding: 0 2px; color: var(--pencil); font-size: 1rem; cursor: pointer; }
+.tour-say code { font-size: 0.9em; }
+.tour-nav { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 10px; }
+.tour-nav button { padding: 5px 12px; font-size: 0.92rem; }
+.tour-skip, .tour-back { background: none; box-shadow: none; border: 0; color: var(--pencil); padding-left: 0 !important; }
+.tour-wait { margin-left: auto; font-family: var(--head); color: var(--pen); }
+@media print { .tour-btn, .tour-bubble { display: none; } }
