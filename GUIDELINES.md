@@ -74,6 +74,15 @@ and every change. Add to this file whenever he gives new design advice.
 - **Teaching (T):** no reminders, nothing counts; picking an answer only marks it, and "Reveal the answer" shows it,
   so a class can think and vote first.
 
+## Supporting the work
+- **Ask gently, only at the end.** A lesson's last page shows one quiet pencil line under Next:
+  "Found this useful? Every bit helps us keep going →", linking to gradlabs.in/support. When a whole
+  notebook is finished (its last lesson, every lesson ready), its last page shows a small taped card
+  instead. Never on other pages, never in teach mode (T) or a split-screen preview.
+- Built into common.js, so every notebook gets it. A notebook can change the link with
+  `support: "https://…"` in its course.js, or turn it off with `support: false`.
+- Kind, never pushy: no pop-ups, no amounts on the lesson page, no guilt.
+
 ## Features and keys (shared by all courses)
 - **Links to other pages open beside the page.** A link to another page or lesson (`<a class="xref" href="lesson3.html#3">`):
   on a laptop the screen splits in two, this page on the left and the linked page on the right, both complete and fully

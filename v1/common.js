@@ -13,6 +13,7 @@ if (new URLSearchParams(location.search).get("embed")) {
 //     pathLabel: "Building the LLM", // label of the step row in each lesson's closing question
 //     lessons: [ { n, label?, step, title, file, ready, summary, leaves }, ... ],   // label: shown instead of n, e.g. "1a"
 //     setup: [ fn, ... ],            // optional: course-only extras, run before the shared setup
+//     support: "https://…",         // optional: where the end-of-lesson support note links; false hides it
 //   };
 const COURSE = window.COURSE || {};
 const LESSONS = COURSE.lessons || [];
@@ -102,6 +103,20 @@ function setupPagedLesson() {
   }
   const backText = back ? back.textContent : "";
 
+  // A gentle support note on a lesson's last page: one quiet line under Next, or, at the end of a
+  // finished notebook, a small card. Never on other pages, in teach mode, or in a split-screen preview.
+  const supportUrl = COURSE.support === false ? null : COURSE.support || "https://gradlabs.in/support";
+  let support = null;
+  if (supportUrl && pagebar) {
+    const courseDone = here >= 0 && here === LESSONS.length - 1 && LESSONS.every(l => l.ready);
+    support = document.createElement("div");
+    support.className = courseDone ? "support-note card" : "support-note";
+    support.innerHTML = courseDone
+      ? `<h3>You finished the notebook!</h3><p>If it helped you, every bit helps us keep going.</p><a class="support-btn" href="${supportUrl}" target="_blank" rel="noopener">Support the work →</a>`
+      : `<a href="${supportUrl}" target="_blank" rel="noopener">Found this useful? Every bit helps us keep going →</a>`;
+    pagebar.after(support);
+  }
+
   let current = 0;
   function go(i) {
     // Past the last page: open the next lesson. Before the first page: open the previous lesson's last page.
@@ -142,6 +157,7 @@ function setupPagedLesson() {
       hint.textContent = h ? h.textContent : "";
       hint.hidden = !h || next.hidden;
     }
+    if (support) support.hidden = current !== parts.length - 1;
     if (label) label.textContent = `${current + 1} / ${parts.length}  ${parts[current].dataset.title || ""}`;
     try { history.replaceState(null, "", `#${current + 1}`); } catch (e) { /* file:// */ }
     window.scrollTo(0, 0);
