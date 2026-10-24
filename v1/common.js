@@ -355,7 +355,7 @@ function addTour(inside, steps, opts = {}) {
   function open() {
     if (tourOpen) tourOpen();
     bubble = document.createElement("div"); bubble.className = "tour-bubble"; bubble.setAttribute("role", "dialog"); bubble.setAttribute("aria-label", "Show me how");
-    document.body.appendChild(bubble); box.classList.add("touring");
+    document.body.appendChild(bubble); box.classList.add("touring"); document.body.classList.add("touring");
     tourOpen = close; markSeen();
     window.addEventListener("scroll", place, { passive: true }); window.addEventListener("resize", place);
     show(0);
@@ -364,15 +364,16 @@ function addTour(inside, steps, opts = {}) {
     clearWait();
     if (target) target.classList.remove("tour-on");
     box.querySelectorAll(".tour-on").forEach(x => x.classList.remove("tour-on"));
-    if (bubble) bubble.remove(); bubble = null; target = null; box.classList.remove("touring");
+    if (bubble) bubble.remove(); bubble = null; target = null; box.classList.remove("touring"); document.body.classList.remove("touring");
     window.removeEventListener("scroll", place); window.removeEventListener("resize", place);
     if (tourOpen === close) tourOpen = null;
   }
   btn.addEventListener("click", () => { btn.blur(); open(); });
+  box.addEventListener("click", e => { if (tourOpen === close && e.target.closest(".reset")) close(); });   // ↺ Reset ends the tour
   document.addEventListener("keydown", e => {
     if (tourOpen !== close) return;
     if (e.key === "Escape") { e.preventDefault(); e.stopImmediatePropagation(); close(); }
-    else if (e.key === "ArrowRight" && !steps[i].click) { e.preventDefault(); e.stopImmediatePropagation(); i === steps.length - 1 ? close() : show(i + 1); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); e.stopImmediatePropagation(); if (!steps[i].click) i === steps.length - 1 ? close() : show(i + 1); }   // on a "your turn" step, → waits too (it must not turn the page)
     else if (e.key === "ArrowLeft" && i > 0) { e.preventDefault(); e.stopImmediatePropagation(); show(i - 1); }
   }, true);
   // The first time its page is shown, open by itself (not in teach mode, not inside a split-screen preview)

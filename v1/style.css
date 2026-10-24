@@ -745,3 +745,4 @@ html.split-open body { overflow: hidden; }
 .tour-skip, .tour-back { background: none; box-shadow: none; border: 0; color: var(--pencil); padding-left: 0 !important; }
 .tour-wait { margin-left: auto; font-family: var(--head); color: var(--pen); }
 @media print { .tour-btn, .tour-bubble { display: none; } }
+body.touring .guide-bar { display: none !important; }   /* one guide at a time */
