@@ -102,6 +102,15 @@ function setupPagedLesson() {
     next.replaceWith(side);
     side.append(hint, next);
   }
+  // On the last page, when the next lesson isn't out yet, say so where its link would be
+  const upcoming = here >= 0 && LESSONS[here + 1] && !LESSONS[here + 1].ready ? LESSONS[here + 1] : null;
+  let soon = null;
+  if (next && upcoming) {
+    soon = document.createElement("span");
+    soon.className = "next-soon";
+    soon.textContent = `Lesson ${upcoming.label || upcoming.n}: coming soon`;
+    next.after(soon);
+  }
   const backText = back ? back.textContent : "";
 
   // A gentle support note on a lesson's last page: one quiet line under Next, or, at the end of a
@@ -155,6 +164,7 @@ function setupPagedLesson() {
       next.hidden = current === parts.length - 1 && !nextLesson;
       next.textContent = current === parts.length - 1 && nextLesson ? `Lesson ${nextLesson.label || nextLesson.n} →` : nextText;
     }
+    if (soon) soon.hidden = current !== parts.length - 1;
     if (hint) {
       const h = parts[current].querySelector(".hook");
       hint.textContent = h ? h.textContent : "";
