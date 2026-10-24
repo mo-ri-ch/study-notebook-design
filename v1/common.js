@@ -296,6 +296,7 @@ function addReset(inside, fn) {
 //     run   — optional: set the activity up for this step (pick a group, mark a box…)
 //     click — optional: instead of a Next button, wait for the reader to click this element
 //     keep  — optional: element(s) the bubble must not cover, e.g. the text the step talks about
+//     wide  — optional: a wider note, for a small table
 //   id   — remembers that the reader has seen it (it opens by itself only the first time)
 //   auto — open by itself the first time the page is shown (default true; never in teach mode)
 // Adds a small "?" button (Show me how) beside ↺ Reset. Esc, ✕ or "Skip" closes; ← → move while it's open.
@@ -327,12 +328,17 @@ function addTour(inside, steps, opts = {}) {
     walk(root);
   }
   function clearWait() { if (waitEl && waitFn) waitEl.removeEventListener("click", waitFn); waitEl = waitFn = null; }
+  // The page may scroll inside a box (e.g. beside the page list), not the window
+  function scrollParent(el) {
+    for (let n = el.parentElement; n; n = n.parentElement) { const o = getComputedStyle(n).overflowY; if ((o === "auto" || o === "scroll") && n.scrollHeight > n.clientHeight) return n; }
+    return document.scrollingElement || document.documentElement;
+  }
   function place() {
     if (!bubble || !target) return;
     // Try below, above, right, left: the first side where the bubble fits on screen and covers neither the
     // thing it points at nor anything the step says to keep visible (step.keep). Otherwise below, scrolled into view.
     const W = document.documentElement.clientWidth, H = window.innerHeight, M = 10, G = 14;
-    const w = Math.min(340, W - 2 * M); bubble.style.width = w + "px";
+    const w = Math.min(steps[i].wide ? 470 : 340, W - 2 * M); bubble.style.width = w + "px";
     const h = bubble.offsetHeight, r = target.getBoundingClientRect();
     const keep = [r, ...[].concat(steps[i].keep ? find(steps[i].keep) : []).filter(Boolean).map(k => k.getBoundingClientRect())];
     const hits = (x, y) => keep.some(k => x < k.right + 4 && x + w > k.left - 4 && y < k.bottom + 4 && y + h > k.top - 4);
@@ -343,13 +349,14 @@ function addTour(inside, steps, opts = {}) {
     if (!pick) {
       // Nothing fits: put it below everything to keep, and scroll so it shows
       const bottom = Math.max(...keep.map(k => k.bottom));
-      pick = ["below", midX, bottom + G];
-      const over = bottom + G + h - (H - M);
-      if (over > 0 && !scrolled) { scrolled = true; window.scrollBy(0, over); return requestAnimationFrame(place); }   // once per step
+      pick = ["below", midX, Math.max(M, Math.min(bottom + G, H - h - M))];   // on a short screen it may overlap the bottom of what it points at
+      const top = Math.min(...keep.map(k => k.top));
+      const over = Math.min(bottom + G + h - (H - M), top - M);   // scroll up to fit the note, but never past the top of what it points at
+      if (over > 0 && !scrolled) { scrolled = true; scrollParent(target).scrollBy({ top: over, behavior: "instant" }); return place(); }   // once per step
     }
     const [side, left, top] = pick;
-    bubble.style.left = (left + window.scrollX) + "px";
-    bubble.style.top = (top + window.scrollY) + "px";
+    bubble.style.left = left + "px";   // the note is position: fixed, so it stays in place whichever box scrolls
+    bubble.style.top = top + "px";
     bubble.dataset.side = side;
     const ax = Math.min(Math.max(16, r.left + r.width / 2 - left), w - 16);
     bubble.style.setProperty("--tapeX", (side === "below" && ax < w / 2 ? w - 70 : side === "below" ? 70 : w / 2) + "px");   // tape away from the arrow
@@ -382,7 +389,7 @@ function addTour(inside, steps, opts = {}) {
     }
     dim([target, ...[].concat(st.keep ? find(st.keep) : []), waitEl]);
     const r = target.getBoundingClientRect();
-    if (r.top < 70 || r.bottom > window.innerHeight - 160) target.scrollIntoView({ block: "center", behavior: "smooth" });
+    if (r.top < 70 || r.bottom > window.innerHeight - 160) target.scrollIntoView({ block: "center", behavior: "instant" });   // instant, so the note can be placed right away
     place(); setTimeout(place, 350);
     (next || bubble.querySelector(".tour-x")).focus({ preventScroll: true });
   }
@@ -391,7 +398,7 @@ function addTour(inside, steps, opts = {}) {
     bubble = document.createElement("div"); bubble.className = "tour-bubble"; bubble.setAttribute("role", "dialog"); bubble.setAttribute("aria-label", "Show me how");
     document.body.appendChild(bubble); box.classList.add("touring"); document.body.classList.add("touring");
     tourOpen = close; markSeen();
-    window.addEventListener("scroll", place, { passive: true }); window.addEventListener("resize", place);
+    document.addEventListener("scroll", place, { passive: true, capture: true }); window.addEventListener("resize", place);
     show(0);
   }
   function close() {
@@ -400,7 +407,7 @@ function addTour(inside, steps, opts = {}) {
     box.querySelectorAll(".tour-on").forEach(x => x.classList.remove("tour-on"));
     undim();
     if (bubble) bubble.remove(); bubble = null; target = null; box.classList.remove("touring"); document.body.classList.remove("touring");
-    window.removeEventListener("scroll", place); window.removeEventListener("resize", place);
+    document.removeEventListener("scroll", place, { capture: true }); window.removeEventListener("resize", place);
     if (tourOpen === close) tourOpen = null;
   }
   btn.addEventListener("click", () => { btn.blur(); open(); });

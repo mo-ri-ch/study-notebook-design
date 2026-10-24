@@ -731,7 +731,7 @@ html.split-open body { overflow: hidden; }
 .activity.has-tour .do { padding-right: 130px; }
 .tour-on { position: relative; z-index: 3; outline: 3px solid var(--pen) !important; outline-offset: 3px; border-radius: 6px;
   box-shadow: 0 0 0 8px color-mix(in srgb, var(--hl-yellow) 45%, transparent); transition: box-shadow 0.2s; }
-.tour-bubble { position: absolute; z-index: 10001; background: var(--note-yellow); color: var(--ink); border: 0;
+.tour-bubble { position: fixed; z-index: 10001; background: var(--note-yellow); color: var(--ink); border: 0;
   border-radius: 2px 2px 16px 2px; padding: 18px 16px 12px; font-size: 1rem; line-height: 1.45; transform: rotate(-0.8deg);
   box-shadow: 0 2px 0 rgba(0,0,0,0.05), 4px 8px 18px -6px rgba(29,34,56,0.35); }
 .tour-bubble::after { content: ""; position: absolute; top: -11px; left: var(--tapeX, 50%); width: 84px; height: 22px; transform: translateX(-50%) rotate(2deg);
@@ -756,3 +756,9 @@ html.split-open body { overflow: hidden; }
 @media print { .tour-btn, .tour-bubble { display: none; } }
 body.touring .guide-bar { display: none !important; }   /* one guide at a time */
 .tour-dim { opacity: 0.25; transition: opacity 0.25s; }   /* Show me how: only the part being explained stays bright */
+.tour-say table { border-collapse: collapse; margin: 8px 0 4px; font-family: var(--mono); font-size: 0.78rem; }
+.tour-say th, .tour-say td { padding: 2px 7px; text-align: right; border-bottom: 1px solid color-mix(in srgb, var(--ink) 15%, transparent); }
+.tour-say th { font-weight: 600; color: var(--pencil); }
+.tour-say td:first-child, .tour-say th:first-child { text-align: left; font-family: var(--body, inherit); }
+.tour-say tr.tot td { border-top: 2px solid var(--ink); font-weight: 700; }
+.tour-say tr.hi td { background: color-mix(in srgb, var(--hl-yellow) 55%, transparent); }
