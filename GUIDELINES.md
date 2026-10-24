@@ -53,7 +53,12 @@ and every change. Add to this file whenever he gives new design advice.
   slide's real numbers. Avoid vague words ("harder push", "size", "magnitude"); say it plainly ("the further from 0,
   the more it moves"). More words are fine when they make it clearer; keep each sentence short.
 - **Never make the student remember.** Show again what a page relies on (e.g. the training text, with the part the
-  page talks about highlighted), and link back to the exact page where it was taught.
+  page talks about highlighted).
+- **Say the idea, not where it was taught.** "Like in Lesson 3" makes the reader stop and try to recall it. Say the
+  idea itself in a few words instead ("by counting how often each letter comes next"). Don't name earlier lessons in
+  passing, and don't add a link to every mention. Link only when the reader really needs to see something there (a
+  table, a number), and name that thing in the link ("the counting table"), not the lesson. Future lessons may be named
+  ("coming in Lesson 6").
 - **Show the whole when showing part.** If a table shows 5 of 14 items, say where the other 9 are.
 - **Be honest about trade-offs** (e.g. learning takes more passes than counting here; say so, and say why it's still worth it).
 - **Explain an idea where it first appears,** not a page later.
@@ -77,7 +82,7 @@ and every change. Add to this file whenever he gives new design advice.
   If Guide me is on, the left half keeps guiding from the same glowing step; the right half starts with the guide off
   (turning it on there affects only that half).
   On phones, a look-only box slides up from the bottom instead (drag to pan, pinch / − + to zoom).
-  Use `xref` for every mention of another page.
+  Use `xref` only for the few links worth opening (see "Say the idea, not where it was taught").
 - G guide me · P pen · ← → back/next · T big text · Esc stop pen/guide (one thing per press).
 - Notes written in Guide mode belong to the glowing step; with the guide off only ordinary notes
   show, plus a "✎ N in Guide mode" hint.
