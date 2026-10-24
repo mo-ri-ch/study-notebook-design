@@ -724,11 +724,11 @@ html.split-open body { overflow: hidden; }
 .test .quiz .q .q-code code { font-size: 1em; }
 
 /* Show me how: game-style bubbles inside an activity */
-.tour-btn { position: absolute; top: 10px; right: 96px; background: none; border: 0; padding: 2px 4px; box-shadow: none;
-  font-family: var(--head); font-weight: 400; font-size: 1.05rem; color: var(--pen); cursor: pointer; }
-.tour-btn:hover { background: none; text-decoration: underline; }
-.activity.has-tour .do { padding-right: 240px; }
-@media (max-width: 640px) { .tour-btn { position: static; display: block; margin: -4px 0 6px; padding: 0; } .activity.has-tour .do { padding-right: 84px; } }
+.tour-btn { position: absolute; top: 10px; right: 96px; width: 26px; height: 26px; padding: 0; border-radius: 50%;
+  border: 1.5px solid var(--pen); background: none; box-shadow: none; color: var(--pen);
+  font-family: var(--head); font-weight: 400; font-size: 1.05rem; line-height: 1; display: grid; place-items: center; cursor: pointer; }
+.tour-btn:hover { background: var(--pen); color: var(--paper); }
+.activity.has-tour .do { padding-right: 130px; }
 .tour-on { position: relative; z-index: 3; outline: 3px solid var(--pen) !important; outline-offset: 3px; border-radius: 6px;
   box-shadow: 0 0 0 8px color-mix(in srgb, var(--hl-yellow) 45%, transparent); transition: box-shadow 0.2s; }
 .tour-bubble { position: absolute; z-index: 10001; background: var(--note-yellow); color: var(--ink); border: 0;

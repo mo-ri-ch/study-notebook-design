@@ -298,7 +298,7 @@ function addReset(inside, fn) {
 //     keep  — optional: element(s) the bubble must not cover, e.g. the text the step talks about
 //   id   — remembers that the reader has seen it (it opens by itself only the first time)
 //   auto — open by itself the first time the page is shown (default true; never in teach mode)
-// Adds a "👆 Show me how" button beside ↺ Reset. Esc, ✕ or "Skip" closes; ← → move while it's open.
+// Adds a small "?" button (Show me how) beside ↺ Reset. Esc, ✕ or "Skip" closes; ← → move while it's open.
 let tourOpen = null;
 function addTour(inside, steps, opts = {}) {
   const el = typeof inside === "string" ? document.getElementById(inside) : inside;
@@ -308,7 +308,7 @@ function addTour(inside, steps, opts = {}) {
   const seen = () => { try { return localStorage.getItem(key) === "1"; } catch (e) { return false; } };
   const markSeen = () => { try { localStorage.setItem(key, "1"); } catch (e) {} };
   const btn = document.createElement("button");
-  btn.className = "tour-btn"; btn.type = "button"; btn.textContent = "👆 Show me how";
+  btn.className = "tour-btn"; btn.type = "button"; btn.textContent = "?"; btn.title = "Show me how"; btn.setAttribute("aria-label", "Show me how this activity works");
   box.insertBefore(btn, box.firstChild); box.classList.add("has-tour");
   const find = a => typeof a === "function" ? a() : typeof a === "string" ? box.querySelector(a) : a || box;
   let i = 0, bubble = null, target = null, waitEl = null, waitFn = null, scrolled = false;
