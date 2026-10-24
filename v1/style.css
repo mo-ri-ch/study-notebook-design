@@ -746,5 +746,6 @@ html.split-open body { overflow: hidden; }
 .tour-nav button { padding: 5px 12px; font-size: 0.92rem; }
 .tour-skip, .tour-back { background: none; box-shadow: none; border: 0; color: var(--pencil); padding-left: 0 !important; }
 .tour-wait { margin-left: auto; font-family: var(--head); color: var(--pen); }
+.tour-doit { font-size: 0.8rem !important; padding: 4px 8px !important; }
 @media print { .tour-btn, .tour-bubble { display: none; } }
 body.touring .guide-bar { display: none !important; }   /* one guide at a time */

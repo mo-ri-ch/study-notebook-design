@@ -353,12 +353,12 @@ function addTour(inside, steps, opts = {}) {
     bubble.innerHTML = `<div class="tour-top"><span class="tour-n">${i + 1} / ${steps.length}</span><button class="tour-x" type="button" aria-label="Close">✕</button></div>` +
       `<div class="tour-say">${say}</div><div class="tour-nav">` +
       (i ? `<button class="tour-back" type="button">← Back</button>` : `<button class="tour-skip" type="button">Skip</button>`) +
-      (st.click ? `<span class="tour-wait">Your turn ↑</span>` : `<button class="tour-next primary" type="button">${last ? "Done ✓" : "Next →"}</button>`) + `</div>`;
+      (st.click ? `<span class="tour-wait">Your turn: press it ↑</span><button class="tour-next tour-doit" type="button">Do it for me</button>` : `<button class="tour-next primary" type="button">${last ? "Done ✓" : "Next →"}</button>`) + `</div>`;
     bubble.querySelector(".tour-x").onclick = close;
     const back = bubble.querySelector(".tour-back"), skip = bubble.querySelector(".tour-skip"), next = bubble.querySelector(".tour-next");
     if (back) back.onclick = () => show(i - 1);
     if (skip) skip.onclick = close;
-    if (next) next.onclick = () => last ? close() : show(i + 1);
+    if (next) next.onclick = () => st.click ? find(st.click).click() : last ? close() : show(i + 1);   // on a "your turn" step it presses the thing for you
     if (st.click) {
       waitEl = find(st.click); waitEl.classList.add("tour-on");
       waitFn = () => { waitEl.classList.remove("tour-on"); setTimeout(() => last ? close() : show(i + 1), 60); };
