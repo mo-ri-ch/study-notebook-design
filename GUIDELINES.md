@@ -76,7 +76,7 @@ and every change. Add to this file whenever he gives new design advice.
 
 ## Supporting the work
 - **Ask gently, only at the end.** A lesson's last page shows one quiet pencil line under Next:
-  "Found this useful? Every bit helps us keep going →", linking to gradlabs.in/support. When a whole
+  "Enjoyed this lesson? Support our work →", linking to gradlabs.in/support. When a whole
   notebook is finished (its last lesson, every lesson ready), its last page shows a small taped card
   instead. Never on other pages, never in teach mode (T) or a split-screen preview.
 - Built into common.js, so every notebook gets it. A notebook can change the link with

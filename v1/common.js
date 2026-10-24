@@ -113,7 +113,7 @@ function setupPagedLesson() {
     support.className = courseDone ? "support-note card" : "support-note";
     support.innerHTML = courseDone
       ? `<h3>You finished the notebook!</h3><p>If it helped you, every bit helps us keep going.</p><a class="support-btn" href="${supportUrl}" target="_blank" rel="noopener">Support the work →</a>`
-      : `<a href="${supportUrl}" target="_blank" rel="noopener">Found this useful? Every bit helps us keep going →</a>`;
+      : `<a href="${supportUrl}" target="_blank" rel="noopener">Enjoyed this lesson? Support our work →</a>`;
     pagebar.after(support);
   }
 
