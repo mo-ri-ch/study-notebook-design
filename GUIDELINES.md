@@ -85,7 +85,7 @@ and every change. Add to this file whenever he gives new design advice.
   Use `xref` only for the few links worth opening (see "Say the idea, not where it was taught").
 - **Show me how: sticky-note steps inside an activity.** When an activity shows several things at once, give it
   steps with `addTour(el, steps, { id })` (in common.js): a sticky note points at one part at a time (a box, a row, a button),
-  sets the activity up for that step, and explains it with the real numbers. A step can wait for the reader to press
+  sets the activity up for that step, dims everything else (like Guide me), and explains it with the real numbers. A step can wait for the reader to press
   something ("Your turn ↑") instead of Next. It opens by itself the first time (not in teach mode or split preview);
   the small "?" button beside ↺ Reset replays it. Skip, ✕ or Esc closes; ← → move while it's open.
   Working correctly is not the same as easy to follow: if a reader can't tell where to look first, add a tour.

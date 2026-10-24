@@ -755,3 +755,4 @@ html.split-open body { overflow: hidden; }
 .tour-doit { font-size: 0.8rem !important; padding: 4px 8px !important; }
 @media print { .tour-btn, .tour-bubble { display: none; } }
 body.touring .guide-bar { display: none !important; }   /* one guide at a time */
+.tour-dim { opacity: 0.25; transition: opacity 0.25s; }   /* Show me how: only the part being explained stays bright */

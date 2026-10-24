@@ -312,6 +312,20 @@ function addTour(inside, steps, opts = {}) {
   box.insertBefore(btn, box.firstChild); box.classList.add("has-tour");
   const find = a => typeof a === "function" ? a() : typeof a === "string" ? box.querySelector(a) : a || box;
   let i = 0, bubble = null, target = null, waitEl = null, waitFn = null, scrolled = false;
+  // Dim everything on the page part except what this step points at (and what it keeps visible), like Guide me
+  const root = box.closest("section.part") || box.parentElement;
+  function undim() { root.querySelectorAll(".tour-dim").forEach(x => x.classList.remove("tour-dim")); }
+  function dim(els) {
+    undim();
+    els = els.filter(Boolean);
+    const path = new Set();
+    els.forEach(e => { for (let n = e; n && n !== root; n = n.parentElement) path.add(n); });
+    const walk = node => [...node.children].forEach(ch => {
+      if (els.includes(ch) || ch.matches("h2")) return;
+      if (path.has(ch)) walk(ch); else ch.classList.add("tour-dim");
+    });
+    walk(root);
+  }
   function clearWait() { if (waitEl && waitFn) waitEl.removeEventListener("click", waitFn); waitEl = waitFn = null; }
   function place() {
     if (!bubble || !target) return;
@@ -366,6 +380,7 @@ function addTour(inside, steps, opts = {}) {
       waitFn = () => { waitEl.classList.remove("tour-on"); setTimeout(() => last ? close() : show(i + 1), 60); };
       waitEl.addEventListener("click", waitFn);
     }
+    dim([target, ...[].concat(st.keep ? find(st.keep) : []), waitEl]);
     const r = target.getBoundingClientRect();
     if (r.top < 70 || r.bottom > window.innerHeight - 160) target.scrollIntoView({ block: "center", behavior: "smooth" });
     place(); setTimeout(place, 350);
@@ -383,6 +398,7 @@ function addTour(inside, steps, opts = {}) {
     clearWait();
     if (target) target.classList.remove("tour-on");
     box.querySelectorAll(".tour-on").forEach(x => x.classList.remove("tour-on"));
+    undim();
     if (bubble) bubble.remove(); bubble = null; target = null; box.classList.remove("touring"); document.body.classList.remove("touring");
     window.removeEventListener("scroll", place); window.removeEventListener("resize", place);
     if (tourOpen === close) tourOpen = null;
