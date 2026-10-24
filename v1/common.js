@@ -290,11 +290,12 @@ function addReset(inside, fn) {
 
 // ---------- Show me how: game-style bubbles that walk through one activity ----------
 // addTour(elementInsideActivity, steps, { id, auto })
-//   steps: [{ at, say, run, click }]
+//   steps: [{ at, say, run, click, keep }]
 //     at    — the element to point at (element, selector inside the activity, or a function returning one)
 //     say   — the bubble's text (HTML, or a function returning it, called after run)
 //     run   — optional: set the activity up for this step (pick a group, mark a box…)
 //     click — optional: instead of a Next button, wait for the reader to click this element
+//     keep  — optional: element(s) the bubble must not cover, e.g. the text the step talks about
 //   id   — remembers that the reader has seen it (it opens by itself only the first time)
 //   auto — open by itself the first time the page is shown (default true; never in teach mode)
 // Adds a "👆 Show me how" button beside ↺ Reset. Esc, ✕ or "Skip" closes; ← → move while it's open.
@@ -310,23 +311,39 @@ function addTour(inside, steps, opts = {}) {
   btn.className = "tour-btn"; btn.type = "button"; btn.textContent = "👆 Show me how";
   box.insertBefore(btn, box.firstChild); box.classList.add("has-tour");
   const find = a => typeof a === "function" ? a() : typeof a === "string" ? box.querySelector(a) : a || box;
-  let i = 0, bubble = null, target = null, waitEl = null, waitFn = null;
+  let i = 0, bubble = null, target = null, waitEl = null, waitFn = null, scrolled = false;
   function clearWait() { if (waitEl && waitFn) waitEl.removeEventListener("click", waitFn); waitEl = waitFn = null; }
   function place() {
     if (!bubble || !target) return;
-    const r = target.getBoundingClientRect(), W = document.documentElement.clientWidth, H = window.innerHeight, M = 10;
+    // Try below, above, right, left: the first side where the bubble fits on screen and covers neither the
+    // thing it points at nor anything the step says to keep visible (step.keep). Otherwise below, scrolled into view.
+    const W = document.documentElement.clientWidth, H = window.innerHeight, M = 10, G = 14;
     const w = Math.min(340, W - 2 * M); bubble.style.width = w + "px";
-    const h = bubble.offsetHeight;
-    const below = r.bottom + 14 + h < H - M || r.top - 14 - h < M;
-    let left = Math.min(Math.max(M, r.left + r.width / 2 - w / 2), W - w - M);
+    const h = bubble.offsetHeight, r = target.getBoundingClientRect();
+    const keep = [r, ...[].concat(steps[i].keep ? find(steps[i].keep) : []).filter(Boolean).map(k => k.getBoundingClientRect())];
+    const hits = (x, y) => keep.some(k => x < k.right + 4 && x + w > k.left - 4 && y < k.bottom + 4 && y + h > k.top - 4);
+    const fits = (x, y) => x >= M && y >= M && x + w <= W - M && y + h <= H - M && !hits(x, y);
+    const midX = Math.min(Math.max(M, r.left + r.width / 2 - w / 2), W - w - M), midY = Math.min(Math.max(M, r.top + r.height / 2 - h / 2), H - h - M);
+    const sides = [["below", midX, r.bottom + G], ["above", midX, r.top - G - h], ["right", r.right + G, midY], ["left", r.left - G - w, midY]];
+    let pick = sides.find(([, x, y]) => fits(x, y));
+    if (!pick) {
+      // Nothing fits: put it below everything to keep, and scroll so it shows
+      const bottom = Math.max(...keep.map(k => k.bottom));
+      pick = ["below", midX, bottom + G];
+      const over = bottom + G + h - (H - M);
+      if (over > 0 && !scrolled) { scrolled = true; window.scrollBy(0, over); return requestAnimationFrame(place); }   // once per step
+    }
+    const [side, left, top] = pick;
     bubble.style.left = (left + window.scrollX) + "px";
-    bubble.style.top = ((below ? r.bottom + 14 : r.top - 14 - h) + window.scrollY) + "px";
-    bubble.classList.toggle("above", !below);
-    bubble.style.setProperty("--arrow", Math.min(Math.max(16, r.left + r.width / 2 - left), w - 16) + "px");
+    bubble.style.top = (top + window.scrollY) + "px";
+    bubble.dataset.side = side;
+    if (side === "below" || side === "above") bubble.style.setProperty("--arrow", Math.min(Math.max(16, r.left + r.width / 2 - left), w - 16) + "px");
+    else bubble.style.setProperty("--arrowY", Math.min(Math.max(16, r.top + r.height / 2 - top), h - 16) + "px");
   }
   function show(n) {
     clearWait();
     i = Math.max(0, Math.min(n, steps.length - 1));
+    scrolled = false;
     const st = steps[i];
     if (st.run) st.run();
     if (target) target.classList.remove("tour-on");

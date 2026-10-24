@@ -735,7 +735,9 @@ html.split-open body { overflow: hidden; }
   border-radius: 12px; box-shadow: 4px 4px 0 var(--ink); padding: 10px 14px 12px; font-size: 1rem; line-height: 1.45; }
 .tour-bubble::before { content: ""; position: absolute; top: -9px; left: calc(var(--arrow, 30px) - 8px); width: 14px; height: 14px;
   background: var(--card, #fff); border-left: 2px solid var(--ink); border-top: 2px solid var(--ink); transform: rotate(45deg); }
-.tour-bubble.above::before { top: auto; bottom: -9px; transform: rotate(225deg); }
+.tour-bubble[data-side="above"]::before { top: auto; bottom: -9px; transform: rotate(225deg); }
+.tour-bubble[data-side="right"]::before { top: calc(var(--arrowY, 30px) - 8px); left: -9px; transform: rotate(-45deg); }
+.tour-bubble[data-side="left"]::before { top: calc(var(--arrowY, 30px) - 8px); left: auto; right: -9px; transform: rotate(135deg); }
 .tour-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
 .tour-n { font-family: var(--mono); font-size: 0.8rem; color: var(--pencil); }
 .tour-x { background: none; border: 0; box-shadow: none; padding: 0 2px; color: var(--pencil); font-size: 1rem; cursor: pointer; }
