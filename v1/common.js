@@ -14,6 +14,7 @@ if (new URLSearchParams(location.search).get("embed")) {
 //     lessons: [ { n, label?, step, title, file, ready, summary, leaves }, ... ],   // label: shown instead of n, e.g. "1a"
 //     setup: [ fn, ... ],            // optional: course-only extras, run before the shared setup
 //     support: "https://…",         // optional: where the end-of-lesson support note links; false hides it
+//     supportFrom: 3,               // optional: the first lesson (as numbered for readers) that shows it
 //   };
 const COURSE = window.COURSE || {};
 const LESSONS = COURSE.lessons || [];
@@ -104,10 +105,12 @@ function setupPagedLesson() {
   const backText = back ? back.textContent : "";
 
   // A gentle support note on a lesson's last page: one quiet line under Next, or, at the end of a
-  // finished notebook, a small card. Never on other pages, in teach mode, or in a split-screen preview.
+  // finished notebook, a small card. Not in the first lessons (a reader first sees what the notebook
+  // is like), on other pages, in teach mode, or in a split-screen preview.
   const supportUrl = COURSE.support === false ? null : COURSE.support || "https://gradlabs.in/support";
+  const lessonNo = here >= 0 ? parseInt(LESSONS[here].label || LESSONS[here].n, 10) : NaN;
   let support = null;
-  if (supportUrl && pagebar) {
+  if (supportUrl && pagebar && lessonNo >= (COURSE.supportFrom || 3)) {
     const courseDone = here >= 0 && here === LESSONS.length - 1 && LESSONS.every(l => l.ready);
     support = document.createElement("div");
     support.className = courseDone ? "support-note card" : "support-note";

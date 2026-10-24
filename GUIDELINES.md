@@ -75,7 +75,8 @@ and every change. Add to this file whenever he gives new design advice.
   so a class can think and vote first.
 
 ## Supporting the work
-- **Ask gently, only at the end.** A lesson's last page shows one quiet pencil line under Next:
+- **Ask gently, only at the end, and only from Lesson 3 on** (readers first see what the notebook is
+  like; `supportFrom` in course.js changes this). A lesson's last page shows one quiet pencil line under Next:
   "Enjoyed this lesson? Support our work →", linking to gradlabs.in/support. When a whole
   notebook is finished (its last lesson, every lesson ready), its last page shows a small taped card
   instead. Never on other pages, never in teach mode (T) or a split-screen preview.
