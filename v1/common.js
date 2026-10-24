@@ -337,7 +337,9 @@ function addTour(inside, steps, opts = {}) {
     bubble.style.left = (left + window.scrollX) + "px";
     bubble.style.top = (top + window.scrollY) + "px";
     bubble.dataset.side = side;
-    if (side === "below" || side === "above") bubble.style.setProperty("--arrow", Math.min(Math.max(16, r.left + r.width / 2 - left), w - 16) + "px");
+    const ax = Math.min(Math.max(16, r.left + r.width / 2 - left), w - 16);
+    bubble.style.setProperty("--tapeX", (side === "below" && ax < w / 2 ? w - 70 : side === "below" ? 70 : w / 2) + "px");   // tape away from the arrow
+    if (side === "below" || side === "above") bubble.style.setProperty("--arrow", ax + "px");
     else bubble.style.setProperty("--arrowY", Math.min(Math.max(16, r.top + r.height / 2 - top), h - 16) + "px");
   }
   function show(n) {

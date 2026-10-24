@@ -731,19 +731,25 @@ html.split-open body { overflow: hidden; }
 @media (max-width: 640px) { .tour-btn { position: static; display: block; margin: -4px 0 6px; padding: 0; } .activity.has-tour .do { padding-right: 84px; } }
 .tour-on { position: relative; z-index: 3; outline: 3px solid var(--pen) !important; outline-offset: 3px; border-radius: 6px;
   box-shadow: 0 0 0 8px color-mix(in srgb, var(--hl-yellow) 45%, transparent); transition: box-shadow 0.2s; }
-.tour-bubble { position: absolute; z-index: 10001; background: var(--card, #fff); color: var(--ink); border: 2px solid var(--ink);
-  border-radius: 12px; box-shadow: 4px 4px 0 var(--ink); padding: 10px 14px 12px; font-size: 1rem; line-height: 1.45; }
-.tour-bubble::before { content: ""; position: absolute; top: -9px; left: calc(var(--arrow, 30px) - 8px); width: 14px; height: 14px;
-  background: var(--card, #fff); border-left: 2px solid var(--ink); border-top: 2px solid var(--ink); transform: rotate(45deg); }
-.tour-bubble[data-side="above"]::before { top: auto; bottom: -9px; transform: rotate(225deg); }
-.tour-bubble[data-side="right"]::before { top: calc(var(--arrowY, 30px) - 8px); left: -9px; transform: rotate(-45deg); }
-.tour-bubble[data-side="left"]::before { top: calc(var(--arrowY, 30px) - 8px); left: auto; right: -9px; transform: rotate(135deg); }
+.tour-bubble { position: absolute; z-index: 10001; background: var(--note-yellow); color: var(--ink); border: 0;
+  border-radius: 2px 2px 16px 2px; padding: 18px 16px 12px; font-size: 1rem; line-height: 1.45; transform: rotate(-0.8deg);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.05), 4px 8px 18px -6px rgba(29,34,56,0.35); }
+.tour-bubble::after { content: ""; position: absolute; top: -11px; left: var(--tapeX, 50%); width: 84px; height: 22px; transform: translateX(-50%) rotate(2deg);
+  background: var(--tape); border-left: 2px dotted rgba(0,0,0,0.06); border-right: 2px dotted rgba(0,0,0,0.06); }
+.tour-bubble::before { content: ""; position: absolute; top: -7px; left: calc(var(--arrow, 30px) - 7px); width: 14px; height: 14px;
+  background: var(--note-yellow); transform: rotate(45deg); }
+.tour-bubble[data-side="above"]::before { top: auto; bottom: -7px; }
+.tour-bubble[data-side="right"]::before { top: calc(var(--arrowY, 30px) - 7px); left: -7px; }
+.tour-bubble[data-side="left"]::before { top: calc(var(--arrowY, 30px) - 7px); left: auto; right: -7px; }
+.tour-say { font-family: var(--hand); font-size: 1.12rem; line-height: 1.4; }
+.tour-say b { font-weight: 700; }
 .tour-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-.tour-n { font-family: var(--mono); font-size: 0.8rem; color: var(--pencil); }
+.tour-n { font-family: var(--head); font-size: 0.95rem; color: var(--pen); }
 .tour-x { background: none; border: 0; box-shadow: none; padding: 0 2px; color: var(--pencil); font-size: 1rem; cursor: pointer; }
-.tour-say code { font-size: 0.9em; }
+.tour-say code { font-size: 0.8em; background: color-mix(in srgb, var(--card) 70%, transparent); }
 .tour-nav { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 10px; }
-.tour-nav button { padding: 5px 12px; font-size: 0.92rem; }
+.tour-nav button { padding: 4px 12px; font-size: 0.9rem; }
+.tour-nav .tour-next.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); box-shadow: none; }
 .tour-skip, .tour-back { background: none; box-shadow: none; border: 0; color: var(--pencil); padding-left: 0 !important; }
 .tour-wait { margin-left: auto; font-family: var(--head); color: var(--pen); }
 .tour-doit { font-size: 0.8rem !important; padding: 4px 8px !important; }
