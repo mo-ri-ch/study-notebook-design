@@ -93,6 +93,9 @@ and every change. Add to this file whenever he gives new design advice.
   (turning it on there affects only that half).
   On phones, a look-only box slides up from the bottom instead (drag to pan, pinch / − + to zoom).
   Use `xref` only for the few links worth opening (see "Say the idea, not where it was taught").
+- **Page addresses use gradlabs.in.** Any link to a course page that students see (notebook headers, READMEs, links
+  between courses) points to gradlabs.in/learn/<course>/…, never to github.io. Colab notebooks still open from GitHub
+  (Colab needs that), but the link back inside them goes to gradlabs.in.
 - **Show me how: sticky-note steps inside an activity.** When an activity shows several things at once, give it
   steps with `addTour(el, steps, { id })` (in common.js): a sticky note points at one part at a time (a box, a row, a button),
   sets the activity up for that step, dims everything else (like Guide me), and explains it with the real numbers. A step can wait for the reader to press

@@ -4,8 +4,8 @@ The shared look and features for my interactive courses: pages that look like a 
 with ruled paper, handwritten headings, highlighters, sticky notes and red-pen notes.
 
 Used by:
-- [Build a Tiny LLM](https://mo-ri-ch.github.io/build-an-llm-from-scratch/)
-- [Transformers & LLMs](https://mo-ri-ch.github.io/transformers-and-llms/)
+- [Build a Tiny LLM](https://gradlabs.in/learn/tiny-llm/)
+- [Transformers & LLMs](https://gradlabs.in/learn/transformers/)
 
 ## What's inside
 
