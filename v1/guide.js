@@ -34,6 +34,8 @@
   .guide-bar button { padding: 6px 12px; font-size: 0.95rem; white-space: nowrap; }
   .guide-bar .guide-count { white-space: nowrap; color: var(--pencil); font-size: 0.85rem; min-width: 3.2em; text-align: center; font-family: var(--mono); }
   .guide-bar .guide-keys { color: var(--pencil); font-size: 0.8rem; }
+  .guide-bar .guide-hint { color: var(--pen); font-size: 0.8rem; max-width: 15em; line-height: 1.25; }
+  .guide-bar .guide-hint:empty { display: none; }
   .guide-bar .guide-stop { border: 0; background: none; box-shadow: none; color: var(--pencil); padding: 6px; }
   @media (max-width: 700px) { .guide-bar .guide-keys { display: none; } }
   @media (prefers-reduced-motion: reduce) { .guide-now .do { animation: none; } }
@@ -99,6 +101,14 @@
     glow.classList.add("on");
   }
 
+  // A walk-through is here (sticky notes or Step through): say so. The guide never starts one by itself.
+  function setHint() {
+    if (!on || !steps[step]) { hint.textContent = ""; return; }
+    const has = sel => steps[step].some(el => (el.matches && el.matches(sel)) || (el.querySelector && el.querySelector(sel)));
+    const cls = c => document.body.classList.contains(c);
+    hint.textContent = has(".tour-btn") && !cls("touring") ? "? = a walk-through of this activity"
+      : has(".step-start") && !cls("walking-code") ? "👣 Step through = walk the code line by line" : "";
+  }
   function show(scroll) {
     clear();
     if (!on) { announce(); return; }
@@ -107,6 +117,7 @@
     step = Math.max(0, Math.min(steps.length - 1, step));
     steps[step].forEach(el => el.classList.add("guide-now"));
     count.textContent = `${step + 1} / ${steps.length}`;
+    setHint();
     placeGlow();
     // Follow the step's size as it changes (an activity opening, Step through starting, a terminal appearing)
     if (sizeWatch) { sizeWatch.disconnect(); steps[step].forEach(el => sizeWatch.observe(el)); }
@@ -163,6 +174,7 @@
     if (on) { step = 0; show(true); } else { clear(); announce(); }
   }
   window.guideToggle = () => setOn(!on);
+  window.guideMove = d => { if (on) move(d); };   // Step through hands back to the guide after its last line
 
   // ----- the controls -----
   const glow = document.createElement("div");
@@ -182,7 +194,8 @@
   const nextBtn = document.createElement("button"); nextBtn.type = "button"; nextBtn.className = "primary"; nextBtn.textContent = "Next →";
   const keys = document.createElement("span"); keys.className = "guide-keys"; keys.textContent = "or press →";
   const stopBtn = document.createElement("button"); stopBtn.type = "button"; stopBtn.className = "guide-stop"; stopBtn.textContent = "✕"; stopBtn.setAttribute("aria-label", "Stop guiding");
-  bar.append(backBtn, count, nextBtn, keys, stopBtn);
+  const hint = document.createElement("span"); hint.className = "guide-hint";
+  bar.append(backBtn, count, nextBtn, keys, hint, stopBtn);
 
   function setup() {
     if (!document.querySelector("main[data-paged]")) return;
@@ -201,14 +214,13 @@
     let walking = false;
     new MutationObserver(() => {
       const now = document.body.classList.contains("walking-code");
-      if (now === walking) { requestAnimationFrame(placeGlow); return; }   // some other class (pen, page list): just re-place
+      if (now === walking) { requestAnimationFrame(placeGlow); setHint(); return; }   // e.g. sticky notes opened or closed   // some other class (pen, page list): just re-place
       walking = now;
       if (!on) return;
       requestAnimationFrame(() => {
         buildSteps();
-        const k = steps.findIndex(g => g.some(el => el.classList.contains("walk-wrap") || el.classList.contains("run-area")));
-        if (k >= 0) step = k;
-        show(document.body.classList.contains("walking-code"));
+        if (now) { const k = steps.findIndex(g => g.some(el => el.classList.contains("walk-wrap") || el.classList.contains("run-area"))); if (k >= 0) step = k; }
+        show(now);
       });
     }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
     document.addEventListener("transitionend", placeGlow);

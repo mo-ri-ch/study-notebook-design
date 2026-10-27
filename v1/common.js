@@ -447,13 +447,13 @@ function addTour(inside, steps, opts = {}) {
     else if (e.key === "ArrowRight") { e.preventDefault(); e.stopImmediatePropagation(); if (!steps[i].click) i === steps.length - 1 ? close() : show(i + 1); }   // on a "your turn" step, → waits too (it must not turn the page)
     else if (e.key === "ArrowLeft" && i > 0) { e.preventDefault(); e.stopImmediatePropagation(); show(i - 1); }
   }, true);
-  // The first time its page is shown, open by itself (not in teach mode, not inside a split-screen preview)
+  // The first time its page is shown, open by itself (not in teach mode or Guide me, not inside a split-screen preview)
   if (opts.auto !== false) {
     const sec = box.closest("section.part");
     const embedded = /[?&]embed=1/.test(location.search);
     const maybe = () => {
-      const teach = document.body.classList.contains("teach");
-      if (!seen() && !embedded && !teach && (!sec || !sec.hidden) && !tourOpen) setTimeout(() => { if (!sec || !sec.hidden) open(); }, 500);
+      const teach = document.body.classList.contains("teach"), guiding = document.body.classList.contains("guiding");   // while guiding, only on request
+      if (!seen() && !embedded && !teach && !guiding && (!sec || !sec.hidden) && !tourOpen) setTimeout(() => { if (!sec || !sec.hidden) open(); }, 500);
     };
     if (sec) new MutationObserver(() => { if (!sec.hidden) maybe(); }).observe(sec, { attributes: true, attributeFilter: ["hidden"] });
     document.addEventListener("DOMContentLoaded", () => setTimeout(maybe, 0));

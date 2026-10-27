@@ -105,6 +105,9 @@ and every change. Add to this file whenever he gives new design advice.
   sets the activity up for that step, dims everything else (like Guide me), and explains it with the real numbers. A step can wait for the reader to press
   something ("Your turn ↑") instead of Next. It opens by itself the first time (not in teach mode or split preview);
   the small "?" button beside ↺ Reset replays it. Skip, ✕ or Esc closes; ← → move while it's open.
+  With Guide me on: the guide never opens notes or Step through by itself (and notes don't auto-open). When the glow
+  is on something that has them, the guide bar says so ("? = a walk-through…", "👣 Step through = …"). Once you
+  click ? or 👣, → and ← move inside it; after the last note or line, → leaves it and the guide carries on.
   Working correctly is not the same as easy to follow: if a reader can't tell where to look first, add a tour.
 - G guide me · P pen · ← → back/next · T big text · Esc stop pen/guide (one thing per press).
 - Notes written in Guide mode belong to the glowing step; with the guide off only ordinary notes

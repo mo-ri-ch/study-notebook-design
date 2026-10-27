@@ -312,6 +312,12 @@
       if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
       if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
         e.preventDefault(); e.stopPropagation();
+        // Guiding, and the last line is done: → leaves Step through and the guide carries on
+        if (e.key === "ArrowRight" && data && at === data.steps.length && document.body.classList.contains("guiding")) {
+          stop();
+          requestAnimationFrame(() => requestAnimationFrame(() => { if (window.guideMove) window.guideMove(1); }));
+          return;
+        }
         go(at + (e.key === "ArrowRight" ? 1 : -1));
       }
     }, true);
