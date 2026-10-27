@@ -57,9 +57,10 @@ and every change. Add to this file whenever he gives new design advice.
 - **Teach before you use.** Never use a word, number, control or idea the reader hasn't been taught yet (e.g. a
   "step size" menu before step size is explained). Introduce it first, with real numbers, then use it. Before adding
   anything to a page, check every term on it was taught on an earlier page or right there.
-- **Under about 120 words per page**, outside the activity. Say each idea once. Side details go into a 🤔, the
-  activity's own notes, or its sticky-note tour. Number lists and small tables can push a page a little over; plain
-  prose shouldn't.
+- **Under about 120 words per page**, outside the activity (up to about 150 for a page that introduces a new rule).
+  Say each idea once. Side details go into a 🤔, the activity's own notes, or its sticky-note tour. But never trim
+  below **one fully worked example in the text**: the reader must see the rule work on real numbers before pressing
+  anything. (Build a Tiny LLM checks this with tools/check_pages.py.)
 - **Say the idea, not where it was taught.** "Like in Lesson 3" makes the reader stop and try to recall it. Say the
   idea itself in a few words instead ("by counting how often each letter comes next"). Don't name earlier lessons in
   passing, and don't add a link to every mention. Link only when the reader really needs to see something there (a
