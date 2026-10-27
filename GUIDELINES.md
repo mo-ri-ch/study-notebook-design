@@ -54,6 +54,9 @@ and every change. Add to this file whenever he gives new design advice.
   the more it moves"). More words are fine when they make it clearer; keep each sentence short.
 - **Never make the student remember.** Show again what a page relies on (e.g. the training text, with the part the
   page talks about highlighted).
+- **Teach before you use.** Never use a word, number, control or idea the reader hasn't been taught yet (e.g. a
+  "step size" menu before step size is explained). Introduce it first, with real numbers, then use it. Before adding
+  anything to a page, check every term on it was taught on an earlier page or right there.
 - **Under about 120 words per page**, outside the activity. Say each idea once. Side details go into a 🤔, the
   activity's own notes, or its sticky-note tour. Number lists and small tables can push a page a little over; plain
   prose shouldn't.
