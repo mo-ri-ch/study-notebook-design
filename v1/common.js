@@ -301,6 +301,43 @@ function setupKeys() {
   });
 }
 
+// ---------- Swipe on phones: left = next, right = back (like the → and ← keys) ----------
+// Only a clear swipe counts: mostly sideways, quick, and long enough. Swipes are ignored when they start on something
+// you drag sideways (sliders, the cube, wide tables, the pen, link previews) or right at the screen's edge
+// (the phone's own back gesture). They act exactly like the arrow keys, so sticky notes, Step through and
+// Guide me get them first.
+function setupSwipe() {
+  if (document.documentElement.classList.contains("embed")) return;
+  let x0 = 0, y0 = 0, t0 = 0, ok = false;
+  const NO = 'input, textarea, select, canvas, svg, .table-scroll, [class*="xref-"], .peek-pop, .pen-tools, .sticky, [data-no-swipe]';
+  function scrollsSideways(el) {
+    for (let n = el; n && n !== document.body; n = n.parentElement) {
+      const o = getComputedStyle(n).overflowX;
+      if ((o === "auto" || o === "scroll") && n.scrollWidth > n.clientWidth + 2) return true;
+    }
+    return false;
+  }
+  document.addEventListener("touchstart", e => {
+    ok = false;
+    if (e.touches.length !== 1 || document.body.classList.contains("pen-on")) return;
+    const t = e.touches[0], edge = 24;
+    if (t.clientX < edge || t.clientX > window.innerWidth - edge) return;
+    if (e.target.closest && e.target.closest(NO)) return;
+    if (scrollsSideways(e.target)) return;
+    x0 = t.clientX; y0 = t.clientY; t0 = Date.now(); ok = true;
+  }, { passive: true });
+  document.addEventListener("touchend", e => {
+    if (!ok) return;
+    ok = false;
+    const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+    if (Date.now() - t0 > 700) return;
+    if (Math.abs(dx) < Math.max(70, window.innerWidth * 0.2) || Math.abs(dx) < 2 * Math.abs(dy)) return;
+    if (String(window.getSelection && window.getSelection()).trim()) return;   // selecting text, not swiping
+    const key = dx < 0 ? "ArrowRight" : "ArrowLeft";
+    document.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }));
+  }, { passive: true });
+}
+
 // ---------- Reset: every activity can go back to how it started ----------
 // addReset(anyElementInsideTheActivity, functionThatResetsIt)
 function addReset(inside, fn) {
@@ -982,6 +1019,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupRun();
   setupTeachMode();
   setupKeys();
+  setupSwipe();
   setupQuizzes();
   setupTests();
   setupPredictions();
