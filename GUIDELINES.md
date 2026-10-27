@@ -93,6 +93,10 @@ and every change. Add to this file whenever he gives new design advice.
   (turning it on there affects only that half).
   On phones, a look-only box slides up from the bottom instead (drag to pan, pinch / − + to zoom).
   Use `xref` only for the few links worth opening (see "Say the idea, not where it was taught").
+- **Eagle-eye view: nothing happens off-screen.** Rishal wants to understand everything that happens, and see the
+  whole picture. Whenever numbers change (a learning step, a sum, a push), the reader can watch it happen: step by
+  step (one press = one step, with ◀ Back), or played slowly (▶ Play / ⏸ Pause), with the math of the latest step
+  shown in real numbers (old → new) and where it's heading (goals, best possible). Never just show a result.
 - **Page addresses use gradlabs.in.** Any link to a course page that students see (notebook headers, READMEs, links
   between courses) points to gradlabs.in/learn/<course>/…, never to github.io. Colab notebooks still open from GitHub
   (Colab needs that), but the link back inside them goes to gradlabs.in.
