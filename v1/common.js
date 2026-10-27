@@ -129,14 +129,22 @@ function setupPagedLesson() {
     pagebar.after(support);
   }
 
-  let current = 0;
+  let current = 0, first = true, quiet = false;   // quiet: a finished drag already slid the page in
+  const still = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function go(i) {
+    const from = current;
     // Past the last page: open the next lesson. Before the first page: open the previous lesson's last page.
     if (i > parts.length - 1 && nextLesson) { location.href = nextLesson.file + "#1"; return; }
     if (i < 0 && prevLesson) { location.href = prevLesson.file + "#last"; return; }
     current = Math.max(0, Math.min(parts.length - 1, i));
     seen.add(current);
     parts.forEach((p, k) => { p.hidden = k !== current; });
+    // Slide the new page in from the side it comes from (not on first load, not after a drag, not with reduced motion)
+    if (!first && !quiet && current !== from && !still() && parts[current].animate) {
+      const d = current > from ? 1 : -1;
+      parts[current].animate([{ transform: `translateX(${d * 40}px)`, opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 220, easing: "ease-out" });
+    }
+    first = false;
     if (bar) Array.from(bar.children).forEach((s, k) => {
       s.classList.toggle("now", k === current);
       s.classList.toggle("seen", seen.has(k) && k !== current);
@@ -178,6 +186,9 @@ function setupPagedLesson() {
     if (area) area.scrollTop = 0;
   }
   pagedGo = (delta) => go(current + delta);
+  // For the touch drag: the pages, which one is showing, and a way to switch without the slide-in
+  window.__paged = { parts, now: () => current, hasPrevLesson: !!prevLesson, hasNextLesson: !!nextLesson,
+    goQuiet: (delta) => { quiet = true; go(current + delta); quiet = false; } };
 
   if (back) back.addEventListener("click", () => go(current - 1));
   if (next) next.addEventListener("click", () => go(current + 1));
@@ -301,15 +312,16 @@ function setupKeys() {
   });
 }
 
-// ---------- Swipe on phones: left = next, right = back (like the → and ← keys) ----------
-// Only a clear swipe counts: mostly sideways, quick, and long enough. Swipes are ignored when they start on something
-// you drag sideways (sliders, the cube, wide tables, the pen, link previews) or right at the screen's edge
-// (the phone's own back gesture). They act exactly like the arrow keys, so sticky notes, Step through and
-// Guide me get them first.
+// ---------- Swipe on phones: drag a page sideways, like flipping cards ----------
+// The page follows your finger and the next (or previous) one slides in beside it. Let go past a third of the
+// screen, or flick, and it moves on; otherwise it springs back. On the first or last page it just stretches a little.
+// Ignored when the drag starts on something you drag sideways (sliders, the cube, wide tables, the pen, link previews)
+// or at the screen's edge (the phone's back gesture). While sticky notes, Step through or Guide me are on, a swipe
+// acts like the → / ← keys instead, so it moves through them.
 function setupSwipe() {
   if (document.documentElement.classList.contains("embed")) return;
-  let x0 = 0, y0 = 0, t0 = 0, ok = false;
   const NO = 'input, textarea, select, canvas, svg, .table-scroll, [class*="xref-"], .peek-pop, .pen-tools, .sticky, [data-no-swipe]';
+  const still = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function scrollsSideways(el) {
     for (let n = el; n && n !== document.body; n = n.parentElement) {
       const o = getComputedStyle(n).overflowX;
@@ -317,25 +329,81 @@ function setupSwipe() {
     }
     return false;
   }
+  const key = k => document.dispatchEvent(new KeyboardEvent("keydown", { key: k, bubbles: true, cancelable: true }));
+  const busy = () => tourOpen || document.body.classList.contains("walking-code") || document.body.classList.contains("guiding");
+  let x0 = 0, y0 = 0, t0 = 0, armed = false, mode = null, cur = null, side = null, dir = 0, W = 0, dx = 0;
+  function clearStyles(el) { if (el) ["transform", "transition", "position", "top", "left", "width", "zIndex"].forEach(p => el.style[p] = ""); }
+  function setNeighbour(d) {
+    const P = window.__paged; if (!P) return;
+    const i = P.now() + d, next = P.parts[i];
+    if (side && side !== next) { side.hidden = true; clearStyles(side); }
+    side = next || null; dir = d;
+    if (!side) return;
+    // lay the neighbour beside the current page, its top where the screen's top is
+    const main = cur.parentElement, mr = main.getBoundingClientRect(), cr = cur.getBoundingClientRect();
+    main.style.position = main.style.position || "relative";
+    main.style.overflowX = "clip";   // the pages beside it must not widen the screen
+    side.hidden = false;
+    Object.assign(side.style, { position: "absolute", left: (cr.left - mr.left) + "px", width: cr.width + "px", top: Math.max(cr.top - mr.top, -mr.top + 8) + "px", zIndex: 1 });
+  }
+  function place(x) {
+    cur.style.transform = `translateX(${x}px)`;
+    if (side) side.style.transform = `translateX(${x + dir * (W + 24)}px)`;   // the next page comes in from the right, the previous from the left
+  }
+  function finish(go) {
+    const P = window.__paged, t = still() ? 0 : 220;
+    const tr = `transform ${t}ms ease-out`;
+    cur.style.transition = tr; if (side) side.style.transition = tr;
+    if (go && side) place(-dir * (W + 24)); else place(0);
+    const c = cur, sd = side, d = dir;
+    setTimeout(() => {
+      clearStyles(c);
+      if (sd) { clearStyles(sd); if (!go) sd.hidden = true; }
+      if (go && sd) P.goQuiet(d);
+      const main = c.parentElement; if (main) main.style.overflowX = "";
+    }, t + 10);
+    cur = side = null; mode = null;
+  }
   document.addEventListener("touchstart", e => {
-    ok = false;
+    armed = false; mode = null;
     if (e.touches.length !== 1 || document.body.classList.contains("pen-on")) return;
     const t = e.touches[0], edge = 24;
     if (t.clientX < edge || t.clientX > window.innerWidth - edge) return;
     if (e.target.closest && e.target.closest(NO)) return;
     if (scrollsSideways(e.target)) return;
-    x0 = t.clientX; y0 = t.clientY; t0 = Date.now(); ok = true;
+    x0 = t.clientX; y0 = t.clientY; t0 = Date.now(); armed = true; dx = 0;
   }, { passive: true });
+  document.addEventListener("touchmove", e => {
+    if (!armed) return;
+    const t = e.touches[0], mx = t.clientX - x0, my = t.clientY - y0;
+    if (!mode) {
+      if (Math.abs(mx) < 10 && Math.abs(my) < 10) return;
+      if (Math.abs(mx) < 1.5 * Math.abs(my)) { armed = false; return; }   // scrolling up/down: leave it alone
+      mode = busy() || !window.__paged ? "key" : "drag";
+      if (mode === "drag") { cur = window.__paged.parts[window.__paged.now()]; W = cur.getBoundingClientRect().width; }
+    }
+    dx = mx;
+    if (mode !== "drag") return;
+    e.preventDefault();
+    const d = dx < 0 ? 1 : -1;
+    if (d !== dir || !side) setNeighbour(d);
+    place(side ? dx : dx * 0.3);   // nothing on that side: just stretch a little
+  }, { passive: false });
   document.addEventListener("touchend", e => {
-    if (!ok) return;
-    ok = false;
-    const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
-    if (Date.now() - t0 > 700) return;
-    if (Math.abs(dx) < Math.max(70, window.innerWidth * 0.2) || Math.abs(dx) < 2 * Math.abs(dy)) return;
-    if (String(window.getSelection && window.getSelection()).trim()) return;   // selecting text, not swiping
-    const key = dx < 0 ? "ArrowRight" : "ArrowLeft";
-    document.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }));
+    if (!armed) return;
+    armed = false;
+    const t = e.changedTouches[0], fx = t.clientX - x0, fy = t.clientY - y0, ms = Date.now() - t0;
+    const far = Math.abs(fx) > Math.max(70, window.innerWidth * 0.33), flick = Math.abs(fx) > 40 && Math.abs(fx) / ms > 0.5;
+    if (mode === "drag") {
+      const P = window.__paged, d = fx < 0 ? 1 : -1;
+      if ((far || flick) && !side && ((d > 0 && P.hasNextLesson && P.now() === P.parts.length - 1) || (d < 0 && P.hasPrevLesson && P.now() === 0))) {
+        finish(false); pagedGo(d); return;   // past the lesson's end: open the next (or previous) lesson
+      }
+      finish(far || flick); return;
+    }
+    if (mode === "key" && (far || flick) && Math.abs(fx) > 2 * Math.abs(fy)) key(fx < 0 ? "ArrowRight" : "ArrowLeft");
   }, { passive: true });
+  document.addEventListener("touchcancel", () => { if (mode === "drag" && cur) finish(false); armed = false; }, { passive: true });
 }
 
 // ---------- Reset: every activity can go back to how it started ----------

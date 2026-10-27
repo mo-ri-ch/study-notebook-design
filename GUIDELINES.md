@@ -116,9 +116,11 @@ and every change. Add to this file whenever he gives new design advice.
   is on something that has them, the guide bar says so ("? = a walk-through…", "👣 Step through = …"). Once you
   click ? or 👣, → and ← move inside it; after the last note or line, → leaves it and the guide carries on.
   Working correctly is not the same as easy to follow: if a reader can't tell where to look first, add a tour.
-- **Swipe on phones:** swipe left = next, right = back, exactly like → and ← (so sticky notes, Step through and Guide me
-  get it first). Only a clear, quick, mostly sideways swipe counts; it's ignored on sliders, the cube, wide tables, the
-  pen, link previews and at the screen edge (the phone's back gesture). Add data-no-swipe to anything else dragged sideways.
+- **Swipe on phones, like flipping cards:** drag a page sideways and it follows your finger, with the next (or previous)
+  page sliding in beside it. Let go past a third of the screen, or flick, to move on; otherwise it springs back. At the
+  ends it just stretches. While sticky notes, Step through or Guide me are on, a swipe acts like → / ← instead. Ignored
+  on sliders, the cube, wide tables, the pen, link previews and at the screen edge. Add data-no-swipe to anything else
+  dragged sideways. On every screen, a page changed with the arrows or Next slides in from its side (not with reduced motion).
 - G guide me · P pen · ← → back/next · T big text · Esc stop pen/guide (one thing per press).
 - Notes written in Guide mode belong to the glowing step; with the guide off only ordinary notes
   show, plus a "✎ N in Guide mode" hint.
