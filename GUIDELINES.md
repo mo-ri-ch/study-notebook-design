@@ -54,6 +54,9 @@ and every change. Add to this file whenever he gives new design advice.
   the more it moves"). More words are fine when they make it clearer; keep each sentence short.
 - **Never make the student remember.** Show again what a page relies on (e.g. the training text, with the part the
   page talks about highlighted).
+- **Under about 120 words per page**, outside the activity. Say each idea once. Side details go into a 🤔, the
+  activity's own notes, or its sticky-note tour. Number lists and small tables can push a page a little over; plain
+  prose shouldn't.
 - **Say the idea, not where it was taught.** "Like in Lesson 3" makes the reader stop and try to recall it. Say the
   idea itself in a few words instead ("by counting how often each letter comes next"). Don't name earlier lessons in
   passing, and don't add a link to every mention. Link only when the reader really needs to see something there (a
