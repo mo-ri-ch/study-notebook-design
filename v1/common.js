@@ -440,12 +440,17 @@ function addTour(inside, steps, opts = {}) {
     if (tourOpen === close) tourOpen = null;
   }
   btn.addEventListener("click", () => { btn.blur(); open(); });
+  // If Guide me's glow moves off this activity (its own buttons, a click elsewhere), the notes close too
+  document.addEventListener("guidestep", e => {
+    if (tourOpen !== close || !e.detail || !e.detail.on) return;
+    if (!box.closest(".guide-now") && !box.querySelector(".guide-now") && !box.classList.contains("guide-now")) close();
+  });
   box.addEventListener("click", e => { if (tourOpen === close && e.target.closest(".reset")) close(); });   // ↺ Reset ends the tour
   document.addEventListener("keydown", e => {
     if (tourOpen !== close) return;
     if (e.key === "Escape") { e.preventDefault(); e.stopImmediatePropagation(); close(); }
     else if (e.key === "ArrowRight") { e.preventDefault(); e.stopImmediatePropagation(); if (!steps[i].click) i === steps.length - 1 ? close() : show(i + 1); }   // on a "your turn" step, → waits too (it must not turn the page)
-    else if (e.key === "ArrowLeft" && i > 0) { e.preventDefault(); e.stopImmediatePropagation(); show(i - 1); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); e.stopImmediatePropagation(); if (i > 0) show(i - 1); else close(); }   // ← on the first note leaves the notes
   }, true);
   // The first time its page is shown, open by itself (not in teach mode or Guide me, not inside a split-screen preview)
   if (opts.auto !== false) {
