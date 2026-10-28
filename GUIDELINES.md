@@ -70,6 +70,8 @@ and every change. Add to this file whenever he gives new design advice.
 - **Be honest about trade-offs** (e.g. learning takes more passes than counting here; say so, and say why it's still worth it).
 - **Explain an idea where it first appears,** not a page later.
 
+- **Box the key equations.** Put an equation the student must remember inside the sentence as `<b class="eqbox">gradient = chance − goal</b>` (light yellow note, inked border). One idea per box; never box a whole calculation.
+
 ## Lesson tests
 - Each lesson ends with a **test** (`<div class="test" data-test="N">` holding `.quiz` questions; set `test: <page>` on the
   lesson in the course list). One question per key idea; only what was taught.
