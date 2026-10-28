@@ -72,6 +72,8 @@ and every change. Add to this file whenever he gives new design advice.
 
 - **Box the key equations.** Put an equation the student must remember inside the sentence as `<b class="eqbox">gradient = chance − goal</b>` (light yellow note, inked border). One idea per box; never box a whole calculation.
 
+- **One step per line.** When a sentence chains a calculation (a = b = c, or "…, which is…, so…"), put each step on its own line with `<br>` inside the same paragraph. Keep the lines of one idea inside **one element**: Guide me glows one element at a time, so separate elements would glow separately.
+
 ## Lesson tests
 - Each lesson ends with a **test** (`<div class="test" data-test="N">` holding `.quiz` questions; set `test: <page>` on the
   lesson in the course list). One question per key idea; only what was taught.
