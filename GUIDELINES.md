@@ -74,6 +74,8 @@ and every change. Add to this file whenever he gives new design advice.
 
 - **One step per line.** When a sentence chains a calculation (a = b = c, or "…, which is…, so…"), put each step on its own line with `<br>` inside the same paragraph. Keep the lines of one idea inside **one element**: Guide me glows one element at a time, so separate elements would glow separately.
 
+- **A 🤔 beside its line.** The 🤔 normally sits at the top-right of its paragraph. When it explains one line of a longer paragraph, wrap that line in `<span class="near">…</span>` (with the button inside) so it sits right beside it.
+
 ## Lesson tests
 - Each lesson ends with a **test** (`<div class="test" data-test="N">` holding `.quiz` questions; set `test: <page>` on the
   lesson in the course list). One question per key idea; only what was taught.
