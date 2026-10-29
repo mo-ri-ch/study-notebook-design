@@ -137,3 +137,4 @@ and every change. Add to this file whenever he gives new design advice.
 - When he asks "what do you think?", give a clear recommendation, then ask before big changes.
 - Ask before pushing anything that changes how existing pages look or work.
 - After changing the shared design, check that every course still looks and works the same.
+- **A rule and its box share one line.** "The rule: [boxed equation]" goes on its own line (`<br>` before it), never wrapped so the box drops under its label. Keep any short idea (a rule, a worked line) whole on one line.
