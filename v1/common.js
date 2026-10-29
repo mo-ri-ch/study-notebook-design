@@ -77,7 +77,7 @@ function setupPagedLesson() {
     parts.forEach((p, i) => {
       const seg = document.createElement("button");
       seg.className = "seg";
-      seg.setAttribute("aria-label", `Go to part ${i + 1}: ${p.dataset.title || ""}`);
+      seg.setAttribute("aria-label", `Go to ${p.hasAttribute("data-nonum") ? "" : "part " + pageNumber(parts, i) + ": "}${p.dataset.title || ""}`);
       seg.addEventListener("click", () => go(i));
       bar.appendChild(seg);
     });
@@ -179,7 +179,7 @@ function setupPagedLesson() {
       hint.hidden = !h || next.hidden;
     }
     if (support) support.hidden = current !== parts.length - 1;
-    if (label) label.textContent = `${current + 1} / ${parts.length}  ${parts[current].dataset.title || ""}`;
+    if (label) { const n = pageNumber(parts, current); label.textContent = (n ? `${n} / ${pageTotal(parts)}  ` : "") + (parts[current].dataset.title || ""); }
     try { history.replaceState(null, "", `#${current + 1}`); } catch (e) { /* file:// */ }
     window.scrollTo(0, 0);
     const area = document.querySelector(".wrap");
@@ -207,6 +207,9 @@ function setupPagedLesson() {
 // A list of every part by name; click one to jump to it.
 const THUMBS_KEY = STORE + "-thumbs-hidden";
 
+// Pages with data-nonum (practice pages) are not numbered, and don't count in the numbers of the others
+function pageNumber(parts, i) { return parts[i].hasAttribute("data-nonum") ? 0 : parts.slice(0, i + 1).filter(p => !p.hasAttribute("data-nonum")).length; }
+function pageTotal(parts) { return parts.filter(p => !p.hasAttribute("data-nonum")).length; }
 function buildThumbnails(parts, onPick) {
   const aside = document.createElement("aside");
   aside.className = "thumbs";
@@ -250,11 +253,12 @@ function buildThumbnails(parts, onPick) {
     const li = document.createElement("li");
     const b = document.createElement("button");
     b.className = "thumb";
-    b.setAttribute("aria-label", `Page ${i + 1}: ${part.dataset.title || ""}`);
+    const num = pageNumber(parts, i);
+    b.setAttribute("aria-label", (num ? `Page ${num}: ` : "") + (part.dataset.title || ""));
 
     const cap = document.createElement("span");
     cap.className = "thumb-cap";
-    cap.innerHTML = `<b>${i + 1}</b> ${part.dataset.title || ""}`;
+    cap.innerHTML = (num ? `<b>${num}</b> ` : "") + (part.dataset.title || "");
 
     b.append(cap);
     b.addEventListener("click", () => onPick(i));
