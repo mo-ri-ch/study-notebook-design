@@ -5,7 +5,7 @@
 // On or off is remembered across pages. Self-contained: adds its own styles.
 (function () {
   const KEY = ((window.COURSE && COURSE.id) || "notebook") + "-guide";
-  const JOIN_PREV = ["our-text", "muted-note", "loss-strip", "loss-avg", "run-area"];   // run-area: the code box, its terminal and Step through glow as one   // small lines that belong to the thing before them
+  const JOIN_PREV = ["our-text", "muted-note", "loss-strip", "loss-avg", "run-area", "cl"];   // run-area: the code box, its terminal and Step through glow as one   // small lines that belong to the thing before them
   const JOIN_NEXT = ["step-label"];               // labels that belong to the thing after them
 
   const css = `
