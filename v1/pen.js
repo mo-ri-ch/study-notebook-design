@@ -26,7 +26,7 @@
   body.pen-on .pen-tools .pen-toggle { opacity: 1; background: var(--ink, #1D2238); color: var(--paper, #fff); border-color: var(--ink, #1D2238); }
   .pen-tools .pen-more { display: none; flex-direction: column; gap: 8px; }
   .pen-tools .pen-guide-hint { width: auto; height: auto; border-radius: 6px; padding: 3px 6px; font-size: 0.7rem; line-height: 1.2;
-    max-width: 64px; white-space: normal; text-align: center; background: var(--note-yellow, #FFF3B0); color: var(--on-hl, #1D2238);
+    max-width: 64px; white-space: normal; text-align: center; background: var(--note-yellow, #FFF3B0); color: var(--ink, #1D2238);
     border: 1px solid var(--ink, #1D2238); }
   .pen-tools .pen-guide-hint[hidden] { display: none; }
   body.pen-on .pen-tools .pen-more { display: flex; }

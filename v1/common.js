@@ -298,6 +298,31 @@ function buildThumbnails(parts, onPick) {
   return items;
 }
 
+// ---------- Dark theme: a moon/sun button in the top bar. Light is the default. ----------
+const THEME_KEY = "notebook-theme";
+function setupTheme() {
+  const root = document.documentElement;
+  const get = () => { try { return localStorage.getItem(THEME_KEY) === "dark" ? "dark" : "light"; } catch (e) { return "light"; } };
+  const apply = (t) => { if (t === "dark") root.setAttribute("data-theme", "dark"); else root.removeAttribute("data-theme"); };
+  apply(get());
+  const bar = document.querySelector(".topbar");
+  if (!bar || document.querySelector(".theme-toggle")) return;
+  const btn = document.createElement("button");
+  btn.type = "button"; btn.className = "theme-toggle small";
+  const sync = () => {
+    const dark = root.getAttribute("data-theme") === "dark";
+    btn.textContent = dark ? "☀️" : "🌙";
+    btn.setAttribute("aria-label", dark ? "Switch to the light theme" : "Switch to the dark theme");
+    btn.title = dark ? "Light theme" : "Dark theme";
+  };
+  btn.addEventListener("click", () => {
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    apply(next); sync();
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) { /* storage blocked */ }
+  });
+  sync(); bar.appendChild(btn);
+}
+
 // ---------- Teach mode: press T for big text (for a projector) ----------
 function setupTeachMode() {
   document.addEventListener("keydown", (e) => {
@@ -1089,6 +1114,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupPagedLesson();
   setupCopy();
   setupRun();
+  setupTheme();
   setupTeachMode();
   setupKeys();
   setupSwipe();

@@ -43,7 +43,7 @@
 
   .lnote {
     display: block; width: 100%; max-width: 380px; padding: 20px 22px 18px;
-    color: var(--on-hl); text-decoration: none;
+    color: var(--ink); text-decoration: none;
     box-shadow: 0 14px 22px -14px rgba(20,24,50,.45), 0 1px 0 rgba(0,0,0,.05);
     border-radius: 2px 2px 6px 2px;
   }

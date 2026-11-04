@@ -132,6 +132,13 @@ and every change. Add to this file whenever he gives new design advice.
   show, plus a "✎ N in Guide mode" hint.
 - The side list of slides scrolls when it's long.
 
+## Dark theme
+- A 🌙/☀️ button in the top bar (added by `common.js`) switches the theme. The choice is saved as `notebook-theme` and shared by every course. Light is the default; dark never turns on by itself.
+- Colors only through variables (`--paper`, `--ink`, `--pen`, `--redpen`, `--good`, `--hl-*`, `--note-*`, `--card`). No hard-coded hex in lessons, including SVG (`stroke="var(--pen)"`). Exception: pastel chips that carry their own dark text.
+- Text on a note color (`--note-*`) uses `--ink`. `--on-hl` is only for text on the bright highlights (`--hl-*`), because notes turn dark in the dark theme.
+- Every page has this one line in `<head>`, before the stylesheet, so the saved theme applies before the page draws: `<script>try{if(localStorage.getItem("notebook-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>` (the starter has it).
+- Check every new activity in both themes before pushing.
+
 ## Working with Rishal
 - Replies in chat: **brief and simple.** He often asks "in brief". Avoid jargon.
 - When he asks "what do you think?", give a clear recommendation, then ask before big changes.

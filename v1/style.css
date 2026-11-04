@@ -51,19 +51,9 @@
   --line: 32px;
 }
 
-/* Dark: a notebook under a desk lamp */
-@media not all {
-  :root:not([data-theme="light"]) {
-    --paper: #1A1C25; --rule: #252A38; --margin: #5A2F3A;
-    --ink: #EEEBE2; --pencil: #A7ABBA; --pen: #8EA6FF; --redpen: #FF8A96; --good: #5FD68F;
-    --card: #222532;
-    --hl-yellow: #F2D33A; --hl-green: #63D98A; --hl-pink: #FF8DB0; --hl-blue: #7DB4FF; --hl-orange: #FFAA55;
-    --note-yellow: #2E2B1E; --note-pink: #33232A; --note-blue: #202A3C; --note-green: #1F3027; --note-orange: #33281D;
-    --tape: rgba(242, 211, 58, 0.35);
-    --code-bg: #12141C;
-  }
-}
+/* Dark: a notebook under a desk lamp. Off by default; the moon button in the top bar turns it on. */
 :root[data-theme="dark"] {
+  color-scheme: dark;
   --paper: #1A1C25; --rule: #252A38; --margin: #5A2F3A;
   --ink: #EEEBE2; --pencil: #A7ABBA; --pen: #8EA6FF; --redpen: #FF8A96; --good: #5FD68F;
   --card: #222532;
@@ -107,12 +97,11 @@ body[data-pen="green"]  { --ul: #1E8F4E; }
 body[data-pen="purple"] { --ul: #7A3FD1; }
 body[data-pen="orange"] { --ul: #E0701B; }
 body[data-pen="pink"]   { --ul: #D2287A; }
-@media not all {
-  :root:not([data-theme="light"]) body[data-pen="blue"]   { --ul: #8EA6FF; }
-  :root:not([data-theme="light"]) body[data-pen="green"]  { --ul: #5FD68F; }
-  :root:not([data-theme="light"]) body[data-pen="purple"] { --ul: #B794FF; }
-  :root:not([data-theme="light"]) body[data-pen="orange"] { --ul: #FFAA55; }
-  :root:not([data-theme="light"]) body[data-pen="pink"]   { --ul: #FF8DC4; }
+:root[data-theme="dark"] body[data-pen="blue"]   { --ul: #8EA6FF; }
+:root[data-theme="dark"] body[data-pen="green"]  { --ul: #5FD68F; }
+:root[data-theme="dark"] body[data-pen="purple"] { --ul: #B794FF; }
+:root[data-theme="dark"] body[data-pen="orange"] { --ul: #FFAA55; }
+:root[data-theme="dark"] body[data-pen="pink"]   { --ul: #FF8DC4; }
 }
 
 a { color: var(--pen); text-underline-offset: 3px; }
@@ -173,6 +162,8 @@ pre .c { color: var(--code-comment); }
 .topbar .home { font-family: var(--head); font-size: 1.35rem; color: var(--ink); text-decoration: none; }
 .topbar .where { color: var(--pencil); font-size: 0.95rem; }
 .topbar .tools { display: flex; gap: 8px; flex-wrap: wrap; }
+.theme-toggle { margin-left: auto; padding: 2px 9px; font-size: 1.05rem; line-height: 1.4; }
+.theme-toggle:hover { background: var(--hl-yellow); color: var(--on-hl); }
 
 section.part { padding: 28px 0 12px; scroll-margin-top: 16px; }
 
@@ -649,7 +640,7 @@ footer.site .heart { color: var(--redpen); }
 [data-peek], [data-peek-from] { border-bottom: 1.5px dotted currentColor; cursor: help; }
 [data-peek]:focus-visible, [data-peek-from]:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; border-radius: 2px; }
 .peek-pop { position: fixed; z-index: 10000; padding: 10px 12px; font-size: 0.92rem; line-height: 1.45;
-  background: var(--note-yellow); color: var(--on-hl); border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
+  background: var(--note-yellow); color: var(--ink); border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
   border-radius: 2px 2px 6px 2px; box-shadow: 0 12px 22px -12px rgba(20,24,50,.5); }
 .peek-pop[hidden] { display: none; }
 
