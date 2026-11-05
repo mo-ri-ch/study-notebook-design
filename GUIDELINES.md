@@ -139,6 +139,11 @@ and every change. Add to this file whenever he gives new design advice.
 - Every page has this one line in `<head>`, before the stylesheet, so the saved theme applies before the page draws: `<script>try{if(localStorage.getItem("notebook-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>` (the starter has it).
 - Check every new activity in both themes before pushing.
 
+## All on one page
+- Every lesson page has a "📜 All on one page" button in the top bar. It shows every part one under the other, to scroll through; "📖 One page at a time" goes back. Off by default, remembered per course (`<course id>-view-all` in localStorage).
+- In that view the side list follows the part at the top, Previous/Next and the support note are hidden, parts are separated by a dashed line, tours don't pop up by themselves, and a link to the next lesson sits at the end.
+- Page scripts must not assume only one part is visible (measure sizes when the part is shown, as with `ResizeObserver`; don't act on `hidden` changes).
+
 ## Working with Rishal
 - Replies in chat: **brief and simple.** He often asks "in brief". Avoid jargon.
 - When he asks "what do you think?", give a clear recommendation, then ask before big changes.

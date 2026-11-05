@@ -130,21 +130,12 @@ function setupPagedLesson() {
   }
 
   let current = 0, first = true, quiet = false;   // quiet: a finished drag already slid the page in
-  const still = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function go(i) {
-    const from = current;
-    // Past the last page: open the next lesson. Before the first page: open the previous lesson's last page.
-    if (i > parts.length - 1 && nextLesson) { location.href = nextLesson.file + "#1"; return; }
-    if (i < 0 && prevLesson) { location.href = prevLesson.file + "#last"; return; }
-    current = Math.max(0, Math.min(parts.length - 1, i));
-    seen.add(current);
-    parts.forEach((p, k) => { p.hidden = k !== current; });
-    // Slide the new page in from the side it comes from (not on first load, not after a drag, not with reduced motion)
-    if (!first && !quiet && current !== from && !still() && parts[current].animate) {
-      const d = current > from ? 1 : -1;
-      parts[current].animate([{ transform: `translateX(${d * 40}px)`, opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 220, easing: "ease-out" });
-    }
-    first = false;
+  // "All on one page": every part is shown one under the other, to scroll through. Off by default, remembered.
+  const VIEW_KEY = STORE + "-view-all";
+  let viewAll = false;
+  try { viewAll = localStorage.getItem(VIEW_KEY) === "all"; } catch (e) { /* ignore */ }
+  document.body.classList.toggle("view-all", viewAll);
+  function paint() {
     if (bar) Array.from(bar.children).forEach((s, k) => {
       s.classList.toggle("now", k === current);
       s.classList.toggle("seen", seen.has(k) && k !== current);
@@ -154,6 +145,23 @@ function setupPagedLesson() {
       t.classList.toggle("seen", seen.has(k) && k !== current);
       if (k === current) t.setAttribute("aria-current", "step"); else t.removeAttribute("aria-current");
     });
+  }
+  const still = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function go(i) {
+    const from = current;
+    // Past the last page: open the next lesson. Before the first page: open the previous lesson's last page.
+    if (i > parts.length - 1 && nextLesson) { location.href = nextLesson.file + "#1"; return; }
+    if (i < 0 && prevLesson) { location.href = prevLesson.file + "#last"; return; }
+    current = Math.max(0, Math.min(parts.length - 1, i));
+    seen.add(current);
+    parts.forEach((p, k) => { p.hidden = !viewAll && k !== current; });
+    // Slide the new page in from the side it comes from (not on first load, not after a drag, not with reduced motion)
+    if (!viewAll && !first && !quiet && current !== from && !still() && parts[current].animate) {
+      const d = current > from ? 1 : -1;
+      parts[current].animate([{ transform: `translateX(${d * 40}px)`, opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 220, easing: "ease-out" });
+    }
+    first = false;
+    paint();
     // Keep the current slide's name in view in the side list (only up/down, never sideways)
     if (thumbs[current]) {
       const t = thumbs[current], box = t.closest(".thumbs");
@@ -181,9 +189,13 @@ function setupPagedLesson() {
     if (support) support.hidden = current !== parts.length - 1;
     if (label) { const n = pageNumber(parts, current); label.textContent = (n ? `${n} / ${pageTotal(parts)}  ` : "") + (parts[current].dataset.title || ""); }
     try { history.replaceState(null, "", `#${current + 1}`); } catch (e) { /* file:// */ }
-    window.scrollTo(0, 0);
-    const area = document.querySelector(".wrap");
-    if (area) area.scrollTop = 0;
+    if (viewAll) {
+      if (current === 0) window.scrollTo(0, 0); else parts[current].scrollIntoView({ block: "start" });
+    } else {
+      window.scrollTo(0, 0);
+      const area = document.querySelector(".wrap");
+      if (area) area.scrollTop = 0;
+    }
   }
   pagedGo = (delta) => go(current + delta);
   // For the touch drag: the pages, which one is showing, and a way to switch without the slide-in
@@ -192,6 +204,41 @@ function setupPagedLesson() {
 
   if (back) back.addEventListener("click", () => go(current - 1));
   if (next) next.addEventListener("click", () => go(current + 1));
+
+  // While scrolling through all parts, the side list follows the part at the top
+  if ("IntersectionObserver" in window) {
+    const spy = new IntersectionObserver(entries => {
+      if (!viewAll) return;
+      entries.forEach(e => { if (e.isIntersecting) { current = parts.indexOf(e.target); seen.add(current); paint(); } });
+    }, { rootMargin: "-15% 0px -75% 0px" });
+    parts.forEach(p => spy.observe(p));
+  }
+  // At the end of the long page: the way on to the next lesson
+  if (nextLesson) {
+    const end = document.createElement("p");
+    end.className = "all-end";
+    end.innerHTML = `<a class="btn primary" href="${nextLesson.file}#1">Lesson ${nextLesson.label || nextLesson.n}: ${nextLesson.title} →</a>`;
+    (document.querySelector(".wrap") || main).appendChild(end);
+  }
+  const topbar = document.querySelector(".topbar");
+  if (topbar && !document.querySelector(".view-toggle") && !/[?&]embed=1/.test(location.search)) {
+    const vb = document.createElement("button");
+    vb.type = "button"; vb.className = "view-toggle small";
+    const sync = () => {
+      vb.textContent = viewAll ? "📖 One page at a time" : "📜 All on one page";
+      vb.setAttribute("aria-pressed", viewAll ? "true" : "false");
+      vb.title = viewAll ? "Show one page at a time" : "Show every page of this lesson on one long page";
+    };
+    vb.addEventListener("click", () => {
+      viewAll = !viewAll;
+      document.body.classList.toggle("view-all", viewAll);
+      try { localStorage.setItem(VIEW_KEY, viewAll ? "all" : ""); } catch (e) { /* ignore */ }
+      sync(); go(current);
+    });
+    sync();
+    const theme = topbar.querySelector(".theme-toggle");
+    if (theme) topbar.insertBefore(vb, theme); else topbar.appendChild(vb);
+  }
 
   const start = location.hash === "#last" ? parts.length : parseInt(location.hash.slice(1), 10);
   go(Number.isFinite(start) ? Math.min(start, parts.length) - 1 : 0);
@@ -592,7 +639,7 @@ function addTour(inside, steps, opts = {}) {
     const embedded = /[?&]embed=1/.test(location.search);
     const maybe = () => {
       const teach = document.body.classList.contains("teach"), guiding = document.body.classList.contains("guiding");   // while guiding, only on request
-      if (!seen() && !embedded && !teach && !guiding && (!sec || !sec.hidden) && !tourOpen) setTimeout(() => { if (!sec || !sec.hidden) open(); }, 500);
+      if (!seen() && !embedded && !teach && !guiding && !document.body.classList.contains("view-all") && (!sec || !sec.hidden) && !tourOpen) setTimeout(() => { if (!sec || !sec.hidden) open(); }, 500);
     };
     if (sec) new MutationObserver(() => { if (!sec.hidden) maybe(); }).observe(sec, { attributes: true, attributeFilter: ["hidden"] });
     document.addEventListener("DOMContentLoaded", () => setTimeout(maybe, 0));
