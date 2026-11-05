@@ -213,11 +213,15 @@ function setupPagedLesson() {
     }, { rootMargin: "-15% 0px -75% 0px" });
     parts.forEach(p => spy.observe(p));
   }
-  // At the end of the long page: the way on to the next lesson
-  if (nextLesson) {
-    const end = document.createElement("p");
+  // At the end of the long page: the way back to the last lesson and on to the next one
+  if (prevLesson || nextLesson || upcoming) {
+    const end = document.createElement("div");
     end.className = "all-end";
-    end.innerHTML = `<a class="btn primary" href="${nextLesson.file}#1">Lesson ${nextLesson.label || nextLesson.n}: ${nextLesson.title} →</a>`;
+    const name = l => `Lesson ${l.label || l.n}: ${l.title}`;
+    end.innerHTML =
+      (prevLesson ? `<a class="btn" href="${prevLesson.file}#last">← ${name(prevLesson)}</a>` : "<span></span>") +
+      (nextLesson ? `<a class="btn primary" href="${nextLesson.file}#1">${name(nextLesson)} →</a>`
+        : upcoming ? `<span class="next-soon">Lesson ${upcoming.label || upcoming.n}: coming soon</span>` : "");
     (document.querySelector(".wrap") || main).appendChild(end);
   }
   const topbar = document.querySelector(".topbar");
