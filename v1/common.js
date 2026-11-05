@@ -229,7 +229,8 @@ function setupPagedLesson() {
     const vb = document.createElement("button");
     vb.type = "button"; vb.className = "view-toggle small";
     const sync = () => {
-      vb.textContent = viewAll ? "📖 One page at a time" : "📜 All on one page";
+      vb.textContent = viewAll ? "📖 Paged" : "📜 All pages";
+      vb.setAttribute("aria-label", viewAll ? "Show one page at a time" : "Show every page of this lesson on one long page");
       vb.setAttribute("aria-pressed", viewAll ? "true" : "false");
       vb.title = viewAll ? "Show one page at a time" : "Show every page of this lesson on one long page";
     };

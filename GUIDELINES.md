@@ -140,7 +140,7 @@ and every change. Add to this file whenever he gives new design advice.
 - Check every new activity in both themes before pushing.
 
 ## All on one page
-- Every lesson page has a "📜 All on one page" button in the top bar. It shows every part one under the other, to scroll through; "📖 One page at a time" goes back. Off by default, remembered per course (`<course id>-view-all` in localStorage).
+- Every lesson page has a "📜 All pages" button in the top bar. It shows every part one under the other, to scroll through; "📖 Paged" goes back. Off by default, remembered per course (`<course id>-view-all` in localStorage).
 - In that view the side list follows the part at the top, Previous/Next buttons and the support note are hidden, parts are separated by a dashed line, tours don't pop up by themselves, and each part's closing hook stays as a quiet line under it, and links to the previous and next lesson sit at the end.
 - Page scripts must not assume only one part is visible (measure sizes when the part is shown, as with `ResizeObserver`; don't act on `hidden` changes).
 

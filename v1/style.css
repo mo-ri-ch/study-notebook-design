@@ -781,7 +781,7 @@ body.touring .guide-bar { display: none !important; }   /* one guide at a time *
 body.teach .support-note, html.embed .support-note { display: none !important; }
 
 /* All on one page */
-.view-toggle { margin-left: auto; padding: 2px 9px; font-size: 0.9rem; line-height: 1.4; }
+.view-toggle { margin-left: auto; padding: 2px 8px; font-size: 0.8rem; line-height: 1.4; }
 .view-toggle + .theme-toggle { margin-left: 0; }
 .all-end { display: none; }
 body.view-all .all-end { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 24px 0 48px; }
