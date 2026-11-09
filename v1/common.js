@@ -808,8 +808,9 @@ function setupTests() {
   if (skipped) return;
   const note = document.createElement("div");
   note.className = "test-gate";
-  note.innerHTML = `<b>Before this lesson:</b> take the Lesson ${prev.n} test, to check every idea landed.
-    <span class="test-gate-row"><a class="btn primary" href="${prev.file}#${prev.test}">Take the Lesson ${prev.n} test</a>
+  const prevName = prev.label || prev.n;   // the number readers see (e.g. "0" or "1a"), not the saved-progress number
+  note.innerHTML = `<b>Before this lesson:</b> take the Lesson ${prevName} test, to check every idea landed.
+    <span class="test-gate-row"><a class="btn primary" href="${prev.file}#${prev.test}">Take the Lesson ${prevName} test</a>
     <button type="button">Continue anyway</button></span>`;
   note.querySelector("button").addEventListener("click", () => { try { sessionStorage.setItem(testKey(prev.n) + ":skip", "1"); } catch (e) { /* fine */ } note.remove(); });
   if (!document.body.classList.contains("teach")) main.prepend(note);
