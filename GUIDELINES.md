@@ -116,8 +116,8 @@ and every change. Add to this file whenever he gives new design advice.
 - **Show me how: sticky-note steps inside an activity.** When an activity shows several things at once, give it
   steps with `addTour(el, steps, { id })` (in common.js): a sticky note points at one part at a time (a box, a row, a button),
   sets the activity up for that step, dims everything else (like Guide me), and explains it with the real numbers. A step can wait for the reader to press
-  something ("Your turn ↑") instead of Next. It opens by itself the first time (not in teach mode or split preview);
-  the small "?" button beside ↺ Reset replays it. Skip, ✕ or Esc closes; ← → move while it's open.
+  something ("Your turn ↑") instead of Next. It never opens by itself (Rishal, 9 Nov 2026): the reader starts it with the
+  small "?" button beside ↺ Reset. Until they have opened it once, the "?" pulses gently. Skip, ✕ or Esc closes; ← → move while it's open.
   With Guide me on: the guide never opens notes or Step through by itself (and notes don't auto-open). When the glow
   is on something that has them, the guide bar says so ("? = a walk-through…", "👣 Step through = …"). Once you
   click ? or 👣, → and ← move inside it; after the last note or line, → leaves it and the guide carries on.
@@ -141,7 +141,7 @@ and every change. Add to this file whenever he gives new design advice.
 
 ## All on one page
 - Every lesson page has a small 📜 button in the top bar (hover: "Show every page of this lesson on one long page"). It shows every part one under the other, to scroll through; the 📖 button goes back. Off by default, remembered per course (`<course id>-view-all` in localStorage).
-- In that view the side list follows the part at the top, Previous/Next buttons and the support note are hidden, parts are separated by a dashed line, tours don't pop up by themselves, and each part's closing hook stays as a quiet line under it, and links to the previous and next lesson sit at the end.
+- In that view the side list follows the part at the top, Previous/Next buttons and the support note are hidden, parts are separated by a dashed line, and each part's closing hook stays as a quiet line under it, and links to the previous and next lesson sit at the end.
 - Page scripts must not assume only one part is visible (measure sizes when the part is shown, as with `ResizeObserver`; don't act on `hidden` changes).
 
 ## Working with Rishal

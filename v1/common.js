@@ -612,7 +612,7 @@ function addTour(inside, steps, opts = {}) {
     if (tourOpen) tourOpen();
     bubble = document.createElement("div"); bubble.className = "tour-bubble"; bubble.setAttribute("role", "dialog"); bubble.setAttribute("aria-label", "Show me how");
     document.body.appendChild(bubble); box.classList.add("touring"); document.body.classList.add("touring");
-    tourOpen = close; markSeen();
+    tourOpen = close; markSeen(); btn.classList.remove("nudge");
     document.addEventListener("scroll", place, { passive: true, capture: true }); window.addEventListener("resize", place);
     show(0);
   }
@@ -638,17 +638,8 @@ function addTour(inside, steps, opts = {}) {
     else if (e.key === "ArrowRight") { e.preventDefault(); e.stopImmediatePropagation(); if (!steps[i].click) i === steps.length - 1 ? close() : show(i + 1); }   // on a "your turn" step, → waits too (it must not turn the page)
     else if (e.key === "ArrowLeft") { e.preventDefault(); e.stopImmediatePropagation(); if (i > 0) show(i - 1); else close(); }   // ← on the first note leaves the notes
   }, true);
-  // The first time its page is shown, open by itself (not in teach mode or Guide me, not inside a split-screen preview)
-  if (opts.auto !== false) {
-    const sec = box.closest("section.part");
-    const embedded = /[?&]embed=1/.test(location.search);
-    const maybe = () => {
-      const teach = document.body.classList.contains("teach"), guiding = document.body.classList.contains("guiding");   // while guiding, only on request
-      if (!seen() && !embedded && !teach && !guiding && !document.body.classList.contains("view-all") && (!sec || !sec.hidden) && !tourOpen) setTimeout(() => { if (!sec || !sec.hidden) open(); }, 500);
-    };
-    if (sec) new MutationObserver(() => { if (!sec.hidden) maybe(); }).observe(sec, { attributes: true, attributeFilter: ["hidden"] });
-    document.addEventListener("DOMContentLoaded", () => setTimeout(maybe, 0));
-  }
+  // Never opens by itself: the reader starts it with ?. Until they have, the ? pulses gently, so it's easy to find.
+  if (!seen()) btn.classList.add("nudge");
   return { open, close };
 }
 // Close an open tour when the page changes
