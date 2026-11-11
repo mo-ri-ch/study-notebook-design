@@ -15,6 +15,13 @@ and every change. Add to this file whenever he gives new design advice.
   (vectors, a neural network, matrix multiplication…), add a short "✏️ Quick basics" slide first.
 - **Plain words with concrete examples.** No terse labels like "Interpretable" or "Extra work"
   on their own: say what it means, with an example the student has just seen.
+- **One word for one thing.** Don't use "number", "score" and "weight" loosely; each names one
+  thing all through a lesson. Use the real term (e.g. "embedding") once it is introduced, not a
+  made-up one.
+- **A rule comes with real numbers.** Never a formula in words on its own ("its partner × the push"):
+  show it on a row the student can see (−0.04 × 1.31, push −0.80), then let the activity repeat it.
+- **No "page 3" or "Lesson 5" in the text.** Say what the thing is ("the score table", "before",
+  "three tables") instead of where it was.
 - **Don't over-explain.** Once the main idea is clear, stop. Every extra line or "why" on the page
   can confuse a beginner more than it helps. Later slides answer later questions; if something must
   be said, put it in a hover or a 🤔, not on the page.
