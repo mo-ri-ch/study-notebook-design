@@ -32,13 +32,16 @@
     "softmax": { what: "Turns scores into chances that add up to 1. Bigger score, bigger chance.", ex: "print(F.softmax(torch.tensor([1.0, 2.0]), dim=0))", out: "tensor([0.2689, 0.7311])" },
     "cross_entropy": { what: "The loss: how wrong the scores were about the right answers. Smaller is better.", ex: "scores = torch.tensor([[2.0, 0.0]])\nprint(F.cross_entropy(scores, torch.tensor([0])))", out: "tensor(0.1269)" },
     "backward": { what: "Finds the gradients: which way to move each number to lower the loss. They land in .grad.", ex: "loss.backward()\nprint(weights.grad)", out: "(one gradient per weight)" },
+    "cat": { what: "Joins tensors side by side into one. dim=1 joins them along each row.", ex: "a = torch.tensor([[1, 2]])\nb = torch.tensor([[3, 4]])\nprint(torch.cat([a, b], dim=1))", out: "tensor([[1, 2, 3, 4]])" },
+    "numel": { what: "Counts all the numbers inside a tensor.", ex: "t = torch.zeros((14, 2))\nprint(t.numel())", out: "28" },
+    "@": { what: "Matrix multiplication: each row times each column, multiplied and added up.", ex: "x = torch.tensor([[1., 2.]])\nw = torch.tensor([[3.], [4.]])\nprint(x @ w)", out: "tensor([[11.]])   (1×3 + 2×4)" },
     "requires_grad": { what: "Tells PyTorch to keep track of this tensor, so backward() can find its gradients.", ex: "w = torch.randn(3, requires_grad=True)", out: "" },
   };
 
   function addPythonWords(code) {
     const used = new Set();
     const names = Object.keys(WORDS).filter(w => /^\w+$/.test(w));
-    const wordRe = new RegExp("\\b(" + names.join("|") + ")\\b|(\\{\\})|( % )", "g");
+    const wordRe = new RegExp("\\b(" + names.join("|") + ")\\b|(\\{\\})|( % )|( @ )", "g");
     const walker = document.createTreeWalker(code, NodeFilter.SHOW_TEXT, {
       acceptNode: n => n.parentElement.closest(".c, .pyword") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
     });
@@ -59,8 +62,8 @@
       let last = 0, m, changed = false;
       wordRe.lastIndex = 0;
       while ((m = wordRe.exec(text))) {
-        const word = m[1] || m[2] || "%";
-        const start = m[3] ? m.index + 1 : m.index;
+        const word = m[1] || m[2] || (m[4] ? "@" : "%");
+        const start = (m[3] || m[4]) ? m.index + 1 : m.index;
         if (inString[start] || used.has(word)) continue;
         used.add(word);
         changed = true;
