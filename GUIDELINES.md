@@ -29,6 +29,12 @@ and every change. Add to this file whenever he gives new design advice.
   along natural boundaries, with matching titles and a one-line hook to the next slide.
   Never split a single idea across slides.
 - **Hands-on where possible.** Typing and seeing results live beats reading.
+- **Animate enough to understand.** When numbers flow or a new part appears (a score becoming a
+  push, a push going back to each number), show it moving, one step at a time (a "Next step →"
+  button), not as one finished table. Hidden parts keep their space so nothing jumps; respect
+  reduced-motion.
+- **Don't say it twice.** If the activity walks through an example, the text above gives only the
+  idea in a few sentences. The numbers live in the activity.
 - **Pictures where they explain better than words** (e.g. arrows for embeddings). Always our own
   drawings in the notebook style, ideally ones that move or respond; never copied from lecture slides.
 - **An activity fits on one laptop screen** (about 650px tall), so it can be presented without scrolling. Big data goes in small pictures (shaded grids, hover to read a number), with the numbers shown only for the part in use.
@@ -152,7 +158,7 @@ and every change. Add to this file whenever he gives new design advice.
 - Page scripts must not assume only one part is visible (measure sizes when the part is shown, as with `ResizeObserver`; don't act on `hidden` changes).
 
 ## Working with Rishal
-- Replies in chat: **brief and simple.** He often asks "in brief". Avoid jargon.
+- Replies in chat: **always brief and simple**, without being asked. Avoid jargon.
 - When he asks "what do you think?", give a clear recommendation, then ask before big changes.
 - Ask before pushing anything that changes how existing pages look or work.
 - After changing the shared design, check that every course still looks and works the same.
