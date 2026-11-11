@@ -15,6 +15,10 @@ and every change. Add to this file whenever he gives new design advice.
   (vectors, a neural network, matrix multiplication…), add a short "✏️ Quick basics" slide first.
 - **Plain words with concrete examples.** No terse labels like "Interpretable" or "Extra work"
   on their own: say what it means, with an example the student has just seen.
+- **Write for a beginner, sentence by sentence.** No compressed lines ("That saved numbers.",
+  "its partner × the push"): say what, compared with what, and why, in full plain words. Each "it",
+  "this" or "that" must point to something on the page. Read every sentence as a first-time
+  student: if it needs the reader to fill a gap, fill it.
 - **One word for one thing.** Don't use "number", "score" and "weight" loosely; each names one
   thing all through a lesson. Use the real term (e.g. "embedding") once it is introduced, not a
   made-up one.
