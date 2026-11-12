@@ -19,6 +19,9 @@ and every change. Add to this file whenever he gives new design advice.
   "its partner × the push"): say what, compared with what, and why, in full plain words. Each "it",
   "this" or "that" must point to something on the page. Read every sentence as a first-time
   student: if it needs the reader to fill a gap, fill it.
+- **Describe first, then name.** When a page brings in something new (a new kind of number, a new step, a
+  new term), say what it is in plain words first, then give its name, and only then use the name: "Each seat also
+  has 3 numbers of its own, always the same for that seat. These are called position numbers." No "New" labels.
 - **One word for one thing.** Don't use "number", "score" and "weight" loosely; each names one
   thing all through a lesson. Use the real term (e.g. "embedding") once it is introduced, not a
   made-up one.
