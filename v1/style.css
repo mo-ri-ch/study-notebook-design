@@ -794,24 +794,3 @@ body.view-all main[data-paged] .hook { display: block; margin: 14px 0 0; text-al
 body.view-all .pagebar, body.view-all .support-note { display: none; }
 body.view-all main[data-paged] section.part { margin-top: 18px; padding-top: 26px; border-top: 2px dashed var(--grid); }
 body.view-all main[data-paged] section.part:first-of-type { margin-top: 0; border-top: 0; }
-
-/* A new idea, named before the page uses it: <p class="say new-idea"><span class="tag">New</span> <b>Term</b>: what it is.</p> */
-.new-idea {
-  border-left: 4px solid var(--pen);
-  background: color-mix(in srgb, var(--pen) 7%, transparent);
-  padding: 6px 12px;
-  border-radius: 0 8px 8px 0;
-}
-.new-idea .tag {
-  display: inline-block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--paper);
-  background: var(--pen);
-  border-radius: 4px;
-  padding: 1px 6px;
-  margin-right: 4px;
-  vertical-align: 2px;
-}

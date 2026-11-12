@@ -19,10 +19,6 @@ and every change. Add to this file whenever he gives new design advice.
   "its partner × the push"): say what, compared with what, and why, in full plain words. Each "it",
   "this" or "that" must point to something on the page. Read every sentence as a first-time
   student: if it needs the reader to fill a gap, fill it.
-- **Announce every new idea.** Before a page uses a new idea (a new kind of number, a new step, a new term),
-  give it its own line marked New, naming it and saying what it is in one sentence:
-  `<p class="say new-idea"><span class="tag">New</span> <b>Position numbers</b>: 3 numbers that belong to a seat…</p>`.
-  One New line per idea; the rest of the page then uses the word.
 - **One word for one thing.** Don't use "number", "score" and "weight" loosely; each names one
   thing all through a lesson. Use the real term (e.g. "embedding") once it is introduced, not a
   made-up one.
