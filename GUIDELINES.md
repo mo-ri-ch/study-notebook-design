@@ -73,7 +73,9 @@ and every change. Add to this file whenever he gives new design advice.
   page talks about highlighted).
 - **Teach before you use.** Never use a word, number, control or idea the reader hasn't been taught yet (e.g. a
   "step size" menu before step size is explained). Introduce it first, with real numbers, then use it. Before adding
-  anything to a page, check every term on it was taught on an earlier page or right there.
+  anything to a page, check every term on it was taught on an earlier page or right there. This includes hidden
+  🤔 notes, hovers and quiz feedback: a reader can open them all. (Build a Tiny LLM checks this with tools/check_terms.py;
+  add each lesson's new words to its list.)
 - **Under about 120 words per page**, outside the activity (up to about 150 for a page that introduces a new rule).
   Say each idea once. Side details go into a 🤔, the activity's own notes, or its sticky-note tour. But never trim
   below **one fully worked example in the text**: the reader must see the rule work on real numbers before pressing
