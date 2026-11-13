@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Webinar</title>
+<meta name="description" content="One sentence about the webinar.">
+<!-- Webinars are unlisted: shared by link, kept out of search engines. -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&family=Kalam:wght@400&family=Patrick+Hand&display=swap" rel="stylesheet">
+<script>try{if(localStorage.getItem("notebook-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
+<link rel="stylesheet" href="https://mo-ri-ch.github.io/study-notebook-design/v1/style.css">
+<link rel="stylesheet" href="https://mo-ri-ch.github.io/study-notebook-design/v1/home.css">
+<link rel="stylesheet" href="https://mo-ri-ch.github.io/study-notebook-design/v1/webinar.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <a class="home" href="./">My Webinar</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <span class="w-stamp">Webinar</span>
+        <h1>Webinar title, <span class="swash">highlighted</span>.</h1>
+        <p class="say">One sentence on what attendees take away, with <b>the key idea in bold.</b></p>
+        <ul class="w-when" id="wWhen"></ul>
+        <div class="actions">
+          <a class="btn primary" href="lessons/talk.html">Start the talk</a>
+        </div>
+      </div>
+      <div class="activity">
+        <p>Something to try on the home page: a tiny demo of the webinar's main idea.</p>
+      </div>
+    </section>
+
+    <h2 class="w-head">Everything from the session</h2>
+    <p class="w-intro">Slides, code and the recording, all in one place.</p>
+    <ul class="w-notes" id="wResources"></ul>
+
+    <h2 class="w-head">The talk, part by part</h2>
+    <p class="w-intro">Short pages with something to try on each.</p>
+    <ul class="w-notes" id="wParts"></ul>
+
+    <h2 class="w-head">Keep learning</h2>
+    <p class="w-intro">Free notebooks that go further.</p>
+    <ul class="w-next" id="wNext"></ul>
+  </main>
+  <footer class="site">Your notes are saved in this browser only.</footer>
+</div>
+
+<script src="assets/course.js"></script>
+<script src="https://mo-ri-ch.github.io/study-notebook-design/v1/common.js"></script>
+<script src="https://mo-ri-ch.github.io/study-notebook-design/v1/webinar.js"></script>
+</body>
+</html>

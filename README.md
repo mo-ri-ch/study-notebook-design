@@ -17,7 +17,10 @@ v1/guide.js     "Guide me": a soft glow on the one thing to look at now
 v1/codewalk.js  "Step through" code line by line, and tap-to-explain Python words
 v1/home.css     the course home page: lessons as sticky notes joined by questions
 v1/home.js      builds that home page from the lesson list
+v1/webinar.css  a webinar's home page: event details, resources, parts of the talk, keep learning
+v1/webinar.js   builds that page from COURSE.webinar
 starter/        a blank course to copy
+starter-webinar/ a blank webinar to copy
 ```
 
 ## Start a new course
@@ -36,6 +39,21 @@ Each course keeps only its own lessons. Every page loads the design from this re
 <script src="../assets/course.js"></script>   <!-- the course's own settings, first -->
 <script src="https://mo-ri-ch.github.io/study-notebook-design/v1/common.js"></script>
 ```
+
+## Start a new webinar
+
+A webinar is a short companion to one live talk: the same notebook look, but its home page is about the event.
+
+1. Make a new, empty public repo on GitHub.
+2. Copy everything in `starter-webinar/` into it.
+3. In `assets/course.js`, set a unique `id` and fill in `webinar`: date, speaker, resources, parts, next courses.
+   A resource with `href: null` shows "Soon" (for the slides or recording, until they're ready).
+4. Write the talk in `lessons/talk.html`, one `<section class="part">` per screen.
+5. Turn on GitHub Pages. Webinars are unlisted: every page has `noindex`, and gradlabs.in serves them
+   without listing them on the home page.
+
+Used by:
+- [GenAI & Prompt Engineering webinar](https://gradlabs.in/learn/genai-webinar/)
 
 ## Change the design
 

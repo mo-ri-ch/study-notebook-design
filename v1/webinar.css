@@ -1,0 +1,68 @@
+/* webinar.css — the home page of a webinar notebook (study-notebook-design, v1).
+   Used with home.css (the hero) and webinar.js (which fills in the event details, resources,
+   the parts of the talk and "Keep learning" from COURSE.webinar in assets/course.js).
+   A webinar is a short companion to one live talk: same notebook look as the courses,
+   but the page is about the event, its resources and where to go next. */
+
+/* The rubber "Webinar" stamp above the title */
+.w-stamp {
+  display: inline-block; margin-bottom: 14px; padding: 0 12px;
+  font-family: var(--head); font-size: 1.25rem; letter-spacing: 0.04em;
+  color: var(--redpen); border: 2px solid currentColor; border-radius: 6px; transform: rotate(-3deg);
+}
+
+/* Date · time · speaker, written in pen under the title */
+.w-when { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 14px 0 0; padding: 0; list-style: none;
+  font-family: var(--hand); font-size: 1.15rem; color: var(--pen); }
+.w-when li::before { content: "✎ "; color: var(--pencil); }
+
+/* Section headings on the home page */
+.w-head { margin: 8px 0 6px; }
+.w-intro { max-width: 46ch; color: var(--pencil); font-size: 1.1rem; margin: 0 0 24px; }
+
+/* Resources and parts: small sticky notes in a grid */
+.w-notes { list-style: none; padding: 0; margin: 0 0 56px; display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 26px 22px; }
+.w-note {
+  position: relative; display: flex; flex-direction: column; gap: 6px; height: 100%;
+  padding: 20px 20px 16px; color: var(--ink); text-decoration: none;
+  border-radius: 2px 2px 6px 2px; box-shadow: 0 14px 22px -14px rgba(20,24,50,.45), 0 1px 0 rgba(0,0,0,.05);
+}
+.w-note::before {   /* a strip of tape */
+  content: ""; position: absolute; top: -10px; left: 50%; width: 70px; height: 20px; margin-left: -35px;
+  background: var(--tape); transform: rotate(-2deg);
+}
+a.w-note:hover { outline: 3px solid var(--hl-yellow); color: var(--ink); }
+.w-note .ico { font-size: 1.6rem; line-height: 1; }
+.w-note .kicker { font-family: var(--head); font-size: 1.05rem; color: var(--pencil); }
+.w-note .title { font-family: var(--head); font-size: 1.6rem; line-height: 1.1; }
+.w-note .sum { font-size: 0.95rem; line-height: 1.45; flex: 1; }
+.w-note .stamp {
+  align-self: flex-start; margin-top: 8px; font-family: var(--head); font-size: 1rem;
+  padding: 0 10px; border: 2px solid currentColor; border-radius: 6px; transform: rotate(-3deg);
+}
+.w-note .stamp.open { color: var(--pen); }
+.w-note .stamp.done { color: var(--good); }
+.w-note .stamp.soon { color: var(--pencil); }
+.w-note.soon { opacity: 0.8; }
+.w-note.y { background: var(--note-yellow); } .w-note.p { background: var(--note-pink); }
+.w-note.b { background: var(--note-blue); } .w-note.g { background: var(--note-green); } .w-note.o { background: var(--note-orange); }
+
+/* Keep learning: the full courses, as plain cards with a red-pen arrow */
+.w-next { list-style: none; padding: 0; margin: 0 0 40px; display: grid; gap: 14px; max-width: 760px; }
+.w-next a {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 16px;
+  padding: 16px 20px; background: var(--card); color: var(--ink); text-decoration: none;
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent); border-radius: 4px;
+  box-shadow: 0 10px 24px -16px rgba(20,24,50,.35);
+}
+.w-next a:hover { outline: 3px solid var(--hl-yellow); }
+.w-next .title { font-family: var(--head); font-size: 1.45rem; line-height: 1.15; }
+.w-next .sum { grid-column: 1; font-size: 0.95rem; color: var(--pencil); }
+.w-next .go { grid-column: 2; grid-row: 1 / span 2; font-family: var(--hand); color: var(--redpen); font-size: 1.15rem; }
+
+@media (max-width: 520px) {
+  .w-notes { grid-template-columns: 1fr; }
+  .w-next a { grid-template-columns: 1fr; }
+  .w-next .go { grid-column: 1; grid-row: auto; }
+}

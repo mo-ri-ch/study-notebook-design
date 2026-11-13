@@ -161,6 +161,14 @@ and every change. Add to this file whenever he gives new design advice.
   show, plus a "✎ N in Guide mode" hint.
 - The side list of slides scrolls when it's long.
 
+## Webinars
+- **Same design, its own template** (Rishal, 13 Nov 2026). A webinar uses `starter-webinar/`: the notebook look,
+  a home page about the event (a "Webinar" stamp, date and speaker, resources, the parts of the talk, keep learning),
+  and one talk page with short parts. No new visual identity.
+- **Unlisted.** Shared by link only: `noindex` on every page, not on the gradlabs.in home page or dashboard.
+- **Point to the full courses at the end**, so attendees know where to go next.
+- **Honest examples.** Activities that show model answers say they are example answers written for the page.
+
 ## Dark theme
 - A 🌙/☀️ button in the top bar (added by `common.js`) switches the theme. The choice is saved as `notebook-theme` and shared by every course. Light is the default; dark never turns on by itself.
 - Colors only through variables (`--paper`, `--ink`, `--pen`, `--redpen`, `--good`, `--hl-*`, `--note-*`, `--card`). No hard-coded hex in lessons, including SVG (`stroke="var(--pen)"`). Exception: pastel chips that carry their own dark text.
