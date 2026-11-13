@@ -11,6 +11,10 @@ and every change. Add to this file whenever he gives new design advice.
   sticky notes, red-pen notes. Keep it consistent across courses.
 
 ## Lessons
+- **Teach every new thing before it's used.** Before a page shows code or an idea, check that each part of it
+  (a Python word, a pattern, a dictionary, a symbol) was taught on an earlier page, is explained on that page, or
+  has a tap-for-help. If a whole lesson leans on background it hasn't taught (e.g. reading Python), add a
+  "✏️ Quick basics" page first. If something can be avoided instead (a regex where a plain loop would do), avoid it.
 - **Explain from scratch.** Assume the student knows very little. When an idea needs background
   (vectors, a neural network, matrix multiplication…), add a short "✏️ Quick basics" slide first.
 - **Plain words with concrete examples.** No terse labels like "Interpretable" or "Extra work"
@@ -120,6 +124,9 @@ and every change. Add to this file whenever he gives new design advice.
 - Kind, never pushy: no pop-ups, no amounts on the lesson page, no guilt.
 
 ## Features and keys (shared by all courses)
+- **Python words (tap a dotted word in code).** The shared list lives in `v1/codewalk.js`. A course adds its own words,
+  or replaces one, by setting `window.PYWORDS_EXTRA = { word: { what, ex, out } }` in its `assets/course.js`
+  (loaded before codewalk.js). Run every `ex` in Python and check it prints `out`.
 - **Links to other pages open beside the page.** A link to another page or lesson (`<a class="xref" href="lesson3.html#3">`):
   on a laptop the screen splits in two, this page on the left and the linked page on the right, both complete and fully
   working (page list, pen, guide…), like two browser windows side by side. Drag the middle bar to resize; "Go to this

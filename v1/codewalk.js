@@ -40,6 +40,9 @@
     "requires_grad": { what: "Tells PyTorch to keep track of this tensor, so backward() can find its gradients.", ex: "w = torch.randn(3, requires_grad=True)", out: "" },
   };
 
+  // A course can add its own words (or replace one) with window.PYWORDS_EXTRA, set before this file loads.
+  if (window.PYWORDS_EXTRA) Object.assign(WORDS, window.PYWORDS_EXTRA);
+
   function addPythonWords(code) {
     const used = new Set();
     const names = Object.keys(WORDS).filter(w => /^\w+$/.test(w));
