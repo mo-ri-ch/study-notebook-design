@@ -15,6 +15,8 @@ and every change. Add to this file whenever he gives new design advice.
   (a Python word, a pattern, a dictionary, a symbol) was taught on an earlier page, is explained on that page, or
   has a tap-for-help. If a whole lesson leans on background it hasn't taught (e.g. reading Python), add a
   "✏️ Quick basics" page first. If something can be avoided instead (a regex where a plain loop would do), avoid it.
+  Within a page too: explain the idea in plain words first, then show the code. An activity's output uses plain
+  words (e.g. "① the name → weather"), not code the page hasn't explained yet (e.g. `act.group(1)`).
 - **Explain from scratch.** Assume the student knows very little. When an idea needs background
   (vectors, a neural network, matrix multiplication…), add a short "✏️ Quick basics" slide first.
 - **Plain words with concrete examples.** No terse labels like "Interpretable" or "Extra work"
