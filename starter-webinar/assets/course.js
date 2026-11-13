@@ -16,7 +16,7 @@ window.COURSE = {
 
   // Read by webinar.js on the home page
   webinar: {
-    when: ["[Date]", "[Time]", "[Speaker]"],
+    when: ["[Date]", "[Time]", "[Speaker]"],   // leave out if the session may repeat
     resources: [
       { icon: "📖", title: "The talk", sum: "Every idea from the session, with things to try.", href: "lessons/talk.html", open: "Start" },
       { icon: "🧪", title: "Colab notebook", sum: "Run the demo yourself.", href: null },
@@ -27,6 +27,7 @@ window.COURSE = {
       { title: "First part", sum: "One line on this part.", href: "lessons/talk.html#1" },
       { title: "Second part", sum: "One line on this part.", href: "lessons/talk.html#3" },
     ],
+    // Only for a Gradient AI Labs webinar. Leave out for a webinar run for another organisation.
     next: [
       { title: "Build a Tiny LLM", sum: "Write a working language model, line by line.", href: "https://gradlabs.in/learn/tiny-llm/" },
       { title: "Transformers & LLMs", sum: "How attention and transformers really work.", href: "https://gradlabs.in/learn/transformers/" },

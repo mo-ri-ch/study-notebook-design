@@ -166,7 +166,11 @@ and every change. Add to this file whenever he gives new design advice.
   a home page about the event (a "Webinar" stamp, date and speaker, resources, the parts of the talk, keep learning),
   and one talk page with short parts. No new visual identity.
 - **Unlisted.** Shared by link only: `noindex` on every page, not on the gradlabs.in home page or dashboard.
-- **Point to the full courses at the end**, so attendees know where to go next.
+- **A webinar run for another organisation is stand-alone** (Rishal, 13 Nov 2026, for Bridgeon): no links to
+  gradlabs.in, the courses or any Gradient AI Labs page, no Gradient AI Labs branding, and not served on gradlabs.in
+  (share the github.io link). Leave out `next` in course.js and end the talk with a "Questions?" page.
+  Only a Gradient AI Labs webinar points to the full courses at the end.
+- **No date, time or speaker on the page** when a session may repeat; leave out `when`.
 - **Honest examples.** Activities that show model answers say they are example answers written for the page.
 
 ## Dark theme
