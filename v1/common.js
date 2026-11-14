@@ -757,6 +757,7 @@ function testPassed(n) { try { return JSON.parse(localStorage.getItem(testKey(n)
 function setupTests() {
   document.querySelectorAll(".test[data-test]").forEach(test => {
     const n = test.dataset.test, quizzes = [...test.querySelectorAll(".quiz")];
+    const L = LESSONS.find(l => String(l.n) === n), name = (L && L.label) || n;   // the number readers see, e.g. "1a"
     const state = new Map();   // quiz -> { first: true/false, right: true/false }
     const card = document.createElement("div");
     card.className = "test-result"; card.setAttribute("aria-live", "polite");
@@ -771,7 +772,7 @@ function setupTests() {
       if (done === quizzes.length) {
         const rec = { passed: true, firstTry: firstRight, of: quizzes.length };
         try { localStorage.setItem(testKey(n), JSON.stringify(rec)); } catch (e) { /* private */ }
-        card.innerHTML = `<b>✓ Lesson ${n} test passed.</b> First try: ${firstRight} of ${quizzes.length}.` +
+        card.innerHTML = `<b>✓ Lesson ${name} test passed.</b> First try: ${firstRight} of ${quizzes.length}.` +
           (missed.length ? `<br>Worth another look: ${missed.map(q => `<a class="xref" href="${q.dataset.page}">${q.dataset.topic}</a>`).join(", ")}.` : " Every idea landed first time.");
         card.className = "test-result passed";
       } else {
