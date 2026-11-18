@@ -680,7 +680,13 @@
       if (e.target.closest && e.target.closest(".sticky textarea") && e.target.scrollHeight > e.target.clientHeight) return;
       e.preventDefault(); e.stopImmediatePropagation();
       const unit = e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? window.innerHeight : 1;
-      if (e.ctrlKey || e.metaKey) zoomAt(Math.exp(-e.deltaY * unit * 0.0025), e.clientX, e.clientY);
+      if (e.ctrlKey || e.metaKey) {
+        // A trackpad pinch sends small steps: follow the fingers 1:1, the way the browser's own pinch zoom does.
+        // A mouse wheel click (Ctrl + wheel) sends a big step: zoom one notch, about 10%, like the browser.
+        const d = e.deltaY * unit;
+        const k = Math.abs(d) >= 50 && Number.isInteger(d) ? (d < 0 ? 1.1 : 1 / 1.1) : Math.exp(-d / 100);
+        zoomAt(k, e.clientX, e.clientY);
+      }
       else if (e.shiftKey && !e.deltaX) panBy(-e.deltaY * unit, 0);   // Shift + wheel moves sideways
       else panBy(-e.deltaX * unit, -e.deltaY * unit);
     }, { capture: true, passive: false });
