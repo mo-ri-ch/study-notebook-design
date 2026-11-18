@@ -158,7 +158,7 @@ and every change. Add to this file whenever he gives new design advice.
   ends it just stretches. While sticky notes, Step through or Guide me are on, a swipe acts like → / ← instead. Ignored
   on sliders, the cube, wide tables, the pen, link previews and at the screen edge. Add data-no-swipe to anything else
   dragged sideways. On every screen, a page changed with the arrows or Next slides in from its side (not with reduced motion).
-- G guide me · P pen · B board · ← → back/next · Esc stop pen/guide (one thing per press). No T big-text mode
+- G guide me · P pen · B board · ← → back/next · Esc: one thing per press (pop-ups, then the pen, then the guide, last the board). No T big-text mode
   (removed 18 Nov 2026, Rishal): board mode zooms instead.
 - **Board mode, B** (Rishal, 18 Nov 2026): zoom and move the page in every direction, like a Miro board, with or
   without the pen. Keyboard only, nothing to click: B on and off. On the board a trackpad pinch zooms at the fingers

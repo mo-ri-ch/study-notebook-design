@@ -824,6 +824,11 @@
       }
       if (e.key === "b" || e.key === "B") { setBoard(!view.on); return; }
       if (!view.on) return;
+      // Esc does one thing per press: notes and pop-ups first, then the pen, then the guide, and last the board
+      if (e.key === "Escape") {
+        if (e.defaultPrevented || document.body.classList.contains("pen-on") || (window.guideState && window.guideState.on)) return;
+        e.preventDefault(); setBoard(false); return;
+      }
       if (e.key === "+" || e.key === "=") zoomCentre(1.25);
       else if (e.key === "-" || e.key === "_") zoomCentre(1 / 1.25);
       else if (e.key === "0") fit();
