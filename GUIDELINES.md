@@ -164,6 +164,7 @@ and every change. Add to this file whenever he gives new design advice.
   and two fingers move the page (also Ctrl + wheel, the wheel, space + drag, the middle button, two fingers on a
   touch screen; 0 = back to 100%). Off the board, a pinch is the browser's own zoom, as usual. Only the page moves:
   the pen tools, the top bar, the page list and the page buttons stay put, and notes stay on what they were written on.
+  The board isn't endless: at least a strip of the page always stays on screen, so it can't get lost.
   Off by default; a small label shows it's on. Once on, it stays on at the same zoom and place on the next slide,
   lesson or course in that tab, so pages line up where the last one was (Rishal, 18 Nov 2026). B or closing the tab
   turns it off. Pages opened beside the page (split view) never start on the board.

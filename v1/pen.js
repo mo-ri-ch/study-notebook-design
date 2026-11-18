@@ -642,10 +642,22 @@
     const pct = bar.querySelector(".board-pct");
 
     // Where the page sits with no zoom: its layout box, measured without our transform
-    function origin() { const r = stage.getBoundingClientRect(); return { left: r.left - view.x, top: r.top - view.y }; }
+    // (measured against the transform that is on the page now, not the one we are about to set)
+    const shown = { x: 0, y: 0 };
+    function origin() { const r = stage.getBoundingClientRect(); return { left: r.left - shown.x, top: r.top - shown.y }; }
     let settle = null;
+    // The page can't be lost: however far you move or zoom, at least a strip of it stays on screen
+    function keepInView() {
+      const o = origin(), w = stage.offsetWidth * view.s, h = stage.offsetHeight * view.s;
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const mx = Math.min(160, w / 2, vw / 3), my = Math.min(160, h / 2, vh / 3);
+      view.x = Math.min(vw - mx - o.left, Math.max(mx - o.left - w, view.x));
+      view.y = Math.min(vh - my - o.top, Math.max(my - o.top - h, view.y));
+    }
     function apply() {
+      if (view.on) keepInView();
       stage.style.transform = view.on ? `translate(${view.x}px, ${view.y}px) scale(${view.s})` : "";
+      shown.x = view.on ? view.x : 0; shown.y = view.on ? view.y : 0;
       pct.textContent = Math.round(view.s * 100) + "%";
       requestRedraw();
       setCursor();
