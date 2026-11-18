@@ -620,6 +620,10 @@
       html.board-on { touch-action: none; }
       html.board-on main { transform-origin: 0 0; position: relative; z-index: 1; }
       html.board-on .topbar { position: relative; z-index: 2; background: var(--paper, #fff); }
+      /* Previous / Next stay reachable: pinned to the bottom of the screen while the page is zoomed and moved */
+      html.board-on .pagebar { position: fixed !important; left: 58px; right: 0; bottom: 0; z-index: 9997; margin: 0 !important;
+        padding: 6px 24px 8px !important; background: var(--paper, #fff); border-top: 1px solid color-mix(in srgb, var(--ink, #1D2238) 15%, transparent); }
+      @media (min-width: 1000px) { html.board-on body.has-thumbs:not(.thumbs-off) .pagebar { right: 232px; } }
       html.board-on.board-grab, html.board-on.board-grab * { cursor: grab !important; }
       html.board-on.board-panning, html.board-on.board-panning * { cursor: grabbing !important; user-select: none; }
       .board-bar { position: fixed; left: 56px; bottom: 16px; z-index: 10000; display: none; align-items: center; gap: 8px;
@@ -627,7 +631,7 @@
         box-shadow: 2px 2px 0 var(--ink, #1D2238); font-family: var(--body, sans-serif); font-size: 0.85rem;
         color: var(--ink, #1D2238); pointer-events: none; }
       html.board-on .board-bar { display: flex; }
-      body:has(.pagebar) .board-bar { bottom: 72px; }
+      body:has(.pagebar) .board-bar { bottom: 104px; }
       .board-bar b { font-variant-numeric: tabular-nums; }
       .board-bar span { color: var(--pencil, #626A7E); }
       @media print { .board-bar { display: none !important; } }
