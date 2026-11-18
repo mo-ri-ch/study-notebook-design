@@ -605,6 +605,15 @@
     // Notes stay on what you wrote them on, because they are saved relative to the slide.
     const stage = document.querySelector("main") || hosts[0];
     const view = { on: false, s: 1, x: 0, y: 0, space: false };
+    // The board stays on, at the same zoom and place, on the next slide, lesson or course in this tab,
+    // so pages line up where the last one was. Closing the tab (or pressing B) turns it off.
+    const BOARD_KEY = "notebook-board";
+    function rememberBoard() {
+      try {
+        if (view.on) sessionStorage.setItem(BOARD_KEY, JSON.stringify({ s: view.s, x: view.x, y: view.y }));
+        else sessionStorage.removeItem(BOARD_KEY);
+      } catch (e) { /* ignore */ }
+    }
     let restoreTop = 0;
     const boardCss = `
       html.board-on, html.board-on body, html.board-on body.has-thumbs .wrap { overflow: hidden !important; overscroll-behavior: none; }
@@ -642,7 +651,8 @@
       setCursor();
       // Let other tools that follow the page (glows, pop-ups) catch up once the movement stops
       clearTimeout(settle);
-      settle = setTimeout(() => { document.dispatchEvent(new Event("scroll")); window.dispatchEvent(new Event("resize")); }, 120);
+      settle = setTimeout(() => {
+        rememberBoard(); document.dispatchEvent(new Event("scroll")); window.dispatchEvent(new Event("resize")); }, 120);
     }
     function zoomAt(k, cx, cy) {
       const s = Math.min(5, Math.max(0.25, view.s * k));
@@ -673,6 +683,18 @@
     }
     // Paged courses jump to the top of a new slide: keep the page still instead
     document.addEventListener("scroll", () => { if (view.on) { const el = scroller(); if (el.scrollTop) el.scrollTop = 0; } }, true);
+
+    // Back on the board where the last page left it (not inside a page opened beside this one)
+    window.addEventListener("pagehide", rememberBoard);
+    if (window.top === window) {
+      let last = null;
+      try { last = JSON.parse(sessionStorage.getItem(BOARD_KEY) || "null"); } catch (e) { last = null; }
+      if (last && [last.s, last.x, last.y].every(Number.isFinite)) {
+        setBoard(true);
+        view.s = Math.min(5, Math.max(0.25, last.s)); view.x = last.x; view.y = last.y;
+        apply();
+      }
+    }
 
     // Wheel: Ctrl + wheel (or a trackpad pinch) zooms at the pointer; the plain wheel moves the page
     window.addEventListener("wheel", (e) => {

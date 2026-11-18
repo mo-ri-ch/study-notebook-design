@@ -164,7 +164,9 @@ and every change. Add to this file whenever he gives new design advice.
   and two fingers move the page (also Ctrl + wheel, the wheel, space + drag, the middle button, two fingers on a
   touch screen; 0 = back to 100%). Off the board, a pinch is the browser's own zoom, as usual. Only the page moves:
   the pen tools, the top bar, the page list and the page buttons stay put, and notes stay on what they were written on.
-  Off by default and after every reload; a small label shows it's on.
+  Off by default; a small label shows it's on. Once on, it stays on at the same zoom and place on the next slide,
+  lesson or course in that tab, so pages line up where the last one was (Rishal, 18 Nov 2026). B or closing the tab
+  turns it off. Pages opened beside the page (split view) never start on the board.
 - Notes written in Guide mode belong to the glowing step; with the guide off only ordinary notes
   show, plus a "✎ N in Guide mode" hint.
 - The side list of slides scrolls when it's long.
