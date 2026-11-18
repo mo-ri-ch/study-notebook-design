@@ -12,7 +12,7 @@ Used by:
 ```
 v1/style.css    the notebook look (light and dark)
 v1/common.js    one part per screen, slide thumbnails, progress, quizzes, teach mode (T), copy and run buttons
-v1/pen.js       write your own notes and sticky notes on any slide (P)
+v1/pen.js       write your own notes and sticky notes on any slide (P); board mode: pinch to zoom, two fingers to move (B)
 v1/guide.js     "Guide me": a soft glow on the one thing to look at now
 v1/codewalk.js  "Step through" code line by line, and tap-to-explain Python words
 v1/home.css     the course home page: lessons as sticky notes joined by questions

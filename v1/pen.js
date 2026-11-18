@@ -1,5 +1,6 @@
 // ---------- Pen: write your own notes anywhere on the screen ----------
 // Press P (or the small ✎ in the left margin) to turn the pen on or off.
+// Press B for board mode: zoom (pinch) and move (two fingers) the page in every direction, with or without the pen.
 // Notes belong to the slide you wrote them on: they scroll with it and come back with it.
 // Saved in this browser only.
 // This file is self-contained: it adds its own styles and doesn't change anything else on the page.
@@ -594,6 +595,181 @@
     }
     canvas.addEventListener("wheel", onWheel, { passive: false });
     stickyLayer.addEventListener("wheel", onWheel, { passive: false });
+
+    // ----- Board mode: zoom and move the page in every direction, like a whiteboard -----
+    // Press B to turn it on or off (nothing to click). On the board, a trackpad pinch (or Ctrl + wheel) zooms
+    // at the pointer, and two fingers (or the wheel) move the page any way. Space + drag and the middle
+    // mouse button move it too; on a touch screen, two fingers pinch and move. Works with the pen on.
+    // Off the board, pinching is the browser's own zoom, as usual.
+    // Only the page moves: the pen tools, the top bar and the page buttons stay where they are.
+    // Notes stay on what you wrote them on, because they are saved relative to the slide.
+    const stage = document.querySelector("main") || hosts[0];
+    const view = { on: false, s: 1, x: 0, y: 0, space: false };
+    let restoreTop = 0;
+    const boardCss = `
+      html.board-on, html.board-on body, html.board-on body.has-thumbs .wrap { overflow: hidden !important; overscroll-behavior: none; }
+      html.board-on { touch-action: none; }
+      html.board-on main { transform-origin: 0 0; position: relative; z-index: 1; }
+      html.board-on .topbar { position: relative; z-index: 2; background: var(--paper, #fff); }
+      html.board-on.board-grab, html.board-on.board-grab * { cursor: grab !important; }
+      html.board-on.board-panning, html.board-on.board-panning * { cursor: grabbing !important; user-select: none; }
+      .board-bar { position: fixed; left: 56px; bottom: 16px; z-index: 10000; display: none; align-items: center; gap: 8px;
+        padding: 5px 12px; background: var(--card, #fff); border: 2px solid var(--ink, #1D2238); border-radius: 999px;
+        box-shadow: 2px 2px 0 var(--ink, #1D2238); font-family: var(--body, sans-serif); font-size: 0.85rem;
+        color: var(--ink, #1D2238); pointer-events: none; }
+      html.board-on .board-bar { display: flex; }
+      body:has(.pagebar) .board-bar { bottom: 72px; }
+      .board-bar b { font-variant-numeric: tabular-nums; }
+      .board-bar span { color: var(--pencil, #626A7E); }
+      @media print { .board-bar { display: none !important; } }
+    `;
+    style.textContent += boardCss;
+
+    // A small label while the board is on: how far you've zoomed, and how to leave
+    const bar = document.createElement("div");
+    bar.className = "board-bar"; bar.setAttribute("aria-live", "polite");
+    bar.innerHTML = '⤢ Board <b class="board-pct">100%</b> <span>0 = 100% · B = leave</span>';
+    document.body.appendChild(bar);
+    const pct = bar.querySelector(".board-pct");
+
+    // Where the page sits with no zoom: its layout box, measured without our transform
+    function origin() { const r = stage.getBoundingClientRect(); return { left: r.left - view.x, top: r.top - view.y }; }
+    let settle = null;
+    function apply() {
+      stage.style.transform = view.on ? `translate(${view.x}px, ${view.y}px) scale(${view.s})` : "";
+      pct.textContent = Math.round(view.s * 100) + "%";
+      requestRedraw();
+      setCursor();
+      // Let other tools that follow the page (glows, pop-ups) catch up once the movement stops
+      clearTimeout(settle);
+      settle = setTimeout(() => { document.dispatchEvent(new Event("scroll")); window.dispatchEvent(new Event("resize")); }, 120);
+    }
+    function zoomAt(k, cx, cy) {
+      const s = Math.min(5, Math.max(0.25, view.s * k));
+      const o = origin();
+      const px = (cx - o.left - view.x) / view.s, py = (cy - o.top - view.y) / view.s;  // the page point under the pointer
+      view.x = cx - o.left - s * px; view.y = cy - o.top - s * py; view.s = s;
+      apply();
+    }
+    function zoomCentre(k) { zoomAt(k, window.innerWidth / 2, window.innerHeight / 2); }
+    function panBy(dx, dy) { view.x += dx; view.y += dy; apply(); }
+    function fit() { view.s = 1; view.x = 0; view.y = -restoreTop; apply(); }
+
+    function setBoard(on) {
+      if (on === view.on) return;
+      const el = scroller();
+      if (on) {
+        restoreTop = el.scrollTop;
+        view.on = true; view.s = 1; view.x = 0; view.y = -restoreTop;   // start exactly where you were
+        document.documentElement.classList.add("board-on");
+        el.scrollTop = 0;
+      } else {
+        const top = Math.max(0, -view.y / view.s);
+        view.on = false;
+        document.documentElement.classList.remove("board-on", "board-grab", "board-panning");
+        el.scrollTop = top;
+      }
+      apply();
+    }
+    // Paged courses jump to the top of a new slide: keep the page still instead
+    document.addEventListener("scroll", () => { if (view.on) { const el = scroller(); if (el.scrollTop) el.scrollTop = 0; } }, true);
+
+    // Wheel: Ctrl + wheel (or a trackpad pinch) zooms at the pointer; the plain wheel moves the page
+    window.addEventListener("wheel", (e) => {
+      if (!view.on) return;
+      if (e.target.closest && e.target.closest(".sticky textarea") && e.target.scrollHeight > e.target.clientHeight) return;
+      e.preventDefault(); e.stopImmediatePropagation();
+      const unit = e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? window.innerHeight : 1;
+      if (e.ctrlKey || e.metaKey) zoomAt(Math.exp(-e.deltaY * unit * 0.0025), e.clientX, e.clientY);
+      else if (e.shiftKey && !e.deltaX) panBy(-e.deltaY * unit, 0);   // Shift + wheel moves sideways
+      else panBy(-e.deltaX * unit, -e.deltaY * unit);
+    }, { capture: true, passive: false });
+
+    // Safari on a Mac sends a trackpad pinch as gesture events, not Ctrl + wheel
+    let gestureScale = 1;
+    window.addEventListener("gesturestart", (e) => { if (!view.on) return; e.preventDefault(); gestureScale = 1; });
+    window.addEventListener("gesturechange", (e) => {
+      if (!view.on) return;
+      e.preventDefault();
+      zoomAt(e.scale / gestureScale, e.clientX, e.clientY); gestureScale = e.scale;
+    });
+    window.addEventListener("gestureend", (e) => { if (view.on) e.preventDefault(); });
+
+    // Dragging the page: space + drag, the middle button, one finger with the pen off, or two fingers (with a pinch)
+    const touches = new Map();
+    let drag = null, moved = false, pinch = null;
+    function dropStroke() {
+      // A second finger means "move", not "write": take back the line the first finger started
+      if (current && current !== "erase") { const list = strokesOf(currentIndex()); const i = list.indexOf(current); if (i >= 0) list.splice(i, 1); }
+      current = null; tap = null; requestRedraw();
+    }
+    function inTools(t) { return t.closest && t.closest(".pen-tools, .sticky, .pagebar, .topbar, .thumbs, .thumbs-toggle"); }
+    window.addEventListener("pointerdown", (e) => {
+      if (!view.on || inTools(e.target)) return;
+      if (e.pointerType === "touch") {
+        touches.set(e.pointerId, [e.clientX, e.clientY]);
+        if (touches.size === 2) {
+          dropStroke();
+          const [a, b] = [...touches.values()];
+          pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, cx: (a[0] + b[0]) / 2, cy: (a[1] + b[1]) / 2 };
+          drag = null; e.preventDefault(); e.stopImmediatePropagation(); return;
+        }
+        if (document.body.classList.contains("pen-on")) return;   // one finger writes
+      } else if (!(e.button === 1 || (e.button === 0 && view.space))) return;
+      drag = { x: e.clientX, y: e.clientY, id: e.pointerId }; moved = false;
+      document.documentElement.classList.add("board-panning");
+      if (e.pointerType !== "touch") { e.preventDefault(); e.stopImmediatePropagation(); }
+    }, true);
+    window.addEventListener("pointermove", (e) => {
+      if (!view.on) return;
+      if (touches.has(e.pointerId)) touches.set(e.pointerId, [e.clientX, e.clientY]);
+      if (pinch && touches.size >= 2) {
+        const [a, b] = [...touches.values()];
+        const d = Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, cx = (a[0] + b[0]) / 2, cy = (a[1] + b[1]) / 2;
+        view.x += cx - pinch.cx; view.y += cy - pinch.cy;
+        zoomAt(d / pinch.d, cx, cy);
+        pinch = { d, cx, cy };
+        e.stopImmediatePropagation(); return;
+      }
+      if (!drag || e.pointerId !== drag.id) return;
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      if (Math.abs(dx) + Math.abs(dy) > 4) moved = true;
+      drag.x = e.clientX; drag.y = e.clientY;
+      panBy(dx, dy);
+      e.stopImmediatePropagation();
+    }, true);
+    function endDrag(e) {
+      touches.delete(e.pointerId);
+      if (touches.size < 2) pinch = null;
+      if (drag && e.pointerId === drag.id) { drag = null; document.documentElement.classList.remove("board-panning"); }
+    }
+    window.addEventListener("pointerup", endDrag, true);
+    window.addEventListener("pointercancel", endDrag, true);
+    // A drag that moved the page isn't a click on whatever was under it
+    window.addEventListener("click", (e) => { if (moved) { moved = false; e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+
+    document.addEventListener("keydown", (e) => {
+      if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || document.activeElement.isContentEditable) return;
+      if (e.ctrlKey || e.metaKey || e.altKey) {
+        if (view.on && (e.key === "=" || e.key === "+" || e.key === "-" || e.key === "0")) {   // Ctrl + / − zooms the board, not the browser
+          e.preventDefault();
+          if (e.key === "0") fit(); else zoomCentre(e.key === "-" ? 1 / 1.25 : 1.25);
+        }
+        return;
+      }
+      if (e.key === "b" || e.key === "B") { setBoard(!view.on); return; }
+      if (!view.on) return;
+      if (e.key === "+" || e.key === "=") zoomCentre(1.25);
+      else if (e.key === "-" || e.key === "_") zoomCentre(1 / 1.25);
+      else if (e.key === "0") fit();
+      else if (e.key === " " && !e.repeat) {
+        if (document.activeElement && document.activeElement.closest && document.activeElement.closest("button, a, summary")) return;
+        e.preventDefault(); view.space = true; document.documentElement.classList.add("board-grab");
+      }
+    });
+    document.addEventListener("keyup", (e) => {
+      if (e.key === " " && view.space) { view.space = false; document.documentElement.classList.remove("board-grab"); }
+    });
 
     // Redraw when the slide changes, scrolls or changes size
     if (window.MutationObserver) {

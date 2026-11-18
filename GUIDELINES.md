@@ -159,6 +159,12 @@ and every change. Add to this file whenever he gives new design advice.
   on sliders, the cube, wide tables, the pen, link previews and at the screen edge. Add data-no-swipe to anything else
   dragged sideways. On every screen, a page changed with the arrows or Next slides in from its side (not with reduced motion).
 - G guide me · P pen · ← → back/next · T big text · Esc stop pen/guide (one thing per press).
+- **Board mode, B** (Rishal, 18 Nov 2026): zoom and move the page in every direction, like a Miro board, with or
+  without the pen. Keyboard only, nothing to click: B on and off. On the board a trackpad pinch zooms at the fingers
+  and two fingers move the page (also Ctrl + wheel, the wheel, space + drag, the middle button, two fingers on a
+  touch screen; 0 = back to 100%). Off the board, a pinch is the browser's own zoom, as usual. Only the page moves:
+  the pen tools, the top bar, the page list and the page buttons stay put, and notes stay on what they were written on.
+  Off by default and after every reload; a small label shows it's on.
 - Notes written in Guide mode belong to the glowing step; with the guide off only ordinary notes
   show, plus a "✎ N in Guide mode" hint.
 - The side list of slides scrolls when it's long.
