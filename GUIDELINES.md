@@ -120,7 +120,7 @@ and every change. Add to this file whenever he gives new design advice.
   like; `supportFrom` in course.js changes this). A lesson's last page shows one quiet pencil line under Next:
   "Enjoyed this lesson? Support our work →", linking to gradlabs.in/support. When a whole
   notebook is finished (its last lesson, every lesson ready), its last page shows a small taped card
-  instead. Never on other pages, never in teach mode (T) or a split-screen preview.
+  instead. Never on other pages, never in a split-screen preview.
 - Built into common.js, so every notebook gets it. A notebook can change the link with
   `support: "https://…"` in its course.js, or turn it off with `support: false`.
 - Kind, never pushy: no pop-ups, no amounts on the lesson page, no guilt.
@@ -158,7 +158,8 @@ and every change. Add to this file whenever he gives new design advice.
   ends it just stretches. While sticky notes, Step through or Guide me are on, a swipe acts like → / ← instead. Ignored
   on sliders, the cube, wide tables, the pen, link previews and at the screen edge. Add data-no-swipe to anything else
   dragged sideways. On every screen, a page changed with the arrows or Next slides in from its side (not with reduced motion).
-- G guide me · P pen · ← → back/next · T big text · Esc stop pen/guide (one thing per press).
+- G guide me · P pen · B board · ← → back/next · Esc stop pen/guide (one thing per press). No T big-text mode
+  (removed 18 Nov 2026, Rishal): board mode zooms instead.
 - **Board mode, B** (Rishal, 18 Nov 2026): zoom and move the page in every direction, like a Miro board, with or
   without the pen. Keyboard only, nothing to click: B on and off. On the board a trackpad pinch zooms at the fingers
   and two fingers move the page (also Ctrl + wheel, the wheel, space + drag, the middle button, two fingers on a

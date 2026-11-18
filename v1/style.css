@@ -330,10 +330,6 @@ button.tile:hover { background: var(--hl-yellow); color: var(--on-hl); }
 .items small { color: var(--pencil); font-size: 0.9rem; line-height: 1.45; display: block; margin-top: 2px; }
 @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } }
 
-/* ---------- Teach mode (press T): big text for a projector ---------- */
-body.teach { font-size: 1.4rem; }
-body.teach .say { font-size: 1.45rem; }
-body.teach pre { font-size: 0.8rem; }
 
 /* ================= Slides with thumbnails on the right ================= */
 .thumbs, .thumbs-toggle { display: none; }
@@ -713,7 +709,6 @@ html.split-open body { overflow: hidden; }
 
 /* ---------- Lesson test ---------- */
 .quiz .options button.chosen { border-color: var(--pen); box-shadow: 0 0 0 3px color-mix(in srgb, var(--pen) 30%, transparent); }
-.quiz-reveal { margin-top: 10px; }
 .quiz .quiz-back { display: block; margin-top: 6px; font-family: var(--body, inherit); font-size: 0.9rem; color: var(--pencil); }
 .test .quiz { border-top: 1px dashed var(--rule, #d6dbe6); padding-top: 22px; margin: 22px 0; }
 .test .quiz .q small { display: block; font-family: var(--body, inherit); font-size: 0.8rem; color: var(--pencil); margin-bottom: 4px; letter-spacing: 0.02em; }
@@ -784,7 +779,7 @@ body.touring .guide-bar { display: none !important; }   /* one guide at a time *
 .support-note.card h3 { margin: 0 0 6px; }
 .support-note.card p { margin: 0 0 14px; }
 .support-note.card a.support-btn { display: inline-block; padding: 8px 18px; border: 2px solid currentColor; border-radius: 8px; color: var(--pen); border-bottom-width: 2px; border-bottom-style: solid; font-family: var(--hand); }
-body.teach .support-note, html.embed .support-note { display: none !important; }
+html.embed .support-note { display: none !important; }
 
 /* All on one page */
 .view-toggle { margin-left: auto; padding: 2px 9px; font-size: 1.05rem; line-height: 1.4; }

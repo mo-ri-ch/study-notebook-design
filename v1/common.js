@@ -5,7 +5,7 @@ if (new URLSearchParams(location.search).get("embed")) {
 }
 
 // common.js — the shared parts of every course page (study-notebook-design, v1):
-// one-part-per-screen lessons, slide thumbnails, progress, quizzes, teach mode, copy and run buttons.
+// one-part-per-screen lessons, slide thumbnails, progress, quizzes, copy and run buttons.
 //
 // Each course sets window.COURSE in its own assets/course.js, loaded BEFORE this file:
 //   window.COURSE = {
@@ -115,7 +115,7 @@ function setupPagedLesson() {
 
   // A gentle support note on a lesson's last page: one quiet line under Next, or, at the end of a
   // finished notebook, a small card. Not in the first lessons (a reader first sees what the notebook
-  // is like), on other pages, in teach mode, or in a split-screen preview.
+  // is like), on other pages, or in a split-screen preview.
   const supportUrl = COURSE.support === false ? null : COURSE.support || "https://gradlabs.in/support";
   const lessonNo = here >= 0 ? parseInt(LESSONS[here].label || LESSONS[here].n, 10) : NaN;
   let support = null;
@@ -375,14 +375,6 @@ function setupTheme() {
   sync(); bar.appendChild(btn);
 }
 
-// ---------- Teach mode: press T for big text (for a projector) ----------
-function setupTeachMode() {
-  document.addEventListener("keydown", (e) => {
-    if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
-    if (e.key === "t" || e.key === "T") document.body.classList.toggle("teach");
-  });
-}
-
 // ---------- Arrow keys move between parts ----------
 function setupKeys() {
   document.addEventListener("keydown", (e) => {
@@ -513,7 +505,7 @@ function addReset(inside, fn) {
 //     keep  — optional: element(s) the bubble must not cover, e.g. the text the step talks about
 //     wide  — optional: a wider note, for a small table
 //   id   — remembers that the reader has seen it (it opens by itself only the first time)
-//   auto — open by itself the first time the page is shown (default true; never in teach mode)
+//   auto — open by itself the first time the page is shown (default true)
 // Adds a small "?" button (Show me how) beside ↺ Reset. Esc, ✕ or "Skip" closes; ← → move while it's open.
 let tourOpen = null;
 function addTour(inside, steps, opts = {}) {
@@ -711,18 +703,15 @@ function setupRun() {
 // ---------- Clickable quizzes ----------
 // <div class="quiz"><button data-right>…</button><button>…</button><div class="feedback"></div></div>
 function setupQuizzes() {
-  const teaching = () => document.body.classList.contains("teach");
   document.querySelectorAll(".quiz").forEach(quiz => {
     const feedback = quiz.querySelector(".feedback");
     const buttons = [...quiz.querySelectorAll(".options button")];
     const again = document.createElement("button");
     again.className = "reset quiz-reset"; again.type = "button"; again.textContent = "↺ Try again"; again.hidden = true;
-    const reveal = document.createElement("button");
-    reveal.className = "quiz-reveal"; reveal.type = "button"; reveal.textContent = "Reveal the answer"; reveal.hidden = true;
     function clear() {
       buttons.forEach(x => x.classList.remove("right", "wrong", "chosen"));
       if (feedback) { feedback.innerHTML = ""; feedback.className = "feedback"; }
-      again.hidden = true; reveal.hidden = true;
+      again.hidden = true;
     }
     function show(b) {
       buttons.forEach(x => x.classList.remove("right", "wrong", "chosen"));
@@ -735,15 +724,12 @@ function setupQuizzes() {
         feedback.innerHTML = html;
         feedback.className = "feedback " + (right ? "good" : "bad");
       }
-      again.hidden = false; reveal.hidden = true;
+      again.hidden = false;
       quiz.dispatchEvent(new CustomEvent("answered", { bubbles: true, detail: { right } }));
     }
     again.addEventListener("click", clear);
-    // Teaching (T): the class picks first; the answer shows only when you press Reveal
-    reveal.addEventListener("click", () => show(buttons.find(x => x.hasAttribute("data-right"))));
-    quiz.append(reveal, again);
+    quiz.append(again);
     buttons.forEach(b => b.addEventListener("click", () => {
-      if (teaching()) { clear(); b.classList.add("chosen"); reveal.hidden = false; return; }
       show(b);
     }));
   });
@@ -782,7 +768,6 @@ function setupTests() {
       }
     }
     test.addEventListener("answered", e => {
-      if (document.body.classList.contains("teach")) return;   // a class discussion doesn't count
       const q = e.target.closest(".quiz"); if (!q) return;
       const st = state.get(q);
       if (!st) state.set(q, { first: e.detail.right, right: e.detail.right });
@@ -805,7 +790,7 @@ function setupTests() {
     <span class="test-gate-row"><a class="btn primary" href="${prev.file}#${prev.test}">Take the Lesson ${prevName} test</a>
     <button type="button">Continue anyway</button></span>`;
   note.querySelector("button").addEventListener("click", () => { try { sessionStorage.setItem(testKey(prev.n) + ":skip", "1"); } catch (e) { /* fine */ } note.remove(); });
-  if (!document.body.classList.contains("teach")) main.prepend(note);
+  main.prepend(note);
 }
 
 // ---------- Predict-first boxes (click to reveal) ----------
@@ -1160,7 +1145,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupCopy();
   setupRun();
   setupTheme();
-  setupTeachMode();
   setupKeys();
   setupSwipe();
   setupQuizzes();

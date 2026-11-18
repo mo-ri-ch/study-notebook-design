@@ -231,7 +231,7 @@
     backBtn.addEventListener("click", () => { move(-1); backBtn.blur(); });
 
     // Keys. Step through (on the code page) handles its own arrows first.
-    // G turns the guide on and off (like P for the pen and T for teach mode)
+    // G turns the guide on and off (like P for the pen and B for the board)
     document.addEventListener("keydown", (e) => {
       if ((e.key !== "g" && e.key !== "G") || e.ctrlKey || e.metaKey || e.altKey) return;
       const a = document.activeElement;
