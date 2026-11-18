@@ -600,7 +600,8 @@
     // Press B to turn it on or off (nothing to click). On the board, a trackpad pinch (or Ctrl + wheel) zooms
     // at the pointer, and two fingers (or the wheel) move the page any way. Space + drag and the middle
     // mouse button move it too; on a touch screen, two fingers pinch and move. Works with the pen on.
-    // Off the board, pinching is the browser's own zoom, as usual.
+    // Off the board, pinching is the browser's own zoom, as usual, except on a phone or tablet: there's no B key,
+    // so a two-finger pinch turns the board on, and a ✕ on its label turns it off.
     // Only the page moves: the pen tools, the top bar and the page buttons stay where they are.
     // Notes stay on what you wrote them on, because they are saved relative to the slide.
     const stage = document.querySelector("main") || hosts[0];
@@ -624,6 +625,7 @@
       html.board-on .pagebar { position: fixed !important; left: 58px; right: 0; bottom: 0; z-index: 9997; margin: 0 !important;
         padding: 6px 24px 8px !important; background: var(--paper, #fff); border-top: 1px solid color-mix(in srgb, var(--ink, #1D2238) 15%, transparent); }
       @media (min-width: 1000px) { html.board-on body.has-thumbs:not(.thumbs-off) .pagebar { right: 232px; } }
+      @media (max-width: 759px) { html.board-on .pagebar { left: 0; } }
       html.board-on.board-grab, html.board-on.board-grab * { cursor: grab !important; }
       html.board-on.board-panning, html.board-on.board-panning * { cursor: grabbing !important; user-select: none; }
       .board-bar { position: fixed; left: 56px; bottom: 16px; z-index: 10000; display: none; align-items: center; gap: 8px;
@@ -634,6 +636,12 @@
       body:has(.pagebar) .board-bar { bottom: 104px; }
       .board-bar b { font-variant-numeric: tabular-nums; }
       .board-bar span { color: var(--pencil, #626A7E); }
+      .board-bar .board-close { display: none; pointer-events: auto; border: 0; background: transparent; color: var(--ink, #1D2238);
+        font-size: 1rem; line-height: 1; padding: 6px 8px; margin: -6px -8px -6px 0; border-radius: 999px; }
+      html.board-touch .board-bar .board-close { display: inline-block; }
+      html.board-touch .board-bar span { display: none; }
+      /* Touch screens: one finger still scrolls; two fingers are ours, for the board */
+      html.board-touch { touch-action: pan-x pan-y; }
       @media print { .board-bar { display: none !important; } }
     `;
     style.textContent += boardCss;
@@ -641,9 +649,16 @@
     // A small label while the board is on: how far you've zoomed, and how to leave
     const bar = document.createElement("div");
     bar.className = "board-bar"; bar.setAttribute("aria-live", "polite");
-    bar.innerHTML = '⤢ Board <b class="board-pct">100%</b> <span>0 = 100% · B = leave</span>';
+    bar.innerHTML = '⤢ Board <b class="board-pct">100%</b> <span>0 = 100% · B = leave</span>' +
+      '<button type="button" class="board-close" aria-label="Leave the board">✕</button>';
     document.body.appendChild(bar);
     const pct = bar.querySelector(".board-pct");
+    const touchScreen = window.matchMedia && matchMedia("(pointer: coarse)").matches;
+    if (touchScreen && window.top === window) document.documentElement.classList.add("board-touch");
+    // On pointerup as well as click: a phone can drop the click after a pinch
+    const closeBtn = bar.querySelector(".board-close");
+    closeBtn.addEventListener("click", () => setBoard(false));
+    closeBtn.addEventListener("pointerup", (e) => { if (e.pointerType !== "mouse") setBoard(false); });
 
     // Where the page sits with no zoom: its layout box, measured without our transform
     // (measured against the transform that is on the page now, not the one we are about to set)
@@ -747,11 +762,17 @@
       if (current && current !== "erase") { const list = strokesOf(currentIndex()); const i = list.indexOf(current); if (i >= 0) list.splice(i, 1); }
       current = null; tap = null; requestRedraw();
     }
-    function inTools(t) { return t.closest && t.closest(".pen-tools, .sticky, .pagebar, .topbar, .thumbs, .thumbs-toggle"); }
+    function inTools(t) { return t.closest && t.closest(".pen-tools, .board-bar, .sticky, .pagebar, .topbar, .thumbs, .thumbs-toggle"); }
     window.addEventListener("pointerdown", (e) => {
-      if (!view.on || inTools(e.target)) return;
+      if (!drag) moved = false;   // a new touch or click: only the click right after a drag is swallowed
+      if (inTools(e.target)) return;
+      if (e.pointerType === "touch") touches.set(e.pointerId, [e.clientX, e.clientY]);
+      if (!view.on) {
+        // On a phone or tablet, two fingers turn the board on (there's no B key)
+        if (!(touchScreen && window.top === window && e.pointerType === "touch" && touches.size === 2)) return;
+        setBoard(true);
+      }
       if (e.pointerType === "touch") {
-        touches.set(e.pointerId, [e.clientX, e.clientY]);
         if (touches.size === 2) {
           dropStroke();
           const [a, b] = [...touches.values()];
@@ -765,8 +786,8 @@
       if (e.pointerType !== "touch") { e.preventDefault(); e.stopImmediatePropagation(); }
     }, true);
     window.addEventListener("pointermove", (e) => {
-      if (!view.on) return;
       if (touches.has(e.pointerId)) touches.set(e.pointerId, [e.clientX, e.clientY]);
+      if (!view.on) return;
       if (pinch && touches.size >= 2) {
         const [a, b] = [...touches.values()];
         const d = Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, cx = (a[0] + b[0]) / 2, cy = (a[1] + b[1]) / 2;

@@ -165,6 +165,8 @@ and every change. Add to this file whenever he gives new design advice.
   and two fingers move the page (also Ctrl + wheel, the wheel, space + drag, the middle button, two fingers on a
   touch screen; 0 = back to 100%). Off the board, a pinch is the browser's own zoom, as usual. Only the page moves:
   the pen tools, the top bar, the page list and the page buttons stay put, and notes stay on what they were written on.
+  Phones and tablets have no B key: there a two-finger pinch turns the board on (so the pen and pinching work together),
+  and a ✕ on its label turns it off. Laptops stay B-only. While on the board, Previous / Next are pinned to the bottom.
   The board isn't endless: at least a strip of the page always stays on screen, so it can't get lost.
   Off by default; a small label shows it's on. Once on, it stays on at the same zoom and place on the next slide,
   lesson or course in that tab, so pages line up where the last one was (Rishal, 18 Nov 2026). B or closing the tab
