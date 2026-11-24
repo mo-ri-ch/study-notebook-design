@@ -1,4 +1,4 @@
-// © 2026 Gradient AI Labs. Free to use under CC BY 4.0 (see LICENSE): keep the "Handcrafted with care by Gradient AI Labs" credit.
+// © 2026 Gradient AI Labs. Free to use under CC BY 4.0 (see LICENSE): keep the "Paper, pens & highlighters by Gradient AI Labs" credit.
 // home.js — the course home page (study-notebook-design, v1).
 // Needs common.js first (for LESSONS and isDone).
 //   <ol class="path" id="pathList"></ol>     → the lessons as sticky notes, joined by each lesson's question

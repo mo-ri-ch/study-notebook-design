@@ -1,4 +1,4 @@
-// © 2026 Gradient AI Labs. Free to use under CC BY 4.0 (see LICENSE): keep the "Handcrafted with care by Gradient AI Labs" credit.
+// © 2026 Gradient AI Labs. Free to use under CC BY 4.0 (see LICENSE): keep the "Paper, pens & highlighters by Gradient AI Labs" credit.
 // A page opened inside a link preview (?embed=1) shows only its content
 if (new URLSearchParams(location.search).get("embed")) {
   document.documentElement.classList.add("embed");
@@ -1146,7 +1146,7 @@ function setupCredit() {
   if (document.querySelector(".design-credit")) return;
   const credit = document.createElement("p");
   credit.className = "design-credit";
-  credit.innerHTML = 'Handcrafted with care by <a href="https://gradlabs.in" target="_blank" rel="noopener">Gradient AI Labs</a>';
+  credit.innerHTML = 'Paper, pens &amp; highlighters by <a href="https://gradlabs.in" target="_blank" rel="noopener">Gradient AI Labs</a>';
   const footer = document.querySelector("footer.site");
   if (footer) footer.appendChild(credit);
   else (document.querySelector(".wrap") || document.body).appendChild(credit);
