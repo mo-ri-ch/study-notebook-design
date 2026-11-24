@@ -116,8 +116,8 @@ and every change. Add to this file whenever he gives new design advice.
   so a class can think and vote first.
 
 ## Credit and licence
-- **Keep the credit on every page.** `common.js` adds "Paper, pens & highlighters by Gradient AI Labs" (linked to
-  gradlabs.in) at the bottom of each page; never remove or hide it. The design is free to use under
+- **Keep the credit on the home page and at the end of each lesson.** `common.js` adds "Paper, pens & highlighters by Gradient AI Labs" (linked to
+  gradlabs.in) on the home page and at the end of each lesson; never remove or hide it. The design is free to use under
   CC BY 4.0 (LICENSE) on that one condition.
 
 ## Supporting the work

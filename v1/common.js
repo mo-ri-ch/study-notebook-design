@@ -188,6 +188,8 @@ function setupPagedLesson() {
       hint.hidden = !h || next.hidden;
     }
     if (support) support.hidden = current !== parts.length - 1;
+    const credit = document.querySelector(".design-credit");
+    if (credit) credit.hidden = !viewAll && current !== parts.length - 1;
     if (label) { const n = pageNumber(parts, current); label.textContent = (n ? `${n} / ${pageTotal(parts)}  ` : "") + (parts[current].dataset.title || ""); }
     try { history.replaceState(null, "", `#${current + 1}`); } catch (e) { /* file:// */ }
     if (viewAll) {
@@ -1140,8 +1142,8 @@ function setupLinkPreviews() {
 }
 
 // ---------- Credit ----------
-// One quiet line at the bottom of every page: the design is free to use under CC BY 4.0
-// as long as this credit stays (see LICENSE).
+// One quiet line on the home page and at the end of each lesson (its last page): the design is
+// free to use under CC BY 4.0 as long as this credit stays (see LICENSE).
 function setupCredit() {
   if (document.querySelector(".design-credit")) return;
   const credit = document.createElement("p");
@@ -1150,6 +1152,9 @@ function setupCredit() {
   const footer = document.querySelector("footer.site");
   if (footer) footer.appendChild(credit);
   else (document.querySelector(".wrap") || document.body).appendChild(credit);
+  // In a lesson, only on its last page (setupPagedLesson keeps this up to date as pages change)
+  const parts = document.querySelectorAll("main[data-paged] section.part");
+  if (parts.length) credit.hidden = parts[parts.length - 1].hidden;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
