@@ -3,9 +3,10 @@
 The shared look and features for my interactive courses: pages that look like a student's notebook,
 with ruled paper, handwritten headings, highlighters, sticky notes and red-pen notes.
 
-> **Using this design? Please give credit.** It's free to use, even commercially, as long as it shows **"Paper, pens & highlighters by Gradient AI Labs"**, linked to
-> [gradlabs.in](https://gradlabs.in). on its home page and at the end of each lesson; `common.js` adds this line for you. See
-> [Licence and credit](#licence-and-credit).
+> **Using this design? Please give credit.** It's free to use, even commercially, as long as your
+> notebooks show **"Paper, pens & highlighters by Gradient AI Labs"**, linked to
+> [gradlabs.in](https://gradlabs.in), on the home page and at the end of each lesson.
+> `common.js` adds this line for you. See [Licence and credit](#licence-and-credit).
 
 Used by:
 - [Build a Tiny LLM](https://gradlabs.in/learn/tiny-llm/)
