@@ -1,3 +1,4 @@
+// © 2026 Gradient AI Labs. Free to use under CC BY 4.0 (see LICENSE): keep the "Notebook design by Gradient AI Labs" credit.
 // A page opened inside a link preview (?embed=1) shows only its content
 if (new URLSearchParams(location.search).get("embed")) {
   document.documentElement.classList.add("embed");
@@ -1138,6 +1139,19 @@ function setupLinkPreviews() {
   document.addEventListener("scroll", () => { if (box && !box.classList.contains("sheet")) place(); }, true);
 }
 
+// ---------- Credit ----------
+// One quiet line at the bottom of every page: the design is free to use under CC BY 4.0
+// as long as this credit stays (see LICENSE).
+function setupCredit() {
+  if (document.querySelector(".design-credit")) return;
+  const credit = document.createElement("p");
+  credit.className = "design-credit";
+  credit.innerHTML = 'Notebook design by <a href="https://gradlabs.in" target="_blank" rel="noopener">Gradient AI Labs</a>';
+  const footer = document.querySelector("footer.site");
+  if (footer) footer.appendChild(credit);
+  else (document.querySelector(".wrap") || document.body).appendChild(credit);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   (COURSE.setup || []).forEach(fn => fn());
   setupLinkPreviews();
@@ -1154,4 +1168,5 @@ document.addEventListener("DOMContentLoaded", () => {
   setupDoneToggle();
   setupLlmPath();
   setupPeeks();
+  setupCredit();
 });

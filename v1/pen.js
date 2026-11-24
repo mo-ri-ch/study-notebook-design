@@ -1,3 +1,4 @@
+// © 2026 Gradient AI Labs. Free to use under CC BY 4.0 (see LICENSE): keep the "Notebook design by Gradient AI Labs" credit.
 // ---------- Pen: write your own notes anywhere on the screen ----------
 // Press P (or the small ✎ in the left margin) to turn the pen on or off.
 // Press B for board mode: zoom (pinch) and move (two fingers) the page in every direction, with or without the pen.

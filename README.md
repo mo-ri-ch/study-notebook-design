@@ -58,3 +58,13 @@ Edit the files in `v1/` and push. Every course updates within a few minutes
 
 For a change that would break existing courses, copy `v1/` to `v2/` and change it there.
 Courses keep using `v1` until you move them to `v2`.
+
+## Licence and credit
+
+© 2026 Gradient AI Labs. Free to use and adapt, even commercially, under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (see `LICENSE`).
+The one condition: keep the credit **"Notebook design by Gradient AI Labs"**, linked to
+https://gradlabs.in. `common.js` adds it at the bottom of every page; please don't remove it.
+
+Using it in your own courses? Take your own copy of `v1/` rather than loading these files
+live: changes here would otherwise change your pages too.

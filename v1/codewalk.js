@@ -1,3 +1,4 @@
+// © 2026 Gradient AI Labs. Free to use under CC BY 4.0 (see LICENSE): keep the "Notebook design by Gradient AI Labs" credit.
 // codewalk.js — help for reading the lesson code:
 //   1. "Step through": run the code one line at a time, like Thonny, and watch every variable change.
 //   2. Python words: tap a dotted word in any code block for a tiny explanation and example.

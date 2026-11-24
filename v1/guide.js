@@ -1,3 +1,4 @@
+// © 2026 Gradient AI Labs. Free to use under CC BY 4.0 (see LICENSE): keep the "Notebook design by Gradient AI Labs" credit.
 // ---------- Guide me: a soft glow on the one thing to look at now ----------
 // Like the guide in a game: → moves the glow to the next thing, ← goes back.
 // After the last thing on a page, → goes to the next page. Shift + → / ← jumps a whole page.

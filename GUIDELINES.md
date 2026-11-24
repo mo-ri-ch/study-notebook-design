@@ -115,6 +115,11 @@ and every change. Add to this file whenever he gives new design advice.
 - **Teaching (T):** no reminders, nothing counts; picking an answer only marks it, and "Reveal the answer" shows it,
   so a class can think and vote first.
 
+## Credit and licence
+- **Keep the credit on every page.** `common.js` adds "Notebook design by Gradient AI Labs" (linked to
+  gradlabs.in) at the bottom of each page; never remove or hide it. The design is free to use under
+  CC BY 4.0 (LICENSE) on that one condition.
+
 ## Supporting the work
 - **Ask gently, only at the end, and only from Lesson 3 on** (readers first see what the notebook is
   like; `supportFrom` in course.js changes this). A lesson's last page shows one quiet pencil line under Next:

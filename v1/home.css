@@ -1,3 +1,4 @@
+/* © 2026 Gradient AI Labs. Free to use under CC BY 4.0 (see LICENSE): keep the "Notebook design by Gradient AI Labs" credit. */
 /* home.css — the course home page: hero, small sticky notes that open in place,
    and the lessons as sticky notes joined by their questions. Used with home.js. */
   .hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: start; padding: 40px 0 72px; }
