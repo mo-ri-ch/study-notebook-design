@@ -6,6 +6,12 @@ with ruled paper, handwritten headings, highlighters, sticky notes and red-pen n
 Used by:
 - [Build a Tiny LLM](https://gradlabs.in/learn/tiny-llm/)
 - [Transformers & LLMs](https://gradlabs.in/learn/transformers/)
+- [Build an AI Agent](https://gradlabs.in/learn/agents/)
+- [Forward Deployed Engineering](https://gradlabs.in/learn/fde/)
+- [Build an AI Team](https://mo-ri-ch.github.io/agent-team/)
+- [Web Foundations](https://mo-ri-ch.github.io/web-foundations/)
+- [Deep Learning, Hands-on](https://mo-ri-ch.github.io/deep-learning/) (session)
+- [Generative AI & Prompt Engineering for Developers](https://mo-ri-ch.github.io/genai-webinar/) (webinar)
 
 ## What's inside
 
