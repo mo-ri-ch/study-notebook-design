@@ -3,6 +3,11 @@
 The shared look and features for my interactive courses: pages that look like a student's notebook,
 with ruled paper, handwritten headings, highlighters, sticky notes and red-pen notes.
 
+> **Using this design? Please give credit.** It's free to use, even commercially, as long as every
+> page that uses it shows **"Paper, pens & highlighters by Gradient AI Labs"**, linked to
+> [gradlabs.in](https://gradlabs.in). `common.js` adds this line for you. See
+> [Licence and credit](#licence-and-credit).
+
 Used by:
 - [Build a Tiny LLM](https://gradlabs.in/learn/tiny-llm/)
 - [Transformers & LLMs](https://gradlabs.in/learn/transformers/)
@@ -69,8 +74,21 @@ Courses keep using `v1` until you move them to `v2`.
 
 © 2026 Gradient AI Labs. Free to use and adapt, even commercially, under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (see `LICENSE`).
-The one condition: keep the credit **"Paper, pens & highlighters by Gradient AI Labs"**, linked to
-https://gradlabs.in. `common.js` adds it at the bottom of every page; please don't remove it.
+
+**If you use this design, in full or in part, you must credit Gradient AI Labs:**
+
+1. Keep the line **"Paper, pens & highlighters by Gradient AI Labs"**, linked to https://gradlabs.in,
+   visible on every page that uses the design. `common.js` adds it at the bottom of each page; don't
+   remove or hide it.
+2. If you don't use `common.js`, or you build your own pages from this design, add the line yourself:
+
+   ```html
+   <p class="design-credit">Paper, pens &amp; highlighters by <a href="https://gradlabs.in">Gradient AI Labs</a></p>
+   ```
+
+3. Keep the `LICENSE` file and the notice at the top of each file in your copy.
+
+The credit is for the design (the look and the shared features), not for your course content.
 
 Using it in your own courses? Take your own copy of `v1/` rather than loading these files
 live: changes here would otherwise change your pages too.
